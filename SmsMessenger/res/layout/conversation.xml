@@ -1,7 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-</TableLayout>
+    <ListView
+        android:id="@+id/conversationListView"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="2" >
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/msgEditText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/new_message_text_hint"
+            android:layout_weight="2"
+            android:inputType="textMultiLine"
+            android:ems="10" >
+            <requestFocus />
+        </EditText>
+
+        <ImageButton
+            android:id="@+id/sendMsgImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/send_message_image_desc"
+            android:src="@drawable/ic_launcher" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SmsMessenger</string>
+    <string name="app_name">SMS Messenger</string>
+    <string name="action_new_message">New Message</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="contact_image_desc">Image preview of contact</string>
+    <string name="new_message_title">New Message</string>
+    <string name="new_message_contacts_hint">Enter recipient</string>
+    <string name="new_message_text_hint">Enter message</string>
+    <string name="add_recipient_image_desc">Add recipient</string>
+    <string name="send_message_image_desc">Send message</string>
 
 </resources>
