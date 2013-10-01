@@ -30,6 +30,7 @@ public class NewConversationActivity extends Activity {
     
 	private AutoCompleteTextView newRecipientTextView;
 	private EditText newMessageEditText;
+	private SmsMessageHandler smsHandler;
 	
 	private OnClickListener addNewRecipientOnClickListener = new OnClickListener(){
 
@@ -110,9 +111,13 @@ public class NewConversationActivity extends Activity {
                 {
                     case Activity.RESULT_OK:
                         Toast.makeText(getBaseContext(), "SMS delivered", Toast.LENGTH_SHORT).show();
-                        messageContainer.setDate(Calendar.getInstance().getTime());
+                        messageContainer.setDate(Calendar.getInstance().getTimeInMillis());
                         messageContainer.setStatus(SmsMessageHandler.SMS_DELIVERED);
-                        SmsMessageHandler.saveOutgoingSmsToDB( messageContainer );
+                        
+                        // TODO - Following lines should be done in async task
+                        getSmsMessageHandler().saveOutgoingSmsToDB(messageContainer);
+                        getSmsMessageHandler().close();
+                        
                         break;
                     case Activity.RESULT_CANCELED:
                         Toast.makeText(getBaseContext(), "SMS not delivered", Toast.LENGTH_SHORT).show();
@@ -123,5 +128,12 @@ public class NewConversationActivity extends Activity {
  
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);        
+	}
+	
+	private SmsMessageHandler getSmsMessageHandler()
+	{
+		if(smsHandler==null)
+			smsHandler = new SmsMessageHandler(this);
+		return smsHandler;
 	}
 }
