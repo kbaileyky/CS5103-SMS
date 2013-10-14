@@ -25,6 +25,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 	public static final String UPDATE_MSG_INTENT = "edu.utsa.cs.smsmessenger.UPDATE_MSG_INTENT";
 
+	//Message status
 	public static final String SMS_DRAFT = "SMS_DRAFT";
 	public static final String SMS_SENT = "SMS_SENT";
 	public static final String SMS_DELIVERED = "SMS_DELIVERED";
@@ -79,11 +80,11 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 	/**
 	 * This method saves a MessageContainer object to the OS database table
-	 * specified by the MessageContainer's type
+	 * specified by the MessageContainer's type.
 	 * 
 	 * @param message
 	 *            is the MessageContainer object to save to the database table
-	 *            specified in the MessageContainer's type
+	 *            specified in the MessageContainer's type.
 	 * @return returns a long that represents the database table id of the saved
 	 *         message.
 	 */
@@ -112,13 +113,13 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 	/**
 	 * This method updates the table row specified by the MessageContainer's id
-	 * with new field values stored in the MessageContainer object
+	 * with new field values stored in the MessageContainer object.
 	 * 
 	 * @param message
 	 *            is the MessageContainer object to update in the database table
-	 *            specified in the MessageContainer's type
+	 *            specified in the MessageContainer's type.
 	 * @return returns an int that represents the number of rows that were
-	 *         updated
+	 *         updated.
 	 */
 	public int updateSmsMessage(MessageContainer message) {
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -146,17 +147,17 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	/**
 	 * Queries the specified OS database table using the passed in parameters
 	 * for selection, and returns and ArrayList of MessageContainer objects
-	 * representing the database entries
+	 * representing the database entries.
 	 * 
 	 * @param selection
 	 *            a database selection string with one or more '?' as a
-	 *            placeholder for arguments
+	 *            placeholder for arguments.
 	 * @param selectionArgs
-	 *            an array of arguments expected in the selection string
+	 *            an array of arguments expected in the selection string.
 	 * @param sortOrder
-	 *            the desired order to return the entries from the database
+	 *            the desired order to return the entries from the database.
 	 * @param table
-	 *            the database table to retrieve the requested entries from
+	 *            the database table to retrieve the requested entries from.
 	 * @return an ArrayList of MessageContainer objects that meet the criteria
 	 *         of the passed parameters.
 	 */
@@ -205,13 +206,13 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	/**
 	 * This method retrieves messages for the user and the specified contact,
 	 * and merges the messages into an ArrayList of MessageContainer objects
-	 * ordered by date in ascending order
+	 * ordered by date in ascending order.
 	 * 
 	 * @param phoneNumber
-	 *            the phone number of the user to retrieve messages from
+	 *            the phone number of the user to retrieve messages from.
 	 * @return returns an ArrayList of MessageContainer objects representing
 	 *         messages from the user and the contact specified by the phone
-	 *         number
+	 *         number.
 	 */
 	public ArrayList<MessageContainer> getConversationWithUser(
 			String phoneNumber) {
@@ -244,7 +245,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	 * 
 	 * @return returns a HashMap with a contact's phone number as the key and a
 	 *         ConversationPreview object representing the latest message
-	 *         between the user and contact
+	 *         between the user and contact.
 	 */
 	public HashMap<String, ConversationPreview> getConversationPreviewItmes() {
 		Log.d("SmsMessageHandler", "getConversationPreviewItmes()");
@@ -291,13 +292,13 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	/**
 	 * This method uses the passed in phone number to lookup and delete a
 	 * conversation, which is all message from the user to a contact and from a
-	 * contact to the user
+	 * contact to the user.
 	 * 
 	 * @param phoneNumber
 	 *            the phone number of the contact in the conversation with the
-	 *            user that will be deleted
+	 *            user that will be deleted.
 	 * @return returns true if delete affected more that one row in any table,
-	 *         returns false if no rows were deleted
+	 *         returns false if no rows were deleted.
 	 */
 	public boolean deleteConversation(String phoneNumber) {
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -310,13 +311,13 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 	/**
 	 * This method uses the passed MessageContainer object to lookup and delete
-	 * a message from the specified database table
+	 * a message from the specified database table.
 	 * 
 	 * @param message
 	 *            the MessageContainer object containing the id and type (table
-	 *            type) to specify which table row to delete
+	 *            type) to specify which table row to delete.
 	 * @return returns true if delete affected more that one row in any table,
-	 *         returns false if no rows were deleted
+	 *         returns false if no rows were deleted.
 	 */
 	public boolean deleteMessage(MessageContainer message) {
 		SQLiteDatabase db = this.getWritableDatabase();

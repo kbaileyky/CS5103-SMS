@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 /**
  * This class listens for incoming SMS messages and broadcasts intents to
- * activities
+ * activities.
  * 
  * @author Michael Madrigal
  * @version 1.0
