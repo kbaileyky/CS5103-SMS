@@ -1,56 +1,62 @@
 package edu.utsa.cs.smsmessenger.model;
 
-
-/** MessageContainer is a data model representing a message
+/**
+ * This class is a data model representing a message
  * 
- * @author mmadrigal
- *
+ * @author Michael Madrigal
+ * @version 1.0
+ * @since 1.0
+ * 
  */
 public class MessageContainer implements Comparable<MessageContainer> {
 
 	private long id;
 	private String phoneNumber;
-	private int contactId;  
+	private int contactId;
 	private long date;
 	private String subject;
 	private String body;
 	private boolean read;
 	private String status;
 	private String type;
-	
-	public MessageContainer()
-	{
+	private boolean saved;
+
+	public MessageContainer() {
 		this.contactId = -1;
+		this.saved = false;
+		this.read = false;
 	}
 
-	public MessageContainer(long id, String phoneNumber, int contactId, long date,
-			String subject, String body, boolean read, String status, String type) {
-		this.id = id;
-		this.phoneNumber = phoneNumber;
-		this.contactId = contactId;
-		this.date = date;
-		this.subject = subject;
-		this.body = body;
-		this.read = read;
-		this.status = status;
+	public MessageContainer(String type) {
 		this.type = type;
+		this.contactId = -1;
+		this.saved = false;
+		this.read = false;
 	}
 
 	@Override
 	public int compareTo(MessageContainer another) {
-		if(this.getDate()>another.getDate())
+		if (this.getDate() > another.getDate())
 			return 1;
-		if(this.getDate()<another.getDate())
+		if (this.getDate() < another.getDate())
 			return -1;
 		return 0;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "MessageContainer [id=" + id + ", phoneNumber=" + phoneNumber
 				+ ", contactId=" + contactId + ", date=" + date + ", subject="
 				+ subject + ", body=" + body + ", read=" + read + ", status="
-				+ status + "]";
+				+ status + ", type=" + type + ", saved=" + saved + "]";
+	}
+
+	public boolean isSaved() {
+		return saved;
+	}
+
+	public void setSaved(boolean saved) {
+		this.saved = saved;
 	}
 
 	public long getId() {
@@ -124,5 +130,5 @@ public class MessageContainer implements Comparable<MessageContainer> {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
 }

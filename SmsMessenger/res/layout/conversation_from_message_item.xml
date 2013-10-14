@@ -2,7 +2,10 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="3dip" >
+    android:paddingTop="3dip"
+    android:paddingBottom="3dip"
+    android:paddingLeft="8dip"
+    android:paddingRight="8dip" >
 
     <TableRow
         android:id="@+id/tableRow1"
@@ -10,7 +13,7 @@
         android:layout_height="wrap_content" >
 
         <ImageView
-            android:id="@+id/msgFromImageView"
+            android:id="@+id/msgImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_launcher"
@@ -24,20 +27,23 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/msgFromTextView"
+                android:id="@+id/msgBodyTextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+        		android:textAppearance="?android:attr/textAppearanceMedium" 
                 android:text="TextView ad a dasdf asdfasd fsdf a sdasd asd asd asd fasdfasd asd asd asdf asd asd asd asd asd asd asd asdasd as asdas as asdas as asdasdfasdf asd asd asdasd asd ada sdasd asdasdasdfasdasd" />
 
             <TextView
-                android:id="@+id/msgFromTimeTextView"
+                android:id="@+id/msgDateTextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right"
+        		android:textAppearance="?android:attr/textAppearanceSmall" 
                 android:text="9/26/2013 10:30am" />
 
         </LinearLayout>
 
     </TableRow>
+
 
 </TableLayout>
