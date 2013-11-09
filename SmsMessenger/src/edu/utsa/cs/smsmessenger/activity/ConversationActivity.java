@@ -8,6 +8,7 @@ import edu.utsa.cs.smsmessenger.adapter.MessageContainerAdapter;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -133,7 +134,14 @@ public class ConversationActivity extends Activity {
 		super.onResume();
 	}
 
+	private void closeExistingNotifications() {
+		// Close notifications for this user
+		NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notificationmanager.cancel(contactId);
+	}
+	
 	public void fillConversationListView() {
+		closeExistingNotifications();
 		ArrayList<MessageContainer> msgList = getSmsMessageHandler()
 				.getConversationWithUser(contactPhoneNumber);
 		getSmsMessageHandler().close();

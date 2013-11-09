@@ -3,9 +3,14 @@ package edu.utsa.cs.smsmessenger.receiver;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import edu.utsa.cs.smsmessenger.R;
+import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.AppConstants;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -55,11 +60,13 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 	public void onReceive(final Context context, Intent intent) {
 		this.context = context;
 		final Bundle bundle = intent.getExtras();
-		
+
 		SharedPreferences preferences;
-		preferences = context.getSharedPreferences(AppConstants.APP_PREF_KEY, Context.MODE_PRIVATE);
-		boolean allowSMSPropagation = preferences.getBoolean(AppConstants.APP_PREF_SMS_PROPAGATION_KEY, true);
-		
+		preferences = context.getSharedPreferences(AppConstants.APP_PREF_KEY,
+				Context.MODE_PRIVATE);
+		boolean allowSMSPropagation = preferences.getBoolean(
+				AppConstants.APP_PREF_SMS_PROPAGATION_KEY, true);
+
 		ArrayList<MessageContainer> newMsgList = new ArrayList<MessageContainer>();
 		try {
 			if (bundle != null) {
@@ -96,6 +103,8 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 					toast.show();
 
 					newMsgList.add(msg);
+
+					sendNotification(context, msg);
 				}
 			}
 		} catch (Exception e) {
@@ -106,9 +115,9 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 
 		SaveNewMessagesToDbTask saveThread = new SaveNewMessagesToDbTask();
 		saveThread.execute(newMsgList.toArray());
-		
-		//Stop sms propagation to native messenger
-		if(!allowSMSPropagation)
+
+		// Stop sms propagation to native messenger
+		if (!allowSMSPropagation)
 			this.abortBroadcast();
 	}
 
@@ -117,4 +126,32 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 			smsMessageHandler = new SmsMessageHandler(context);
 		return smsMessageHandler;
 	}
+
+	private void sendNotification(Context context, MessageContainer msg) {
+		Intent intent = new Intent(context, ConversationActivity.class);
+		intent.putExtra(SmsMessageHandler.COL_NAME_PHONE_NUMBER,
+				msg.getPhoneNumber());
+		intent.putExtra(SmsMessageHandler.COL_NAME_CONTACT_ID,
+				msg.getContactId());
+
+		PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+
+		// TODO - display contact name in notification if available
+
+		// Create Notification
+		Notification.Builder builder = new Notification.Builder(context)
+				.setContentTitle("New message from: " + msg.getPhoneNumber())
+				.setContentText(msg.getBody())
+				.setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent)
+				.setAutoCancel(true)
+				.setDefaults(Notification.DEFAULT_ALL);
+
+		// Create Notification Manager
+		NotificationManager notificationmanager = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+		// Build Notification with Notification Manager
+		notificationmanager.notify(msg.getContactId(), builder.getNotification());
+	}
+
 }

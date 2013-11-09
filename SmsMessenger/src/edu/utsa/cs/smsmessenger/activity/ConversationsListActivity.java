@@ -10,6 +10,7 @@ import edu.utsa.cs.smsmessenger.model.ConversationPreview;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -80,26 +81,37 @@ public class ConversationsListActivity extends Activity {
 		Toast msg;
 
 		switch (item.getItemId()) {
-			case R.id.action_new_message:
-				msg = Toast.makeText(this, "New Message...", Toast.LENGTH_LONG);
-				msg.show();
-	
-				Intent newConversationintent = new Intent(this, NewConversationActivity.class);
-				startActivity(newConversationintent);
-	
-				break;
-			case R.id.action_settings:
-				msg = Toast.makeText(this, "Settings...", Toast.LENGTH_LONG);
-				msg.show();
-	
-				Intent settingsIntent = new Intent(this, AppSettingsActivity.class);
-				startActivity(settingsIntent);
-				break;
+		case R.id.action_new_message:
+			msg = Toast.makeText(this, "New Message...", Toast.LENGTH_LONG);
+			msg.show();
+
+			Intent newConversationintent = new Intent(this,
+					NewConversationActivity.class);
+			startActivity(newConversationintent);
+
+			break;
+		case R.id.action_settings:
+			msg = Toast.makeText(this, "Settings...", Toast.LENGTH_LONG);
+			msg.show();
+
+			Intent settingsIntent = new Intent(this, AppSettingsActivity.class);
+			startActivity(settingsIntent);
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void closeAllExistingNotifications() {
+		// Since we are in the conversation list, we will see new messages so we
+		// can close notifications
+		NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notificationmanager.cancelAll();
+	}
+
 	public void fillConversationsList() {
+		// If we are filling the conversation list, then we don't need to show
+		// notifications
+		closeAllExistingNotifications();
 		Log.d("ConversationsListActivity", "fillConversation()");
 		HashMap<String, ConversationPreview> convPrevMap = getSmsMessageHandler()
 				.getConversationPreviewItmes();
