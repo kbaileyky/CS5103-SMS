@@ -80,14 +80,21 @@ public class ConversationsListActivity extends Activity {
 		Toast msg;
 
 		switch (item.getItemId()) {
-		case R.id.action_new_message:
-			msg = Toast.makeText(this, "New Message...", Toast.LENGTH_LONG);
-			msg.show();
-
-			Intent intent = new Intent(this, NewConversationActivity.class);
-			startActivity(intent);
-
-			break;
+			case R.id.action_new_message:
+				msg = Toast.makeText(this, "New Message...", Toast.LENGTH_LONG);
+				msg.show();
+	
+				Intent newConversationintent = new Intent(this, NewConversationActivity.class);
+				startActivity(newConversationintent);
+	
+				break;
+			case R.id.action_settings:
+				msg = Toast.makeText(this, "Settings...", Toast.LENGTH_LONG);
+				msg.show();
+	
+				Intent settingsIntent = new Intent(this, AppSettingsActivity.class);
+				startActivity(settingsIntent);
+				break;
 		}
 		return super.onOptionsItemSelected(item);
 	}

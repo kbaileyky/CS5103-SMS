@@ -35,8 +35,12 @@
             android:name="edu.utsa.cs.smsmessenger.activity.ConversationActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name="edu.utsa.cs.smsmessenger.activity.AppSettingsActivity"
+            android:label="@string/settings_title" >
+        </activity>
         <receiver android:name="edu.utsa.cs.smsmessenger.receiver.IncomingSmsMessageReceiver">
-            <intent-filter >
+            <intent-filter android:priority="9999" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>

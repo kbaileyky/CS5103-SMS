@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
+import edu.utsa.cs.smsmessenger.util.AppConstants;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
@@ -53,6 +55,11 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 	public void onReceive(final Context context, Intent intent) {
 		this.context = context;
 		final Bundle bundle = intent.getExtras();
+		
+		SharedPreferences preferences;
+		preferences = context.getSharedPreferences(AppConstants.APP_PREF_KEY, Context.MODE_PRIVATE);
+		boolean allowSMSPropagation = preferences.getBoolean(AppConstants.APP_PREF_SMS_PROPAGATION_KEY, true);
+		
 		ArrayList<MessageContainer> newMsgList = new ArrayList<MessageContainer>();
 		try {
 			if (bundle != null) {
@@ -95,10 +102,14 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 			Log.e("IncomingSMSReceiver", "Exception in onReceive(): " + e);
 		}
 
-		Log.e("IncomingSMSReceiver", "New Msg List Size: " + newMsgList.size());
+		Log.d("IncomingSMSReceiver", "New Msg List Size: " + newMsgList.size());
 
 		SaveNewMessagesToDbTask saveThread = new SaveNewMessagesToDbTask();
 		saveThread.execute(newMsgList.toArray());
+		
+		//Stop sms propagation to native messenger
+		if(!allowSMSPropagation)
+			this.abortBroadcast();
 	}
 
 	private SmsMessageHandler getSmsMessageHandler(Context context) {

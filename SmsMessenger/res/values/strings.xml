@@ -4,6 +4,7 @@
     <string name="app_name">SMS Messenger</string>
     <string name="action_new_message">New Message</string>
     <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
     <string name="hello_world">Hello world!</string>
     <string name="contact_image_desc">Image preview of contact</string>
     <string name="new_message_title">New Message</string>
@@ -11,5 +12,8 @@
     <string name="new_message_text_hint">Enter message</string>
     <string name="add_recipient_image_desc">Add recipient</string>
     <string name="send_message_image_desc">Send message</string>
+    <string name="sms_message_settings_title">SMS Message Settings</string>
+    <string name="sms_propagation_chk_bx">Allow SMS message propagation</string>
+    <string name="settings_title">App Settings</string>
 
 </resources>
