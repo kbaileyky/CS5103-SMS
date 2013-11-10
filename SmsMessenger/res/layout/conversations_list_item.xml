@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="6dip"
         android:contentDescription="@string/contact_image_desc"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/hg_launcher_icon" />
 
     <TextView
         android:id="@+id/conversationPreviewTextView"

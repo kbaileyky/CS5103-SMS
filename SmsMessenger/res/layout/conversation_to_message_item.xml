@@ -39,7 +39,7 @@
             android:id="@+id/msgImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher"
+            android:src="@drawable/hg_launcher_icon"
         	android:contentDescription="@string/contact_image_desc"
             android:layout_gravity="center" />
 

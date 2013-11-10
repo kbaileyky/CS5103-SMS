@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/add_recipient_image_desc"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/hg_launcher_icon" />
 
     </TableRow>
 
@@ -47,7 +47,7 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:contentDescription="@string/send_message_image_desc"
-		    android:src="@drawable/ic_launcher" />
+		    android:src="@drawable/hg_launcher_icon" />
 
     </TableRow>
 

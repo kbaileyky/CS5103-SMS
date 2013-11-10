@@ -144,7 +144,7 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 		Notification.Builder builder = new Notification.Builder(context)
 				.setContentTitle("New message from: " + msg.getPhoneNumber())
 				.setContentText(msg.getBody())
-				.setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent)
+				.setSmallIcon(R.drawable.hg_launcher_icon).setContentIntent(pIntent)
 				.setAutoCancel(true)
 				.setDefaults(Notification.DEFAULT_ALL);
 
