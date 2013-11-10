@@ -4,6 +4,8 @@ import java.util.Calendar;
 
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
+import edu.utsa.cs.smsmessenger.util.AutoContactFillAdapter;
+import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -105,6 +108,7 @@ public class NewConversationActivity extends Activity {
 		setContentView(R.layout.new_conversation);
 
 		newRecipientTextView = (AutoCompleteTextView) findViewById(R.id.newMsgRecipientAutoCompleteTextView);
+		newRecipientTextView.setAdapter(new AutoContactFillAdapter(this));
 		newMessageEditText = (EditText) findViewById(R.id.newMsgTextEditText);
 
 		ImageButton newRecipientButton = (ImageButton) findViewById(R.id.newMsgAddRecipientImageButton);
