@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,8 +19,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import edu.utsa.cs.smsmessenger.R;
+import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
+import edu.utsa.cs.smsmessenger.activity.NewConversationActivity;
+import edu.utsa.cs.smsmessenger.activity.ViewMessageActivity;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
+
 
 /**
  * This class is used to adapter and fill a ListView with an ArrayList of
@@ -99,6 +104,22 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 			@Override
 			public void onClick(View arg0) {
 				// TODO launch Message Activitys
+				try {
+					
+					Intent viewMsgIntent = new Intent(context, ViewMessageActivity.class);
+					
+					//store message details in 
+					viewMsgIntent.putExtra("contactName", finalMessage.getContactId());
+					viewMsgIntent.putExtra("timeAndDate", finalMessage.getDate());
+					viewMsgIntent.putExtra("msgBody", finalMessage.getBody());
+
+					
+					context.startActivity(viewMsgIntent);
+				
+				} catch(Exception x){
+					finalMessage.setBody(x.getMessage());
+				}
+				
 			}
 		});
 		convertView.setOnLongClickListener(new OnLongClickListener() {
@@ -159,4 +180,6 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 			smsMessageHandler = new SmsMessageHandler(context);
 		return smsMessageHandler;
 	}
+	
+
 }

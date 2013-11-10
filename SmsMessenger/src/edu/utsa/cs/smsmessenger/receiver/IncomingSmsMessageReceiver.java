@@ -3,6 +3,7 @@ package edu.utsa.cs.smsmessenger.receiver;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
@@ -24,11 +25,11 @@ import android.widget.Toast;
 /**
  * This class listens for incoming SMS messages and broadcasts intents to
  * activities.
- * 
+ *
  * @author Michael Madrigal
  * @version 1.0
  * @since 1.0
- * 
+ *
  */
 public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 

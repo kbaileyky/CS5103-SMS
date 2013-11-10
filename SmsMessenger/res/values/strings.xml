@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">SMS Messenger</string>
     <string name="action_new_message">New Message</string>
     <string name="action_settings">Settings</string>
@@ -12,6 +11,7 @@
     <string name="new_message_text_hint">Enter message</string>
     <string name="add_recipient_image_desc">Add recipient</string>
     <string name="send_message_image_desc">Send message</string>
+    <string name="view_message_title">View message</string>
     <string name="sms_message_settings_title">SMS Message Settings</string>
     <string name="sms_propagation_chk_bx">Allow SMS message propagation</string>
     <string name="settings_title">App Settings</string>
