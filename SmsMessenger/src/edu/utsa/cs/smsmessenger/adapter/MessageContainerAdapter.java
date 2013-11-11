@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,8 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import edu.utsa.cs.smsmessenger.R;
-import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
-import edu.utsa.cs.smsmessenger.activity.NewConversationActivity;
 import edu.utsa.cs.smsmessenger.activity.ViewMessageActivity;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;

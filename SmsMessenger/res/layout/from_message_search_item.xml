@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="3dip"
+    android:paddingBottom="3dip"
+    android:paddingLeft="8dip"
+    android:paddingRight="8dip" >
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/msgImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_launcher"
+        	android:contentDescription="@string/contact_image_desc"
+            android:layout_gravity="center" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/msgSenderTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/msgBodyTextView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:text="TextView ad a dasdf asdfasd fsdf a sdasd asd asd asd fasdfasd asd asd asdf asd asd asd asd asd asd asd asdasd as asdas as asdas as asdasdfasdf asd asd asdasd asd ada sdasd asdasdasdfasdasd" />
+
+            <TextView
+                android:id="@+id/msgDateTextView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textSize="10sp"
+                android:text="9/26/2013 10:30am" />
+
+        </LinearLayout>
+
+    </TableRow>
+
+
+</TableLayout>

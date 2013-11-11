@@ -15,5 +15,6 @@
     <string name="sms_message_settings_title">SMS Message Settings</string>
     <string name="sms_propagation_chk_bx">Allow SMS message propagation</string>
     <string name="settings_title">App Settings</string>
-
+	<string name="message_search_hint">Search for message</string>
+	<string name="search_activity_title">Message Search Results</string>
 </resources>
