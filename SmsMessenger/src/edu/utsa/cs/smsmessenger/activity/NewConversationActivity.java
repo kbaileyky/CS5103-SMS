@@ -116,6 +116,16 @@ public class NewConversationActivity extends Activity {
 
 		newRecipientButton.setOnClickListener(addNewRecipientOnClickListener);
 		sendNewMessageButton.setOnClickListener(sendNewMessageOnClickListener);
+		
+		//If the message is being forwarded
+		if(getIntent().hasExtra("fwdBody")){
+			newMessageEditText.setText(getIntent().getExtras().getString("fwdBody"));
+		}
+		
+		if(getIntent().hasExtra("replyContact")){
+			newRecipientTextView.setText(getIntent().getExtras().getString("replyContact"));
+		}
+		
 	}
 
 	public void sendSmsMessage(final String phoneNumber, final String message) {

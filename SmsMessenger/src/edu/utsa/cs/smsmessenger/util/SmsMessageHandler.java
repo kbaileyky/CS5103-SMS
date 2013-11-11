@@ -25,7 +25,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 	public static final String UPDATE_MSG_INTENT = "edu.utsa.cs.smsmessenger.UPDATE_MSG_INTENT";
 
-	// Message status
+	//Message status
 	public static final String SMS_DRAFT = "SMS_DRAFT";
 	public static final String SMS_SENT = "SMS_SENT";
 	public static final String SMS_DELIVERED = "SMS_DELIVERED";
@@ -218,37 +218,6 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 			String phoneNumber) {
 		String selectString = COL_NAME_PHONE_NUMBER + " = ?";
 		String[] selectArgs = { phoneNumber };
-		String sortOrder = COL_NAME_DATE + " ASC";
-
-		ArrayList<MessageContainer> fromMsgList = getSmsMessages(selectString,
-				selectArgs, sortOrder, MSG_TYPE_IN);
-		Log.d("SmsMessageHandler", "getConversationWithUser() fromMsgList: "
-				+ fromMsgList.size());
-		ArrayList<MessageContainer> toMsgList = getSmsMessages(selectString,
-				selectArgs, sortOrder, MSG_TYPE_OUT);
-		Log.d("SmsMessageHandler", "getConversationWithUser() toMsgList: "
-				+ toMsgList.size());
-
-		fromMsgList.addAll(toMsgList);
-		Collections.sort(fromMsgList);
-		Log.d("SmsMessageHandler",
-				"getConversationWithUser() fromMsgList merged: "
-						+ fromMsgList.size());
-
-		return fromMsgList;
-	}
-
-	/**
-	 * This method retrieves messages for that meet the query criteria
-	 * 
-	 * @param query
-	 *            the query string to search for in all message bodies.
-	 * @return returns an ArrayList of MessageContainer objects representing
-	 *         messages that meet the query criteria.
-	 */
-	public ArrayList<MessageContainer> queryMessages(String query) {
-		String selectString = COL_NAME_BODY + " LIKE ?";
-		String[] selectArgs = { "%" + query + "%" };
 		String sortOrder = COL_NAME_DATE + " ASC";
 
 		ArrayList<MessageContainer> fromMsgList = getSmsMessages(selectString,

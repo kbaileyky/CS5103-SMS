@@ -17,4 +17,7 @@
     <string name="settings_title">App Settings</string>
 	<string name="message_search_hint">Search for message</string>
 	<string name="search_activity_title">Message Search Results</string>
+    <string name="action_reply">Reply</string>
+    <string name="action_forward">Forward</string>
+
 </resources>

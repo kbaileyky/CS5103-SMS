@@ -138,6 +138,7 @@ public class ConversationActivity extends Activity {
 		// Close notifications for this user
 		NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		notificationmanager.cancel(contactId);
+		// menu
 	}
 	
 	public void fillConversationListView() {

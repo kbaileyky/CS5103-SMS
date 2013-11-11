@@ -4,14 +4,18 @@ import java.text.SimpleDateFormat;
 
 import edu.utsa.cs.smsmessenger.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.FloatMath;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
@@ -41,7 +45,11 @@ public class ViewMessageActivity extends Activity{
 		
 		currentMessage.setBody(extras.getString("msgBody"));
 		currentMessage.setDate(extras.getLong("timeAndDate"));
-		currentMessage.setContactId(extras.getInt("contactName"));
+		currentMessage.setContactId(extras.getInt(SmsMessageHandler.COL_NAME_CONTACT_ID));
+		currentMessage.setPhoneNumber(extras
+				.getString(SmsMessageHandler.COL_NAME_PHONE_NUMBER));
+		
+	
 		
 		updateUI();
 		
@@ -65,7 +73,7 @@ public class ViewMessageActivity extends Activity{
 		
 		//Temporary - replace with contact name
 		//TODO Get contact
-		setTitle(Integer.toString(currentMessage.getContactId()));
+		setTitle(currentMessage.getPhoneNumber());
 		
 		txtMsgBody = (TextView)findViewById(R.id.msgBodyTextView);
 		txtMsgBody.setText(currentMessage.getBody());
@@ -83,6 +91,45 @@ public class ViewMessageActivity extends Activity{
 		return;
 	}
 
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.view_msg_menu_list, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		Toast msg;
+
+		switch (item.getItemId()) {
+		case R.id.action_forward:
+			msg = Toast.makeText(this, "Forward...", Toast.LENGTH_LONG);
+			msg.show();
+
+			Intent forwardIntent = new Intent(this,
+					NewConversationActivity.class);
+			
+			forwardIntent.putExtra("fwdBody", currentMessage.getBody());
+			
+			startActivity(forwardIntent);
+
+			break;
+		case R.id.action_reply:
+			msg = Toast.makeText(this, "Reply...", Toast.LENGTH_LONG);
+			msg.show();
+
+			Intent replyIntent = new Intent(this, NewConversationActivity.class);
+			
+			
+			replyIntent.putExtra("replyContact", currentMessage.getPhoneNumber());
+			startActivity(replyIntent);
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 	
 	private void updateFontSize() {
 		float newsize;
