@@ -54,7 +54,18 @@ public class NewConversationActivity extends Activity {
 			String number = newRecipientTextView.getText().toString();
 			String message = newMessageEditText.getText().toString();
 			newMessageEditText.setText("");
-			sendSmsMessage(number, message);
+			if(ContactsUtil.isAPhoneNumber(number))
+			{
+				sendSmsMessage(number, message);
+			}
+			else
+			{
+				String phoneNumber = ContactsUtil.getPhoneNumberByContactName(getActivity(), number);
+				if(phoneNumber != null)
+				{
+					sendSmsMessage(phoneNumber, message);
+				}
+			}
 		}
 	};
 
