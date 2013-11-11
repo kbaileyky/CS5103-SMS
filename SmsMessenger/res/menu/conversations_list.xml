@@ -6,10 +6,11 @@
         android:showAsAction="never"
         android:title="@string/action_new_message"/>
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_message_search"
+        android:actionViewClass="android.widget.SearchView"
         android:orderInCategory="200"
-        android:showAsAction="never"
-        android:title="@string/action_search"/>
+        android:showAsAction="collapseActionView"
+        android:title="@string/action_search" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="300"
