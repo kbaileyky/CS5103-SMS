@@ -132,7 +132,7 @@ public class ConversationsListActivity extends Activity implements
 		closeAllExistingNotifications();
 		Log.d("ConversationsListActivity", "fillConversation()");
 		HashMap<String, ConversationPreview> convPrevMap = getSmsMessageHandler()
-				.getConversationPreviewItmes();
+				.getConversationPreviewItmes(this);
 		Log.d("ConversationsListActivity", "convPrevMap: " + convPrevMap);
 
 		ArrayList<ConversationPreview> convPrevArrayList = new ArrayList<ConversationPreview>();

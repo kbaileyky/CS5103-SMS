@@ -88,8 +88,8 @@ public class ConversationPreviewAdapter extends
 
 		ConversationPreview preview = objects.get(position);
 		contactNameTextView.setText(preview.getContactName());
+		
 		previewTextView.setText(preview.getPreviewText());
-
 		// TODO - mark view to indicate if message has not been read
 
 		final ConversationPreview finalPreview = preview;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -276,7 +277,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	 *         ConversationPreview object representing the latest message
 	 *         between the user and contact.
 	 */
-	public HashMap<String, ConversationPreview> getConversationPreviewItmes() {
+	public HashMap<String, ConversationPreview> getConversationPreviewItmes(Activity activity) {
 		Log.d("SmsMessageHandler", "getConversationPreviewItmes()");
 		ArrayList<MessageContainer> inMsgList = getSmsMessages(null, null,
 				COL_NAME_DATE + " DESC", MSG_TYPE_IN);
@@ -290,7 +291,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
 				// TODO - look up contact info
 				ConversationPreview preview = new ConversationPreview(null,
-						msg.getPhoneNumber(), msg.getBody(), msg.isRead(),
+						ContactsUtil.getContactNameByPhoneNumber(activity, msg.getPhoneNumber()), msg.getBody(), msg.isRead(),
 						msg.getDate(), msg.getPhoneNumber(), msg.getContactId());
 				convPrevList.put(msg.getPhoneNumber(), preview);
 			}
@@ -298,9 +299,10 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 		for (MessageContainer msg : outMsgList) {
 			// Since they are in order, no need to check if next is more recent
 			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
+				
 				// TODO - look up contact info
 				ConversationPreview preview = new ConversationPreview(null,
-						msg.getPhoneNumber(), msg.getBody(), msg.isRead(),
+						ContactsUtil.getContactNameByPhoneNumber(activity, msg.getPhoneNumber()), msg.getBody(), msg.isRead(),
 						msg.getDate(), msg.getPhoneNumber(), msg.getContactId());
 				convPrevList.put(msg.getPhoneNumber(), preview);
 			} else {
@@ -312,6 +314,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 					preview.setPreviewText(msg.getBody());
 					preview.setPhoneNumber(msg.getPhoneNumber());
 					preview.setContactId(msg.getContactId());
+					preview.setContactName(ContactsUtil.getContactNameByPhoneNumber(activity, msg.getPhoneNumber()));
 				}
 			}
 		}

@@ -55,6 +55,7 @@ public class NewConversationActivity extends Activity {
 		}
 	};
 
+
 	private OnClickListener sendNewMessageOnClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
