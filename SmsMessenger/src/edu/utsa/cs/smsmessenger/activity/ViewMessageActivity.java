@@ -26,93 +26,78 @@ import edu.utsa.cs.smsmessenger.model.ConversationPreview;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
-
-public class ViewMessageActivity extends Activity{
+public class ViewMessageActivity extends Activity {
 
 	private TableRow rootTable;
 	private TextView txtMsgBody;
 	private MessageContainer currentMessage;
 	private SmsMessageHandler smsMessageHandler;
 	private Context context;
-	//Touch event related variables
+	// Touch event related variables
 	int touchState;
 	final int IDLE = 0;
 	final int TOUCH = 1;
 	final int PINCH = 2;
 	float dist0, distCurrent;
 
-
-	
-	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.conversation_to_message_item);
 
 		Bundle extras = getIntent().getExtras();
 
-		currentMessage= new MessageContainer();
-		
-	
+		currentMessage = new MessageContainer();
 
 		currentMessage.setBody(extras.getString("msgBody"));
 		currentMessage.setDate(extras.getLong("timeAndDate"));
-		currentMessage.setContactId(extras.getInt(SmsMessageHandler.COL_NAME_CONTACT_ID));
+		currentMessage.setContactId(extras
+				.getInt(SmsMessageHandler.COL_NAME_CONTACT_ID));
 		currentMessage.setPhoneNumber(extras
 				.getString(SmsMessageHandler.COL_NAME_PHONE_NUMBER));
 		currentMessage.setType(extras.getString("msgType"));
 
-
-
 		updateUI();
 
-
-		distCurrent = 1; //Dummy default distance
-		dist0 = 1;   //Dummy default distance
+		distCurrent = 1; // Dummy default distance
+		dist0 = 1; // Dummy default distance
 
 		rootTable.setOnTouchListener(MyOnTouchListener);
 
 		touchState = IDLE;
 
-
-		Log.d("ViewMessageActivity", "view Message Activity: " + currentMessage.getBody() + " from " + currentMessage.getContactId());
-
+		Log.d("ViewMessageActivity",
+				"view Message Activity: " + currentMessage.getBody() + " from "
+						+ currentMessage.getContactId());
 
 		return;
 	}
 
-	
-	
-	private void updateUI(){
+	private void updateUI() {
 
-		//Temporary - replace with contact name
-		//TODO Get contact
+		// Temporary - replace with contact name
 		setTitle(currentMessage.getPhoneNumber());
 
-		txtMsgBody = (TextView)findViewById(R.id.msgBodyTextView);
+		txtMsgBody = (TextView) findViewById(R.id.msgBodyTextView);
 		txtMsgBody.setText(currentMessage.getBody());
 
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
-		TextView txtTimeAndDate = (TextView)findViewById(R.id.msgDateTextView);
+		TextView txtTimeAndDate = (TextView) findViewById(R.id.msgDateTextView);
 		txtTimeAndDate.setText(sdf.format(currentMessage.getDate()));
 
-
-		rootTable = (TableRow)findViewById(R.id.tableRow1);
-		//tableRow1
-
+		rootTable = (TableRow) findViewById(R.id.tableRow1);
+		// tableRow1
 
 		// Find the root view
 		View root = rootTable.getRootView();
 
-		if(currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN)){
-			root.setBackgroundColor(Color.parseColor("#dddddd"));			
+		if (currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
+			root.setBackgroundColor(Color.parseColor("#dddddd"));
 		} else {
-			root.setBackgroundColor(Color.parseColor("#019192"));	
+			root.setBackgroundColor(Color.parseColor("#019192"));
 		}
-
 
 		return;
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -120,8 +105,6 @@ public class ViewMessageActivity extends Activity{
 		getMenuInflater().inflate(R.menu.view_msg_menu_list, menu);
 		return true;
 	}
-
-	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -147,38 +130,39 @@ public class ViewMessageActivity extends Activity{
 
 			Intent replyIntent = new Intent(this, NewConversationActivity.class);
 
-
-			replyIntent.putExtra("replyContact", currentMessage.getPhoneNumber());
+			replyIntent.putExtra("replyContact",
+					currentMessage.getPhoneNumber());
 			startActivity(replyIntent);
 			break;
-//		case R.id.action_delete:
-//			try{
-//			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-//					this);
-//			final CharSequence[] items = { "Delete", "Cancel" };
-//			alertDialogBuilder.setItems(items,
-//					new DialogInterface.OnClickListener() {
-//						@Override
-//						public void onClick(DialogInterface dialog,
-//								int which) {
-//							switch (which) {
-//							case 0:
-//								MessageContainer[] msgArr = { currentMessage };
-//								DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
-//								deleteThread.execute(msgArr);
-//								break;
-//							case 1:
-//								dialog.cancel();
-//								break;
-//							}
-//						}
-//					});
-//			AlertDialog alertDialog = alertDialogBuilder.create();
-//			alertDialog.show();
-//			}catch(Exception x) {
-//				Log.d("ViewMessageActivity", "Threw Error on delete:" + x.getMessage());
-//			}
-			
+		// case R.id.action_delete:
+		// try{
+		// AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+		// this);
+		// final CharSequence[] items = { "Delete", "Cancel" };
+		// alertDialogBuilder.setItems(items,
+		// new DialogInterface.OnClickListener() {
+		// @Override
+		// public void onClick(DialogInterface dialog,
+		// int which) {
+		// switch (which) {
+		// case 0:
+		// MessageContainer[] msgArr = { currentMessage };
+		// DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
+		// deleteThread.execute(msgArr);
+		// break;
+		// case 1:
+		// dialog.cancel();
+		// break;
+		// }
+		// }
+		// });
+		// AlertDialog alertDialog = alertDialogBuilder.create();
+		// alertDialog.show();
+		// }catch(Exception x) {
+		// Log.d("ViewMessageActivity", "Threw Error on delete:" +
+		// x.getMessage());
+		// }
+
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -186,26 +170,25 @@ public class ViewMessageActivity extends Activity{
 
 	private void updateFontSize() {
 		float newsize;
-		float curScale = distCurrent/dist0;
-		if (curScale < 0.1){
-			curScale = 0.1f; 
+		float curScale = distCurrent / dist0;
+		if (curScale < 0.1) {
+			curScale = 0.1f;
 		}
 
 		newsize = (12 * curScale);
 
-		if(newsize < 9){
+		if (newsize < 9) {
 			newsize = 9;
 		}
 
-		if(newsize > 24){
+		if (newsize > 24) {
 			newsize = 24;
 		}
 
 		txtMsgBody.setTextSize(newsize);
 	}
 
-	OnTouchListener MyOnTouchListener = new OnTouchListener(){
-
+	OnTouchListener MyOnTouchListener = new OnTouchListener() {
 
 		@Override
 		public boolean onTouch(View view, MotionEvent event) {
@@ -213,26 +196,28 @@ public class ViewMessageActivity extends Activity{
 
 			float distx, disty;
 
-			switch(event.getAction() & MotionEvent.ACTION_MASK){
+			switch (event.getAction() & MotionEvent.ACTION_MASK) {
 			case MotionEvent.ACTION_DOWN:
-				//A pressed gesture has started, the motion contains the initial starting location.
+				// A pressed gesture has started, the motion contains the
+				// initial starting location.
 				touchState = TOUCH;
 				break;
 			case MotionEvent.ACTION_POINTER_DOWN:
-				//A non-primary pointer has gone down.
+				// A non-primary pointer has gone down.
 				touchState = PINCH;
 
-				//Get the distance when the second pointer touch
+				// Get the distance when the second pointer touch
 				distx = event.getX(0) - event.getX(1);
 				disty = event.getY(0) - event.getY(1);
 				dist0 = FloatMath.sqrt(distx * distx + disty * disty);
 
 				break;
 			case MotionEvent.ACTION_MOVE:
-				//A change has happened during a press gesture (between ACTION_DOWN and ACTION_UP).
+				// A change has happened during a press gesture (between
+				// ACTION_DOWN and ACTION_UP).
 
-				if(touchState == PINCH){      
-					//Get the current distance
+				if (touchState == PINCH) {
+					// Get the current distance
 					distx = event.getX(0) - event.getX(1);
 					disty = event.getY(0) - event.getY(1);
 					distCurrent = FloatMath.sqrt(distx * distx + disty * disty);
@@ -242,12 +227,12 @@ public class ViewMessageActivity extends Activity{
 
 				break;
 			case MotionEvent.ACTION_UP:
-				//A pressed gesture has finished.
+				// A pressed gesture has finished.
 
 				touchState = IDLE;
 				break;
 			case MotionEvent.ACTION_POINTER_UP:
-				//A non-primary pointer has gone up.
+				// A non-primary pointer has gone up.
 				touchState = TOUCH;
 				break;
 			}
@@ -255,10 +240,7 @@ public class ViewMessageActivity extends Activity{
 			return true;
 		}
 
-
 	};
-	
-
 
 	private class DeleteMessageFromDbTask extends
 			AsyncTask<MessageContainer, Void, Void> {
@@ -273,6 +255,5 @@ public class ViewMessageActivity extends Activity{
 			return null;
 		}
 	}
-	
 
 }

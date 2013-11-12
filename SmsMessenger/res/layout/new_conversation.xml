@@ -23,7 +23,7 @@
         <ImageButton
             android:id="@+id/newMsgAddRecipientImageButton"
             android:contentDescription="@string/add_recipient_image_desc"
-            android:src="@drawable/hg_launcher_icon"
+            android:src="@drawable/hg_new_contact"
 			style="@style/ButtonStyle"
 			/>
 
