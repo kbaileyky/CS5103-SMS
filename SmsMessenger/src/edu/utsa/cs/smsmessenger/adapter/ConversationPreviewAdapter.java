@@ -12,7 +12,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -21,6 +23,7 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 /**
  * This class is used to adapter and fill a ListView with an ArrayList of
@@ -85,21 +88,33 @@ public class ConversationPreviewAdapter extends
 				.findViewById(R.id.contactNameTextView);
 		TextView previewTextView = (TextView) convertView
 				.findViewById(R.id.conversationPreviewTextView);
+		TextView countTextView = (TextView) convertView
+				.findViewById(R.id.notReadCountTextView);
 
 		ConversationPreview preview = objects.get(position);
 		contactNameTextView.setText(preview.getContactName());
 		
 		previewTextView.setText(preview.getPreviewText());
-		// TODO - mark view to indicate if message has not been read
+		countTextView.setText(""+preview.getNotReadCount());
+
+		if(preview.getNotReadCount()<1)
+			countTextView.setVisibility(View.INVISIBLE);
+		
+		if(preview.getContactImgUri()!=null)
+		{
+			contactImageView.setImageURI(Uri.parse( preview.getContactImgUri() ));
+		}
+		else
+		{
+			contactImageView.setImageResource(R.drawable.hg_new_contact);
+		}
 
 		final ConversationPreview finalPreview = preview;
+		final TextView finalCountTextView = countTextView;
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				// TODO launch conversation Activity
-				// Toast.makeText(context, "Click " +
-				// finalPreview.getContactName() , Toast.LENGTH_SHORT).show();
-
+				finalCountTextView.setVisibility(View.INVISIBLE);
 				Intent intent = new Intent(context, ConversationActivity.class);
 				intent.putExtra(SmsMessageHandler.COL_NAME_PHONE_NUMBER,
 						finalPreview.getPhoneNumber());

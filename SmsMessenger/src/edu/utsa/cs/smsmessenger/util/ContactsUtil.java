@@ -3,6 +3,8 @@ package edu.utsa.cs.smsmessenger.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.utsa.cs.smsmessenger.model.ContactContainer;
+
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -44,10 +46,12 @@ public class ContactsUtil {
 							.add(lPeople.getString(lPeople
 									.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
 				}
+				lPeople.close();
 			}
 		} catch (NullPointerException e) {
 			Log.e("getAllContactNames()", e.getMessage());
 		}
+		
 		return lContactNamesList;
 	}
 
@@ -80,66 +84,104 @@ public class ContactsUtil {
 							String phoneNo = pCur
 									.getString(pCur
 											.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+							pCur.close();
+							cur.close();
 							return phoneNo;
 						}
-
+						pCur.close();
 					}
 				}
 
 			}
+			cur.close();
 		}
 		return null;
 	}
 
-	public static String getContactNameByPhoneNumber(Activity activity,
-			String contactName) {
-		if (!isAPhoneNumber(contactName))
-			return contactName;
-		String phoneNumber = contactName.replaceAll("[^0-9]", "");
+	public static ContactContainer getContactByPhoneNumber(
+			ContentResolver contentResolver, String lookUpPhoneNumber) {
+
+		//Log.e("getContactByPhoneNumber", "**********start");
+		ContactContainer contact = new ContactContainer();
+		contact.setPhoneNumber(lookUpPhoneNumber);
+
+		String phoneNumber = lookUpPhoneNumber.replaceAll("[^\\d]", "");// ("[^0-9]",
+																		// "");
+		if (!isAPhoneNumber(phoneNumber)) {
+			//Log.e("getContactByPhoneNumber", "**********Not phone number");
+			return contact;
+		}
+
+		// String phoneNumber = lookUpPhoneNumber.replaceAll("[^\\d]", ""
+		// );//("[^0-9]", "");
+
+		contact.setDisplayName(phoneNumber);
+		contact.setPhoneNumber(phoneNumber);
 		if (phoneNumber.length() == 10) {
 			phoneNumber = "1" + phoneNumber;
 		}
 
-		ContentResolver cr = activity.getContentResolver();
-		Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null,
-				null, null, null);
+		// ContentResolver cr = activity.getContentResolver();
+		Cursor cur = contentResolver.query(
+				ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+		if (cur != null) // null pointer exception on phone
+		{
+			if (cur.getCount() > 0) {
+				while (cur.moveToNext()) {
+					String id = cur.getString(cur
+							.getColumnIndex(ContactsContract.Contacts._ID));
+					String name = cur
+							.getString(cur
+									.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+					String photoUri = cur
+							.getString(cur
+									.getColumnIndex(ContactsContract.Contacts.Photo.PHOTO_URI));
 
-		if (cur.getCount() > 0) {
-			while (cur.moveToNext()) {
-				String id = cur.getString(cur
-						.getColumnIndex(ContactsContract.Contacts._ID));
-				String name = cur
-						.getString(cur
-								.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+					if (Integer
+							.parseInt(cur.getString(cur
+									.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
 
-				if (Integer
-						.parseInt(cur.getString(cur
-								.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+						Cursor pCur = contentResolver
+								.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+										null,
+										ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+												+ " = ?", new String[] { id },
+										null);
+						if (pCur != null) // Null pointer exception on phone
+						{
+							while (pCur.moveToNext()) {
+								String phoneNo = pCur
+										.getString(
+												pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+										.replaceAll("[^0-9]", "");
+								if (phoneNo.length() == 10) {
+									phoneNo = "1" + phoneNo;
+								}
 
-					Cursor pCur = cr.query(
-							ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-							null,
-							ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-									+ " = ?", new String[] { id }, null);
-
-					while (pCur.moveToNext()) {
-						String phoneNo = pCur
-								.getString(
-										pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-								.replaceAll("[^0-9]", "");
-						if (phoneNo.length() == 10) {
-							phoneNo = "1" + phoneNo;
-						}
-
-						if (phoneNumber.equals(phoneNo))
-							return name;
+								if (phoneNumber.equals(phoneNo)) {
+									contact.setId(id);
+									contact.setDisplayName(name);
+									contact.setPhotoUri(photoUri);
+									//Log.e("getContactByPhoneNumber",
+									//		"**********Found match contact, end");
+									pCur.close();
+									cur.close();
+									return contact;
+								}
+							}
+							pCur.close();
+						} //else
+							//Log.e("getContactByPhoneNumber",
+							//		"**********pCur is null");
 					}
 
 				}
-
 			}
-		}
-		return null;
+			cur.close();
+		} //else
+			//Log.e("getContactByPhoneNumber", "**********cur is null");
+		//Log.e("getContactByPhoneNumber", "**********end");
+		return contact;
 	}
 
 	public static boolean isAPhoneNumber(String contact) {
@@ -158,5 +200,15 @@ public class ContactsUtil {
 		} else {
 			return false;
 		}
+	}
+
+	public static boolean isInteger(String s) {
+		try {
+			Integer.parseInt(s);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		// only got here if we didn't return false
+		return true;
 	}
 }

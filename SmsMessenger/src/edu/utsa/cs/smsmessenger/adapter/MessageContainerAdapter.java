@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,6 @@ import edu.utsa.cs.smsmessenger.activity.ViewMessageActivity;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
-
 /**
  * This class is used to adapter and fill a ListView with an ArrayList of
  * MessageContainer objects
@@ -42,6 +42,8 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 	private ArrayList<MessageContainer> objects;
 	private SimpleDateFormat sdf;
 	private SmsMessageHandler smsMessageHandler;
+	private String contactUri;
+	private String userUri;
 
 	private class DeleteMessageFromDbTask extends
 			AsyncTask<MessageContainer, Void, Void> {
@@ -64,11 +66,35 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 		}
 	}
 
+	private class UpdateMessageDbTask extends
+			AsyncTask<MessageContainer, Void, Void> {
+		@Override
+		protected Void doInBackground(MessageContainer... objects) {
+			if (context != null) {
+				for (MessageContainer msg : objects) {
+					getSmsMessageHandler().updateSmsMessage(msg);
+				}
+				getSmsMessageHandler().close();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			Intent newMsgIntent = new Intent(
+					SmsMessageHandler.UPDATE_MSG_INTENT);
+			context.sendBroadcast(newMsgIntent);
+		}
+	}
+
 	public MessageContainerAdapter(Context context, int textViewResourceId,
+			String contactUri, String userUri,
 			ArrayList<MessageContainer> objects) {
 		super(context, textViewResourceId, objects);
 		this.context = context;
 		this.objects = objects;
+		this.contactUri = contactUri;
+		this.userUri = userUri;
 		this.sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
 	}
 
@@ -77,8 +103,6 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 
 		MessageContainer message = objects.get(position);
 
-		// Log.d("MessageContainerAdapter", "getView() messageType: " +
-		// message.getType());
 		int layoutResourceId = message.getType().equals(
 				SmsMessageHandler.MSG_TYPE_IN) ? R.layout.conversation_from_message_item
 				: R.layout.conversation_to_message_item;
@@ -97,42 +121,56 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(message.getDate());
 		msgDateTextView.setText(sdf.format(cal.getTime()));
-		
-		if(message.getType().equals(SmsMessageHandler.MSG_TYPE_IN)){
-			//convertView.setBackgroundColor(Color.parseColor("#C6E093"));	
-			convertView.setBackgroundColor( context.getResources().getColor(R.color.RowColor1));	
+
+		if (message.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
+			if(contactUri!=null)
+				msgImageView.setImageURI(Uri.parse(contactUri));
+			else
+				msgImageView.setImageResource(R.drawable.hg_new_contact);	
 		} else {
+			msgImageView.setImageResource(R.drawable.hg_new_contact);
+			convertView.setBackgroundColor(Color.parseColor("#019192"));
 			//convertView.setBackgroundColor(Color.parseColor("#ABDA4E"));	
 			convertView.setBackgroundColor(context.getResources().getColor(R.color.RowColor2));	
 		}
 
-		// TODO - mark view to indicate if message has not been read
+		// Mark all messages as read since activity will open
+		if (!message.isRead()) {
+			message.setRead(true);
+			MessageContainer[] msgArr = { message };
+			UpdateMessageDbTask updateThread = new UpdateMessageDbTask();
+			updateThread.execute(msgArr);
+		}
 
 		final MessageContainer finalMessage = message;
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				// TODO launch Message Activitys
 				try {
-					
-					Intent viewMsgIntent = new Intent(context, ViewMessageActivity.class);
-					
-					//store message details in 
-					viewMsgIntent.putExtra(SmsMessageHandler.COL_NAME_PHONE_NUMBER,
+
+					Intent viewMsgIntent = new Intent(context,
+							ViewMessageActivity.class);
+
+					// store message details in
+					viewMsgIntent.putExtra(
+							SmsMessageHandler.COL_NAME_PHONE_NUMBER,
 							finalMessage.getPhoneNumber());
-					viewMsgIntent.putExtra(SmsMessageHandler.COL_NAME_CONTACT_ID,
+					viewMsgIntent.putExtra(
+							SmsMessageHandler.COL_NAME_CONTACT_ID,
 							finalMessage.getContactId());
-					viewMsgIntent.putExtra("contactName", finalMessage.getPhoneNumber());
-					viewMsgIntent.putExtra("timeAndDate", finalMessage.getDate());
+					viewMsgIntent.putExtra("contactName",
+							finalMessage.getPhoneNumber());
+					viewMsgIntent.putExtra("timeAndDate",
+							finalMessage.getDate());
 					viewMsgIntent.putExtra("msgBody", finalMessage.getBody());
 					viewMsgIntent.putExtra("msgType", finalMessage.getType());
-					
+
 					context.startActivity(viewMsgIntent);
-				
-				} catch(Exception x){
+
+				} catch (Exception x) {
 					finalMessage.setBody(x.getMessage());
 				}
-				
+
 			}
 		});
 		convertView.setOnLongClickListener(new OnLongClickListener() {
@@ -193,6 +231,5 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 			smsMessageHandler = new SmsMessageHandler(context);
 		return smsMessageHandler;
 	}
-	
 
 }

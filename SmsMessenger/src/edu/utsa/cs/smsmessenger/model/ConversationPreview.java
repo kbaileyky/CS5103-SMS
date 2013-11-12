@@ -1,6 +1,5 @@
 package edu.utsa.cs.smsmessenger.model;
 
-import android.net.Uri;
 
 /**
  * This class is a data model representing a conversation preview displayed in
@@ -13,13 +12,13 @@ import android.net.Uri;
  */
 public class ConversationPreview {
 
-	private Uri contactImgUri;
+	private String contactImgUri;
 	private String contactName;
 	private String previewText;
 	private String phoneNumber;
 	private int contactId;
-	private boolean read;
 	private long date;
+	private int notReadCount;
 
 	/**
 	 * Constructs a ConversationPreview with contactId initialized to -1, and
@@ -27,21 +26,21 @@ public class ConversationPreview {
 	 */
 	public ConversationPreview() {
 		this.contactId = -1;
-		this.read = false;
+		this.notReadCount = 0;
 	}
 
 	/**
 	 * Constructs a ConversationPreview with object fields set to the specified
 	 * values.
 	 */
-	public ConversationPreview(Uri contactImgUri, String contactName,
-			String previewText, boolean read, long date, String phoneNumber,
-			int contactId) {
+	public ConversationPreview(String contactImgUri, String contactName,
+			String previewText, int notReadCount, long date,
+			String phoneNumber, int contactId) {
 		super();
 		this.contactImgUri = contactImgUri;
 		this.contactName = contactName;
 		this.previewText = previewText;
-		this.read = read;
+		this.notReadCount = notReadCount;
 		this.date = date;
 		this.phoneNumber = phoneNumber;
 		this.contactId = contactId;
@@ -85,7 +84,7 @@ public class ConversationPreview {
 	 * @return returns the image uri of the contact, and not the user, in the
 	 *         conversation.
 	 */
-	public Uri getContactImgUri() {
+	public String getContactImgUri() {
 		return contactImgUri;
 	}
 
@@ -94,7 +93,7 @@ public class ConversationPreview {
 	 *            represents the image uri of the contact, and not the user, in
 	 *            the conversation.
 	 */
-	public void setContactImgUri(Uri contactImgUri) {
+	public void setContactImgUri(String contactImgUri) {
 		this.contactImgUri = contactImgUri;
 	}
 
@@ -132,23 +131,6 @@ public class ConversationPreview {
 	}
 
 	/**
-	 * @return returns true if all messages in the conversation have been read,
-	 *         returns false if one or more messages in the conversation have
-	 *         not been read.
-	 */
-	public boolean isRead() {
-		return read;
-	}
-
-	/**
-	 * @param read
-	 *            represents if all messages in a conversation have been read.
-	 */
-	public void setRead(boolean read) {
-		this.read = read;
-	}
-
-	/**
 	 * @return returns a long that represents the date last message in the
 	 *         conversation was sent or received.
 	 */
@@ -165,12 +147,40 @@ public class ConversationPreview {
 		this.date = date;
 	}
 
+	/**
+	 * @return returns an int that represents the number of unread messages from
+	 *         the contact.
+	 */
+	public int getNotReadCount() {
+		return notReadCount;
+	}
+
+	/**
+	 * @param notReadCount
+	 *            an int that represents that represents the number of unread
+	 *            messages from the contact.
+	 */
+	public void setNotReadCount(int notReadCount) {
+		this.notReadCount = notReadCount;
+	}
+
+	/**
+	 * @param increment
+	 *            a boolean that determines if notReadCount should be
+	 *            incremented.
+	 */
+	public void incremtNotReadCount(boolean increment) {
+		if(increment)
+			this.notReadCount++;
+	}
+
 	@Override
 	public String toString() {
 		return "ConversationPreview [contactImgUri=" + contactImgUri
 				+ ", contactName=" + contactName + ", previewText="
 				+ previewText + ", phoneNumber=" + phoneNumber + ", contactId="
-				+ contactId + ", read=" + read + ", date=" + date + "]";
+				+ contactId + ", date=" + date + ", notReadCount="
+				+ notReadCount + "]";
 	}
 
 }

@@ -3,6 +3,7 @@ package edu.utsa.cs.smsmessenger.activity;
 import java.util.Calendar;
 
 import edu.utsa.cs.smsmessenger.R;
+import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.AutoContactFillAdapter;
 import edu.utsa.cs.smsmessenger.util.ContactsUtil;
@@ -119,7 +120,9 @@ public class NewConversationActivity extends Activity {
 							newRecipientTextView.getText().toString())) {
 						if(ContactsUtil.isAPhoneNumber(newRecipientTextView.getText().toString()))
 						{
-							newRecipientTextView.setText(ContactsUtil.getContactNameByPhoneNumber(actvty, newRecipientTextView.getText().toString()));
+							ContactContainer contact = ContactsUtil.getContactByPhoneNumber(actvty.getContentResolver(), newRecipientTextView.getText().toString());
+							
+							newRecipientTextView.setText(contact.getDisplayName()!=null?contact.getDisplayName():contact.getPhoneNumber());
 						}
 						sendNewMessageButton.setEnabled(true);
 					} else {

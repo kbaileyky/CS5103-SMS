@@ -5,7 +5,9 @@ import java.util.Calendar;
 
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.adapter.MessageContainerAdapter;
+import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
+import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -42,6 +44,7 @@ public class ConversationActivity extends Activity {
 	private MessageContainerAdapter messageContainerAdapter;
 	private EditText messageEditText;
 	private ImageButton sendMessageImageButton;
+	private ContactContainer contact;
 
 	private BroadcastReceiver newMsgReceiver = new BroadcastReceiver() {
 		@Override
@@ -111,7 +114,12 @@ public class ConversationActivity extends Activity {
 		contactPhoneNumber = extras
 				.getString(SmsMessageHandler.COL_NAME_PHONE_NUMBER);
 		contactId = extras.getInt(SmsMessageHandler.COL_NAME_CONTACT_ID);
-		setTitle(contactPhoneNumber);
+
+		contact = ContactsUtil.getContactByPhoneNumber(
+				this.getContentResolver(), contactPhoneNumber);
+
+		setTitle(contact.getDisplayName() != null ? contact.getDisplayName()
+				: contactPhoneNumber);
 
 		messageEditText = (EditText) findViewById(R.id.msgEditText);
 		sendMessageImageButton = (ImageButton) findViewById(R.id.sendMsgImageButton);
@@ -148,7 +156,8 @@ public class ConversationActivity extends Activity {
 		getSmsMessageHandler().close();
 
 		messageContainerAdapter = new MessageContainerAdapter(this,
-				R.layout.conversation_from_message_item, msgList);
+				R.layout.conversation_from_message_item, contact.getPhotoUri(),
+				null, msgList);
 		Log.d("ConversationActivity", "messageContainerAdapter: "
 				+ messageContainerAdapter);
 		Log.d("ConversationActivity", "conversationListView: "

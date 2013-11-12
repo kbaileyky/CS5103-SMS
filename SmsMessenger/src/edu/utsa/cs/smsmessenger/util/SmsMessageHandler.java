@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.ConversationPreview;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 
@@ -59,9 +60,11 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 	public static final String DELETE_TABLE = "DROP TABLE IF EXISTS %s";
 
+	private Context context;
+
 	public SmsMessageHandler(Context context) {
 		super(context, DB_NAME, null, DB_VERSION);
-		// TODO Auto-generated constructor stub
+		this.context = context;
 	}
 
 	@Override
@@ -292,38 +295,56 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 		for (MessageContainer msg : inMsgList) {
 			// Since they are in order, no need to check if next is more recent
 			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
-				// TODO - look up contact info
-				ConversationPreview preview = new ConversationPreview(null,
-						ContactsUtil.getContactNameByPhoneNumber(activity,
-								msg.getPhoneNumber()), msg.getBody(),
-						msg.isRead(), msg.getDate(), msg.getPhoneNumber(),
-						msg.getContactId());
+
+				ContactContainer contact = ContactsUtil
+						.getContactByPhoneNumber(context.getContentResolver(),
+								msg.getPhoneNumber());
+
+				ConversationPreview preview = new ConversationPreview(contact.getPhotoUri(),
+						contact.getDisplayName() != null ? contact
+								.getDisplayName() : msg.getPhoneNumber(),
+						msg.getBody(), msg.isRead() ? 0 : 1, msg.getDate(),
+						msg.getPhoneNumber(), msg.getContactId());
 				convPrevList.put(msg.getPhoneNumber(), preview);
+			} else {
+				ConversationPreview existing = convPrevList.get(msg
+						.getPhoneNumber());
+				existing.incremtNotReadCount(!msg.isRead());
 			}
 		}
 		for (MessageContainer msg : outMsgList) {
 			// Since they are in order, no need to check if next is more recent
 			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
 
-				// TODO - look up contact info
-				ConversationPreview preview = new ConversationPreview(null,
-						ContactsUtil.getContactNameByPhoneNumber(activity,
-								msg.getPhoneNumber()), msg.getBody(),
-						msg.isRead(), msg.getDate(), msg.getPhoneNumber(),
+				ContactContainer contact = ContactsUtil
+						.getContactByPhoneNumber(context.getContentResolver(),
+								msg.getPhoneNumber());
+
+				ConversationPreview preview = new ConversationPreview(contact.getPhotoUri(),
+						contact.getDisplayName() != null ? contact
+								.getDisplayName() : msg.getPhoneNumber(),
+						msg.getBody(), 0, msg.getDate(), msg.getPhoneNumber(),
 						msg.getContactId());
 				convPrevList.put(msg.getPhoneNumber(), preview);
 			} else {
-				if (convPrevList.get(msg.getPhoneNumber()).getDate() < msg
-						.getDate()) {
+				ConversationPreview existing = convPrevList.get(msg
+						.getPhoneNumber());
+				if (existing.getDate() < msg.getDate()) {
 					ConversationPreview preview = convPrevList.get(msg
 							.getPhoneNumber());
 					preview.setDate(msg.getDate());
 					preview.setPreviewText(msg.getBody());
 					preview.setPhoneNumber(msg.getPhoneNumber());
 					preview.setContactId(msg.getContactId());
-					preview.setContactName(ContactsUtil
-							.getContactNameByPhoneNumber(activity,
-									msg.getPhoneNumber()));
+					preview.setNotReadCount(existing.getNotReadCount());
+
+					ContactContainer contact = ContactsUtil
+							.getContactByPhoneNumber(
+									context.getContentResolver(),
+									msg.getPhoneNumber());
+					preview.setContactName(contact.getDisplayName() != null ? contact
+							.getDisplayName() : msg.getPhoneNumber());
+					preview.setContactImgUri(contact.getPhotoUri());
 				}
 			}
 		}

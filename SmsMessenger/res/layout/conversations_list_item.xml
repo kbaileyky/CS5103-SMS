@@ -15,7 +15,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="6dip"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/contact_image_desc"
+        android:scaleType="fitStart"
         android:src="@drawable/hg_launcher_icon" />
 
     <TextView
@@ -42,5 +44,19 @@
         android:gravity="center_vertical"
         android:text="Example application"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/notReadCountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:paddingRight="3sp"
+        android:paddingLeft="2sp"
+        android:text="-1"
+        android:textStyle="bold"
+        android:textColor="#fff"
+        android:background="#f50"
+        android:textSize="12sp" />
 
 </RelativeLayout> 

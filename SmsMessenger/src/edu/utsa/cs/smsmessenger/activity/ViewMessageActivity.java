@@ -22,8 +22,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.utsa.cs.smsmessenger.adapter.MessageContainerAdapter;
+import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.ConversationPreview;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
+import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
 public class ViewMessageActivity extends Activity {
@@ -31,6 +33,7 @@ public class ViewMessageActivity extends Activity {
 	private TableRow rootTable;
 	private TextView txtMsgBody;
 	private MessageContainer currentMessage;
+	private ContactContainer currentContact;
 	private SmsMessageHandler smsMessageHandler;
 	private Context context;
 	// Touch event related variables
@@ -56,6 +59,7 @@ public class ViewMessageActivity extends Activity {
 				.getString(SmsMessageHandler.COL_NAME_PHONE_NUMBER));
 		currentMessage.setType(extras.getString("msgType"));
 
+		currentContact = ContactsUtil.getContactByPhoneNumber(this.getContentResolver(), currentMessage.getPhoneNumber());
 		updateUI();
 
 		distCurrent = 1; // Dummy default distance
@@ -75,7 +79,7 @@ public class ViewMessageActivity extends Activity {
 	private void updateUI() {
 
 		// Temporary - replace with contact name
-		setTitle(currentMessage.getPhoneNumber());
+		setTitle(currentContact.getDisplayName()!=null?currentContact.getDisplayName():currentMessage.getPhoneNumber());
 
 		txtMsgBody = (TextView) findViewById(R.id.msgBodyTextView);
 		txtMsgBody.setText(currentMessage.getBody());

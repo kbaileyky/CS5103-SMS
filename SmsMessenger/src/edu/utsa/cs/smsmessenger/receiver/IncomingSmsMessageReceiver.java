@@ -6,8 +6,10 @@ import java.util.Calendar;
 
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
+import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.AppConstants;
+import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -58,7 +60,7 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 	}
 
 	@Override
-	public void onReceive(final Context context, Intent intent) {
+	public void onReceive(Context context, Intent intent) {
 		this.context = context;
 		final Bundle bundle = intent.getExtras();
 
@@ -82,31 +84,35 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 							SmsMessageHandler.MSG_TYPE_IN);
 					msg.setPhoneNumber(currentMessage
 							.getDisplayOriginatingAddress());
+					msg.setPhoneNumber(msg.getPhoneNumber().replaceAll("[^\\d]", "" ));
 					msg.setBody(currentMessage.getDisplayMessageBody());
 
 					// This is how it should be done, but emulator times are all
 					// messed up
-					Calendar cal = Calendar.getInstance();
-					cal.setTimeInMillis(currentMessage.getTimestampMillis());
-					msg.setDate(cal.getTimeInMillis());
+					//Calendar cal = Calendar.getInstance();
+					//cal.setTimeInMillis(currentMessage.getTimestampMillis());
+					//msg.setDate(cal.getTimeInMillis());
 
 					// This is the way to correct emulator times
-					//msg.setDate(Calendar.getInstance().getTimeInMillis());
+					msg.setDate(Calendar.getInstance().getTimeInMillis());
 
-					// TODO - lookup contact by phone number
-					//context.getContentResolver()
+					ContactContainer contact = ContactsUtil.getContactByPhoneNumber(context.getContentResolver(), msg.getPhoneNumber());
+					
+					msg.setPhoneNumber(contact.getPhoneNumber());
+					if(contact.getId()!=null && ContactsUtil.isInteger(contact.getId()))
+						msg.setContactId(Integer.parseInt(contact.getId()));
 
 					Log.d("IncomingSMSReceiver",
 							"phoneNumber: " + msg.getPhoneNumber()
 									+ "; message: " + msg.getBody());
 
 					Toast toast = Toast.makeText(context, "New message from: "
-							+ msg.getPhoneNumber(), Toast.LENGTH_LONG);
+							+ (contact.getDisplayName()!=null?contact.getDisplayName():msg.getPhoneNumber()), Toast.LENGTH_LONG);
 					toast.show();
 
 					newMsgList.add(msg);
 
-					sendNotification(context, msg);
+					sendNotification(context, msg, contact);
 				}
 			}
 		} catch (Exception e) {
@@ -129,7 +135,7 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 		return smsMessageHandler;
 	}
 
-	private void sendNotification(Context context, MessageContainer msg) {
+	private void sendNotification(Context context, MessageContainer msg, ContactContainer contact) {
 		Intent intent = new Intent(context, ConversationActivity.class);
 		intent.putExtra(SmsMessageHandler.COL_NAME_PHONE_NUMBER,
 				msg.getPhoneNumber());
@@ -143,7 +149,7 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 
 		// Create Notification
 		Notification.Builder builder = new Notification.Builder(context)
-				.setContentTitle("New message from: " + msg.getPhoneNumber())
+				.setContentTitle("New message from: " + contact.getDisplayName()!=null?contact.getDisplayName():msg.getPhoneNumber())
 				.setContentText(msg.getBody())
 				.setSmallIcon(R.drawable.hg_launcher_icon).setContentIntent(pIntent)
 				.setAutoCancel(true)

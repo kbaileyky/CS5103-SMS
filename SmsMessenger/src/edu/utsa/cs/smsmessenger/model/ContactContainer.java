@@ -1,6 +1,5 @@
 package edu.utsa.cs.smsmessenger.model;
 
-import android.net.Uri;
 /**
  * This class is a container to hold contact information.
  * 
@@ -13,7 +12,8 @@ public class ContactContainer {
 	
     private String displayName;
     private String phoneNumber;
-    private Uri photoUri;
+    private String photoUri;
+    private String id;
 
 	/**
 	 * @param displayName
@@ -47,7 +47,7 @@ public class ContactContainer {
 	/**
 	 * @return returns the contact's photo uri.
 	 */
-    public Uri getPhotoUri() {
+    public String getPhotoUri() {
         return this.photoUri;
     }
 
@@ -55,8 +55,18 @@ public class ContactContainer {
 	 * @param photoUri
 	 *            represent the photo uri to set for the contact's photo
 	 */
-    public void setPhotoUri(Uri photoUri) {
+    public void setPhotoUri(String photoUri) {
         this.photoUri = photoUri;
     }
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+    
+    
 
 }
