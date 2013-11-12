@@ -28,7 +28,7 @@
         <ImageButton
             android:id="@+id/sendMsgImageButton"
             android:contentDescription="@string/send_message_image_desc"
-            android:src="@drawable/hg_launcher_icon"
+            android:src="@drawable/send_msg_icon"
             style="@style/ButtonStyle"
              />
 

@@ -91,9 +91,9 @@ public class ViewMessageActivity extends Activity {
 		View root = rootTable.getRootView();
 
 		if (currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
-			root.setBackgroundColor(Color.parseColor("#dddddd"));
+			root.setBackgroundColor(getResources().getColor(R.color.RowColor1));			
 		} else {
-			root.setBackgroundColor(Color.parseColor("#019192"));
+			root.setBackgroundColor(getResources().getColor(R.color.RowColor2));	
 		}
 
 		return;

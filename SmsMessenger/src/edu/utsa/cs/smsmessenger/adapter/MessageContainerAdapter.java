@@ -99,9 +99,11 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 		msgDateTextView.setText(sdf.format(cal.getTime()));
 		
 		if(message.getType().equals(SmsMessageHandler.MSG_TYPE_IN)){
-			convertView.setBackgroundColor(Color.parseColor("#dddddd"));			
+			//convertView.setBackgroundColor(Color.parseColor("#C6E093"));	
+			convertView.setBackgroundColor( context.getResources().getColor(R.color.RowColor1));	
 		} else {
-			convertView.setBackgroundColor(Color.parseColor("#019192"));	
+			//convertView.setBackgroundColor(Color.parseColor("#ABDA4E"));	
+			convertView.setBackgroundColor(context.getResources().getColor(R.color.RowColor2));	
 		}
 
 		// TODO - mark view to indicate if message has not been read
