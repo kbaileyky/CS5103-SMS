@@ -117,6 +117,10 @@ public class NewConversationActivity extends Activity {
 				} else {
 					if (ContactsUtil.isAValidPhoneNumber(actvty,
 							newRecipientTextView.getText().toString())) {
+						if(ContactsUtil.isAPhoneNumber(newRecipientTextView.getText().toString()))
+						{
+							newRecipientTextView.setText(ContactsUtil.getContactNameByPhoneNumber(actvty, newRecipientTextView.getText().toString()));
+						}
 						sendNewMessageButton.setEnabled(true);
 					} else {
 						sendNewMessageButton.setEnabled(false);
