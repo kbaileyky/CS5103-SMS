@@ -9,24 +9,11 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.util.Log;
 
-/**
- * This class is a utility class to allow the activities to query contact
- * information. Contact Names on a phone, get a phone number based on contact,
- * etc.
- * 
- * @author Emilio Mercado
- * @version 1.0
- * @since 1.0
- * 
- */
-
 public class ContactsUtil {
 	/**
-	 * This method retrieves all literal string contact names from the phone
+	 * Get All the Contact Names
 	 * 
-	 * @param activity
-	 *            The activity which to use for obtaining contentResolver() for querying.
-	 * @return returns an ArrayList of String Contact names for the current Phone Activity.
+	 * @return
 	 */
 	public static List<String> getAllContactNames(Activity activity) {
 		List<String> lContactNamesList = new ArrayList<String>();
@@ -91,19 +78,9 @@ public class ContactsUtil {
 
 	public static boolean isAPhoneNumber(String contact) {
 		if (contact
-				.matches("^\\d{10}|^\\d{11}|^[1]?(\\(\\d{3}\\)\\s?)?\\d{3}-\\d{4}$|^\\d{3}([.-])\\d{3}\\2\\d{4}$")) {
+				.matches("^\\d{10}|^(\\(\\d{3}\\)\\s?)?\\d{3}-\\d{4}$|^\\d{3}([.-])\\d{3}\\2\\d{4}$")) {
 			return true;
 		}
 		return false;
-	}
-
-	public static boolean isAValidPhoneNumber(Activity activity, String contact) {
-		if (isAPhoneNumber(contact)) {
-			return true;
-		} else if (getPhoneNumberByContactName(activity, contact) != null) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 }

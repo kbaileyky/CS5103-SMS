@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <color name="lightGrey">#c6c6c6</color>
+    <color name="darkGrey">#365255</color>
+    <color name="limeGreen">#abda4e</color>
+    <color name="teal">#019192</color>
+    <color name="offWhite">#dddddd</color>
+</resources>

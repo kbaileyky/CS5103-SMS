@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true"
+        android:drawable="@color/limeGreen" />
+    <item android:state_selected="false"
+        android:drawable="@color/teal"/>
+
+</selector>
+
+</animation-list>

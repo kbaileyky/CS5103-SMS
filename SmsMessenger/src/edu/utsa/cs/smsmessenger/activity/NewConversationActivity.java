@@ -16,11 +16,8 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.SmsManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -40,7 +37,6 @@ public class NewConversationActivity extends Activity {
 	private AutoCompleteTextView newRecipientTextView;
 	private EditText newMessageEditText;
 	private SmsMessageHandler smsMessageHandler;
-	private ImageButton sendNewMessageButton;
 
 	private OnClickListener addNewRecipientOnClickListener = new OnClickListener() {
 		@Override
@@ -55,80 +51,22 @@ public class NewConversationActivity extends Activity {
 		public void onClick(View v) {
 			// TODO - input should be a contact, and not limited to a number.
 			// Also should try to resolve contact and show message if bad input
-			System.out.println("onClick send New Message!!!");
 			String number = newRecipientTextView.getText().toString();
 			String message = newMessageEditText.getText().toString();
 			newMessageEditText.setText("");
-			if (ContactsUtil.isAPhoneNumber(number)) {
+			if(ContactsUtil.isAPhoneNumber(number))
+			{
 				sendSmsMessage(number, message);
-			} else {
-				String phoneNumber = ContactsUtil.getPhoneNumberByContactName(
-						getActivity(), number);
-				if (phoneNumber != null) {
+			}
+			else
+			{
+				String phoneNumber = ContactsUtil.getPhoneNumberByContactName(getActivity(), number);
+				if(phoneNumber != null)
+				{
 					sendSmsMessage(phoneNumber, message);
-
 				}
 			}
 		}
-	};
-
-	private TextWatcher recipientTextViewTextWatcher = new TextWatcher() {
-
-		@Override
-		public void afterTextChanged(Editable arg0) {
-			if (newRecipientTextView.getText().length() == 0) {
-				sendNewMessageButton.setEnabled(false);
-			} else {
-
-			}
-		}
-
-		@Override
-		public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-				int arg3) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-				int arg3) {
-			// TODO Auto-generated method stub
-
-		}
-
-	};
-
-	private Activity actvty = this;
-
-	private OnFocusChangeListener recipientTextFieldFocusListener = new OnFocusChangeListener() {
-
-		@Override
-		public void onFocusChange(View arg0, boolean arg1) {
-			if (!newRecipientTextView.isFocused()) {
-				System.out.println("onFocusChange recipientTextField!!");
-				if (newRecipientTextView.getText().length() == 0) {
-					sendNewMessageButton.setEnabled(false);
-				} else {
-					if (ContactsUtil.isAValidPhoneNumber(actvty,
-							newRecipientTextView.getText().toString())) {
-						sendNewMessageButton.setEnabled(true);
-					} else {
-						sendNewMessageButton.setEnabled(false);
-						newRecipientTextView.setText("");
-						newRecipientTextView.post(new Runnable() {
-							@Override
-							public void run() {
-								newRecipientTextView.requestFocus();
-							}
-
-						});
-
-					}
-				}
-			}
-		}
-
 	};
 
 	private class SaveNewMessageToDbStartConversationTask extends
@@ -182,28 +120,23 @@ public class NewConversationActivity extends Activity {
 
 		newRecipientTextView = (AutoCompleteTextView) findViewById(R.id.newMsgRecipientAutoCompleteTextView);
 		newRecipientTextView.setAdapter(new AutoContactFillAdapter(this));
-		newRecipientTextView
-				.setOnFocusChangeListener(recipientTextFieldFocusListener);
 		newMessageEditText = (EditText) findViewById(R.id.newMsgTextEditText);
 
 		ImageButton newRecipientButton = (ImageButton) findViewById(R.id.newMsgAddRecipientImageButton);
-		sendNewMessageButton = (ImageButton) findViewById(R.id.newMsgSendImageButton);
+		ImageButton sendNewMessageButton = (ImageButton) findViewById(R.id.newMsgSendImageButton);
 
 		newRecipientButton.setOnClickListener(addNewRecipientOnClickListener);
 		sendNewMessageButton.setOnClickListener(sendNewMessageOnClickListener);
-		sendNewMessageButton.setEnabled(false);
-
-		// If the message is being forwarded
-		if (getIntent().hasExtra("fwdBody")) {
-			newMessageEditText.setText(getIntent().getExtras().getString(
-					"fwdBody"));
+		
+		//If the message is being forwarded
+		if(getIntent().hasExtra("fwdBody")){
+			newMessageEditText.setText(getIntent().getExtras().getString("fwdBody"));
 		}
-
-		if (getIntent().hasExtra("replyContact")) {
-			newRecipientTextView.setText(getIntent().getExtras().getString(
-					"replyContact"));
+		
+		if(getIntent().hasExtra("replyContact")){
+			newRecipientTextView.setText(getIntent().getExtras().getString("replyContact"));
 		}
-
+		
 	}
 
 	public void sendSmsMessage(final String phoneNumber, final String message) {

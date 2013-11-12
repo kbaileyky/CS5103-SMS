@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+        android:background="@color/offWhite"
+         >
 
     <TableRow
         android:id="@+id/tableRow1"
@@ -20,10 +22,10 @@
 
         <ImageButton
             android:id="@+id/newMsgAddRecipientImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:contentDescription="@string/add_recipient_image_desc"
-            android:src="@drawable/hg_launcher_icon" />
+            android:src="@drawable/hg_launcher_icon"
+			style="@style/ButtonStyle"
+			/>
 
     </TableRow>
 
@@ -44,10 +46,10 @@
 
 		<ImageButton
 		    android:id="@+id/newMsgSendImageButton"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
 		    android:contentDescription="@string/send_message_image_desc"
-		    android:src="@drawable/send_msg_icon" />
+		    android:src="@drawable/send_msg_icon"
+		    style="@style/ButtonStyle"
+		     />
 
     </TableRow>
 

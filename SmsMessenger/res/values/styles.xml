@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -17,5 +17,36 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    
+    
+    <!-- Button Theme -->
+    <style name="ButtonStyle">
+        <item name="android:layout_width">wrap_content</item>
+    	<item name="android:layout_height">wrap_content</item>
+    	<item name="android:background">@drawable/button</item>        
+    </style>
+    
+    <!-- List style -->
+    <style name="ListViewStyle" parent="@android:style/Widget.ListView">
+    <item name="android:background">@color/offWhite</item>
+    <item name="android:divider">@android:color/transparent</item>
+    <item name="android:dividerHeight">0dp</item>
+    <item name="android:textColor">@color/darkGrey</item>
+    </style>
+    
+    <!-- Input Body style -->
+    <style name="inputBodyStyle">
+    <item name="android:layout_width">fill_parent</item>
+   	<item name="android:layout_height">wrap_content</item>
+    <item name="android:hint">@string/new_message_text_hint</item>
+    <item name="android:layout_weight">2</item>
+    <item name="android:inputType">textMultiLine</item>
+    <item name="android:ems">10</item>
+    <item name="android:background">@color/offWhite</item>
+    </style>
+    
+   
+    
+    
 </resources>
 

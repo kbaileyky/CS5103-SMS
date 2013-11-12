@@ -156,6 +156,9 @@ public class ConversationActivity extends Activity {
 		getConversationListView().setAdapter(messageContainerAdapter);
 		getConversationListView().setSelection(
 				messageContainerAdapter.getCount() - 1);
+
+		
+		
 	}
 
 	public ListView getConversationListView() {

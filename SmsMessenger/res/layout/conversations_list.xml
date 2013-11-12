@@ -6,7 +6,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".ConversationsListActivity" >
+    tools:context=".ConversationsListActivity"
+        android:background="@color/offWhite"
+         >
 
 	<ListView
 	    android:id="@+id/conversationsListView"

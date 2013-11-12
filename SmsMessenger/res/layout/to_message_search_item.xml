@@ -5,7 +5,8 @@
     android:paddingTop="3dip"
     android:paddingBottom="3dip"
     android:paddingLeft="8dip"
-    android:paddingRight="8dip" >
+    android:paddingRight="8dip"
+        android:background="@color/offWhite" >
 
     <TableRow
         android:id="@+id/tableRow1"
@@ -44,7 +45,7 @@
             android:id="@+id/msgImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher"
+            android:src="@drawable/hg_launcher_icon"
         	android:contentDescription="@string/contact_image_desc"
             android:layout_gravity="center" />
 

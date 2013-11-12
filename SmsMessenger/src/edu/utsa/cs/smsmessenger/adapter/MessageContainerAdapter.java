@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -96,6 +97,12 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(message.getDate());
 		msgDateTextView.setText(sdf.format(cal.getTime()));
+		
+		if(message.getType().equals(SmsMessageHandler.MSG_TYPE_IN)){
+			convertView.setBackgroundColor(Color.parseColor("#dddddd"));			
+		} else {
+			convertView.setBackgroundColor(Color.parseColor("#019192"));	
+		}
 
 		// TODO - mark view to indicate if message has not been read
 
@@ -116,7 +123,7 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 					viewMsgIntent.putExtra("contactName", finalMessage.getPhoneNumber());
 					viewMsgIntent.putExtra("timeAndDate", finalMessage.getDate());
 					viewMsgIntent.putExtra("msgBody", finalMessage.getBody());
-
+					viewMsgIntent.putExtra("msgType", finalMessage.getType());
 					
 					context.startActivity(viewMsgIntent);
 				

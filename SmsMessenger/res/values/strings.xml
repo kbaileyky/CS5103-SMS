@@ -19,5 +19,6 @@
 	<string name="search_activity_title">Message Search Results</string>
     <string name="action_reply">Reply</string>
     <string name="action_forward">Forward</string>
+    <string name="action_delete">Delete</string>
 
 </resources>
