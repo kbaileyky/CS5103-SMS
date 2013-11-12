@@ -86,14 +86,15 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 
 					// This is how it should be done, but emulator times are all
 					// messed up
-					// Calendar cal = Calendar.getInstance();
-					// cal.setTimeInMillis(currentMessage.getTimestampMillis());
-					// msg.setDate(cal.getTimeInMillis());
+					Calendar cal = Calendar.getInstance();
+					cal.setTimeInMillis(currentMessage.getTimestampMillis());
+					msg.setDate(cal.getTimeInMillis());
 
 					// This is the way to correct emulator times
-					msg.setDate(Calendar.getInstance().getTimeInMillis());
+					//msg.setDate(Calendar.getInstance().getTimeInMillis());
 
 					// TODO - lookup contact by phone number
+					//context.getContentResolver()
 
 					Log.d("IncomingSMSReceiver",
 							"phoneNumber: " + msg.getPhoneNumber()

@@ -1,5 +1,7 @@
 package edu.utsa.cs.smsmessenger.model;
 
+import android.net.Uri;
+
 /**
  * This class is a data model representing a conversation preview displayed in
  * the ConversationsListActivity
@@ -11,7 +13,7 @@ package edu.utsa.cs.smsmessenger.model;
  */
 public class ConversationPreview {
 
-	private String contactImgSrc;
+	private Uri contactImgUri;
 	private String contactName;
 	private String previewText;
 	private String phoneNumber;
@@ -32,11 +34,11 @@ public class ConversationPreview {
 	 * Constructs a ConversationPreview with object fields set to the specified
 	 * values.
 	 */
-	public ConversationPreview(String contactImgSrc, String contactName,
+	public ConversationPreview(Uri contactImgUri, String contactName,
 			String previewText, boolean read, long date, String phoneNumber,
 			int contactId) {
 		super();
-		this.contactImgSrc = contactImgSrc;
+		this.contactImgUri = contactImgUri;
 		this.contactName = contactName;
 		this.previewText = previewText;
 		this.read = read;
@@ -80,20 +82,20 @@ public class ConversationPreview {
 	}
 
 	/**
-	 * @return returns the image src of the contact, and not the user, in the
+	 * @return returns the image uri of the contact, and not the user, in the
 	 *         conversation.
 	 */
-	public String getContactImgSrc() {
-		return contactImgSrc;
+	public Uri getContactImgUri() {
+		return contactImgUri;
 	}
 
 	/**
 	 * @param contactImgSrc
-	 *            represents the image src of the contact, and not the user, in
+	 *            represents the image uri of the contact, and not the user, in
 	 *            the conversation.
 	 */
-	public void setContactImgSrc(String contactImgSrc) {
-		this.contactImgSrc = contactImgSrc;
+	public void setContactImgUri(Uri contactImgUri) {
+		this.contactImgUri = contactImgUri;
 	}
 
 	/**
@@ -165,7 +167,7 @@ public class ConversationPreview {
 
 	@Override
 	public String toString() {
-		return "ConversationPreview [contactImgSrc=" + contactImgSrc
+		return "ConversationPreview [contactImgUri=" + contactImgUri
 				+ ", contactName=" + contactName + ", previewText="
 				+ previewText + ", phoneNumber=" + phoneNumber + ", contactId="
 				+ contactId + ", read=" + read + ", date=" + date + "]";

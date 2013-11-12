@@ -13,8 +13,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,11 +32,11 @@ import android.widget.Toast;
 
 /**
  * This class is the Activity that allows the users to start a new conversations
- * 
+ *
  * @author Michael Madrigal
  * @version 1.0
  * @since 1.0
- * 
+ *
  */
 public class NewConversationActivity extends Activity {
 
@@ -45,8 +48,10 @@ public class NewConversationActivity extends Activity {
 	private OnClickListener addNewRecipientOnClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
 
+			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+			intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+			startActivityForResult(intent, 1);
 		}
 	};
 
@@ -55,10 +60,10 @@ public class NewConversationActivity extends Activity {
 		public void onClick(View v) {
 			// TODO - input should be a contact, and not limited to a number.
 			// Also should try to resolve contact and show message if bad input
-			System.out.println("onClick send New Message!!!");
+			// System.out.println("onClick send New Message!!!");
 			String number = newRecipientTextView.getText().toString();
 			String message = newMessageEditText.getText().toString();
-			newMessageEditText.setText("");
+
 			if (ContactsUtil.isAPhoneNumber(number)) {
 				sendSmsMessage(number, message);
 			} else {
@@ -146,6 +151,9 @@ public class NewConversationActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(MessageContainer result) {
+			newMessageEditText.setText("");
+			newRecipientTextView.setText("");
+
 			Intent coversationIntent = new Intent(getContext(),
 					ConversationActivity.class);
 			coversationIntent.putExtra(SmsMessageHandler.COL_NAME_PHONE_NUMBER,
@@ -205,6 +213,40 @@ public class NewConversationActivity extends Activity {
 		}
 
 	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data != null) {
+			Uri uri = data.getData();
+
+			if (uri != null) {
+				Cursor c = null;
+				try {
+					c = getContentResolver()
+							.query(uri,
+									new String[] {
+											ContactsContract.CommonDataKinds.Phone.NUMBER,
+											ContactsContract.Contacts.DISPLAY_NAME },
+									null, null, null);
+
+					if (c != null && c.moveToFirst()) {
+						String number = c.getString(0);
+						String type = c.getString(1);
+						SetContact(type, number);
+					}
+				} finally {
+					if (c != null) {
+						c.close();
+					}
+				}
+			}
+		}
+	}
+
+	public void SetContact(String name, String number) {
+		newRecipientTextView.setText(name);
+	}
+
 
 	public void sendSmsMessage(final String phoneNumber, final String message) {
 		final MessageContainer messageContainer = new MessageContainer(
