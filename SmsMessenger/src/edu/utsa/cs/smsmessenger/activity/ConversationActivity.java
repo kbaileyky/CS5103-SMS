@@ -140,7 +140,7 @@ public class ConversationActivity extends Activity {
 		notificationmanager.cancel(contactId);
 		// menu
 	}
-	
+
 	public void fillConversationListView() {
 		closeExistingNotifications();
 		ArrayList<MessageContainer> msgList = getSmsMessageHandler()
@@ -157,8 +157,6 @@ public class ConversationActivity extends Activity {
 		getConversationListView().setSelection(
 				messageContainerAdapter.getCount() - 1);
 
-		
-		
 	}
 
 	public ListView getConversationListView() {

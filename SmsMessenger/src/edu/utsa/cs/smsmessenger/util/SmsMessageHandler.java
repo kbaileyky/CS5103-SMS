@@ -26,7 +26,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 	public static final String UPDATE_MSG_INTENT = "edu.utsa.cs.smsmessenger.UPDATE_MSG_INTENT";
 
-	//Message status
+	// Message status
 	public static final String SMS_DRAFT = "SMS_DRAFT";
 	public static final String SMS_SENT = "SMS_SENT";
 	public static final String SMS_DELIVERED = "SMS_DELIVERED";
@@ -238,6 +238,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 		return fromMsgList;
 	}
+
 	/**
 	 * This method retrieves messages for that meet the query criteria
 	 * 
@@ -268,6 +269,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 		return fromMsgList;
 	}
+
 	/**
 	 * This methods searches the database for all conversations with the user's
 	 * contacts and generates a preview list of each conversation in a HashMap
@@ -277,7 +279,8 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	 *         ConversationPreview object representing the latest message
 	 *         between the user and contact.
 	 */
-	public HashMap<String, ConversationPreview> getConversationPreviewItmes(Activity activity) {
+	public HashMap<String, ConversationPreview> getConversationPreviewItmes(
+			Activity activity) {
 		Log.d("SmsMessageHandler", "getConversationPreviewItmes()");
 		ArrayList<MessageContainer> inMsgList = getSmsMessages(null, null,
 				COL_NAME_DATE + " DESC", MSG_TYPE_IN);
@@ -291,19 +294,23 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
 				// TODO - look up contact info
 				ConversationPreview preview = new ConversationPreview(null,
-						ContactsUtil.getContactNameByPhoneNumber(activity, msg.getPhoneNumber()), msg.getBody(), msg.isRead(),
-						msg.getDate(), msg.getPhoneNumber(), msg.getContactId());
+						ContactsUtil.getContactNameByPhoneNumber(activity,
+								msg.getPhoneNumber()), msg.getBody(),
+						msg.isRead(), msg.getDate(), msg.getPhoneNumber(),
+						msg.getContactId());
 				convPrevList.put(msg.getPhoneNumber(), preview);
 			}
 		}
 		for (MessageContainer msg : outMsgList) {
 			// Since they are in order, no need to check if next is more recent
 			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
-				
+
 				// TODO - look up contact info
 				ConversationPreview preview = new ConversationPreview(null,
-						ContactsUtil.getContactNameByPhoneNumber(activity, msg.getPhoneNumber()), msg.getBody(), msg.isRead(),
-						msg.getDate(), msg.getPhoneNumber(), msg.getContactId());
+						ContactsUtil.getContactNameByPhoneNumber(activity,
+								msg.getPhoneNumber()), msg.getBody(),
+						msg.isRead(), msg.getDate(), msg.getPhoneNumber(),
+						msg.getContactId());
 				convPrevList.put(msg.getPhoneNumber(), preview);
 			} else {
 				if (convPrevList.get(msg.getPhoneNumber()).getDate() < msg
@@ -314,7 +321,9 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 					preview.setPreviewText(msg.getBody());
 					preview.setPhoneNumber(msg.getPhoneNumber());
 					preview.setContactId(msg.getContactId());
-					preview.setContactName(ContactsUtil.getContactNameByPhoneNumber(activity, msg.getPhoneNumber()));
+					preview.setContactName(ContactsUtil
+							.getContactNameByPhoneNumber(activity,
+									msg.getPhoneNumber()));
 				}
 			}
 		}

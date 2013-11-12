@@ -55,13 +55,12 @@ public class NewConversationActivity extends Activity {
 		}
 	};
 
-
 	private OnClickListener sendNewMessageOnClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			// TODO - input should be a contact, and not limited to a number.
 			// Also should try to resolve contact and show message if bad input
-			//System.out.println("onClick send New Message!!!");
+			// System.out.println("onClick send New Message!!!");
 			String number = newRecipientTextView.getText().toString();
 			String message = newMessageEditText.getText().toString();
 			if (ContactsUtil.isAPhoneNumber(number)) {
@@ -225,7 +224,7 @@ public class NewConversationActivity extends Activity {
 							.query(uri,
 									new String[] {
 											ContactsContract.CommonDataKinds.Phone.NUMBER,
-											ContactsContract.Contacts.DISPLAY_NAME},
+											ContactsContract.Contacts.DISPLAY_NAME },
 									null, null, null);
 
 					if (c != null && c.moveToFirst()) {

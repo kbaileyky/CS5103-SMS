@@ -96,8 +96,7 @@ public class ContactsUtil {
 		if (!isAPhoneNumber(contactName))
 			return contactName;
 		String phoneNumber = contactName.replaceAll("[^0-9]", "");
-		if(phoneNumber.length() == 10)
-		{
+		if (phoneNumber.length() == 10) {
 			phoneNumber = "1" + phoneNumber;
 		}
 
@@ -128,11 +127,10 @@ public class ContactsUtil {
 								.getString(
 										pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
 								.replaceAll("[^0-9]", "");
-						if(phoneNo.length() == 10)
-						{
-							phoneNo = "1"+phoneNo;
+						if (phoneNo.length() == 10) {
+							phoneNo = "1" + phoneNo;
 						}
-						
+
 						if (phoneNumber.equals(phoneNo))
 							return name;
 					}
