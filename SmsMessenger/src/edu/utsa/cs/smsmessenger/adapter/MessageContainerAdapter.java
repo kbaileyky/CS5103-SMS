@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import edu.utsa.cs.smsmessenger.R;
-import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
-import edu.utsa.cs.smsmessenger.activity.NewConversationActivity;
 import edu.utsa.cs.smsmessenger.activity.ViewMessageActivity;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
@@ -30,11 +29,11 @@ import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 /**
  * This class is used to adapter and fill a ListView with an ArrayList of
  * MessageContainer objects
- * 
+ *
  * @author Michael Madrigal
  * @version 1.0
  * @since 1.0
- * 
+ *
  */
 public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 
@@ -109,6 +108,8 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		// Get the need view items
 		convertView = inflater.inflate(layoutResourceId, parent, false);
 		ImageView msgImageView = (ImageView) convertView
 				.findViewById(R.id.msgImageView);
@@ -118,18 +119,20 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 				.findViewById(R.id.msgDateTextView);
 
 		msgBodyTextView.setText(message.getBody());
+
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(message.getDate());
 		msgDateTextView.setText(sdf.format(cal.getTime()));
 
 		if (message.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
-			if(contactUri!=null)
+			if (contactUri != null)
 				msgImageView.setImageURI(Uri.parse(contactUri));
 			else
-				msgImageView.setImageResource(R.drawable.hg_new_contact);	
+				msgImageView.setImageResource(R.drawable.hg_new_contact);
 		} else {
 			msgImageView.setImageResource(R.drawable.hg_new_contact);
-			convertView.setBackgroundColor(context.getResources().getColor(R.color.RowColor2));	
+			convertView.setBackgroundColor(context.getResources().getColor(R.color.RowColor2));
+
 		}
 
 		// Mark all messages as read since activity will open
@@ -145,7 +148,6 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 			@Override
 			public void onClick(View arg0) {
 				try {
-
 					Intent viewMsgIntent = new Intent(context,
 							ViewMessageActivity.class);
 
@@ -177,7 +179,17 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 			public boolean onLongClick(View arg0) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						context);
-				final CharSequence[] items = { "Delete", "Cancel" };
+
+				// If contact is invalid, add option to create contact for phone
+				// number
+				final CharSequence[] items;
+				if (finalMessage.getContactId() != -1
+						|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT)
+					items = new CharSequence[] { "Delete", "Cancel" };
+				else
+					items = new CharSequence[] { "Add to contacts", "Delete",
+							"Cancel" };
+
 				alertDialogBuilder.setItems(items,
 						new DialogInterface.OnClickListener() {
 							@Override
@@ -185,11 +197,32 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 									int which) {
 								switch (which) {
 								case 0:
-									MessageContainer[] msgArr = { finalMessage };
-									DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
-									deleteThread.execute(msgArr);
+									if (finalMessage.getContactId() != -1
+											|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT) {
+										MessageContainer[] msgArr = { finalMessage };
+										DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
+										deleteThread.execute(msgArr);
+									} else {
+										Intent intent = new Intent(
+												Intent.ACTION_INSERT);
+										intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+										intent.putExtra(
+												ContactsContract.Intents.Insert.PHONE,
+												finalMessage.getPhoneNumber());
+										context.startActivity(intent);
+									}
 									break;
 								case 1:
+									if (finalMessage.getContactId() != -1
+											|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT) {
+										dialog.cancel();
+									} else {
+										MessageContainer[] msgArr = { finalMessage };
+										DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
+										deleteThread.execute(msgArr);
+									}
+									break;
+								case 2:
 									dialog.cancel();
 									break;
 								}
