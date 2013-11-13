@@ -22,6 +22,7 @@ import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -33,11 +34,11 @@ import android.widget.Toast;
 
 /**
  * This class is the Activity that allows the users to start a new conversations
- *
+ * 
  * @author Michael Madrigal
  * @version 1.0
  * @since 1.0
- *
+ * 
  */
 public class NewConversationActivity extends Activity {
 
@@ -56,6 +57,8 @@ public class NewConversationActivity extends Activity {
 		}
 	};
 
+	private boolean sent = false;
+
 	private OnClickListener sendNewMessageOnClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -66,13 +69,15 @@ public class NewConversationActivity extends Activity {
 			String message = newMessageEditText.getText().toString();
 
 			if (ContactsUtil.isAPhoneNumber(number)) {
+				sendNewMessageButton.setEnabled(false);
 				sendSmsMessage(number, message);
 			} else {
 				String phoneNumber = ContactsUtil.getPhoneNumberByContactName(
 						getActivity(), number);
 				if (phoneNumber != null) {
-					sendSmsMessage(phoneNumber, message);
-
+					if (!sent)
+						sendSmsMessage(phoneNumber, message);
+					Log.d("NewConversationActivity", "" + sent);
 				}
 			}
 		}
@@ -118,11 +123,18 @@ public class NewConversationActivity extends Activity {
 				} else {
 					if (ContactsUtil.isAValidPhoneNumber(actvty,
 							newRecipientTextView.getText().toString())) {
-						if(ContactsUtil.isAPhoneNumber(newRecipientTextView.getText().toString()))
-						{
-							ContactContainer contact = ContactsUtil.getContactByPhoneNumber(actvty.getContentResolver(), newRecipientTextView.getText().toString());
-							
-							newRecipientTextView.setText(contact.getDisplayName()!=null?contact.getDisplayName():contact.getPhoneNumber());
+						if (ContactsUtil.isAPhoneNumber(newRecipientTextView
+								.getText().toString())) {
+							ContactContainer contact = ContactsUtil
+									.getContactByPhoneNumber(actvty
+											.getContentResolver(),
+											newRecipientTextView.getText()
+													.toString());
+
+							newRecipientTextView.setText(contact
+									.getDisplayName() != null ? contact
+									.getDisplayName() : contact
+									.getPhoneNumber());
 						}
 						sendNewMessageButton.setEnabled(true);
 					} else {
@@ -253,7 +265,6 @@ public class NewConversationActivity extends Activity {
 	public void SetContact(String name, String number) {
 		newRecipientTextView.setText(name);
 	}
-
 
 	public void sendSmsMessage(final String phoneNumber, final String message) {
 		final MessageContainer messageContainer = new MessageContainer(
