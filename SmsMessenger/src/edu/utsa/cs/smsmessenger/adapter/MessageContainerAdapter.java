@@ -129,8 +129,6 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 				msgImageView.setImageResource(R.drawable.hg_new_contact);	
 		} else {
 			msgImageView.setImageResource(R.drawable.hg_new_contact);
-			convertView.setBackgroundColor(Color.parseColor("#019192"));
-			//convertView.setBackgroundColor(Color.parseColor("#ABDA4E"));	
 			convertView.setBackgroundColor(context.getResources().getColor(R.color.RowColor2));	
 		}
 
@@ -164,6 +162,7 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 							finalMessage.getDate());
 					viewMsgIntent.putExtra("msgBody", finalMessage.getBody());
 					viewMsgIntent.putExtra("msgType", finalMessage.getType());
+					viewMsgIntent.putExtra("msgID", finalMessage.getId());
 
 					context.startActivity(viewMsgIntent);
 

@@ -11,13 +11,16 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.EditText;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,18 +33,19 @@ import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
 public class ViewMessageActivity extends Activity {
 
-	private TableRow rootTable;
-	private TextView txtMsgBody;
-	private MessageContainer currentMessage;
-	private ContactContainer currentContact;
-	private SmsMessageHandler smsMessageHandler;
-	private Context context;
+	private TableRow rootTable; 
+	private TextView txtMsgBody; //Where the body of the message being view is shown 
+	private MessageContainer currentMessage; //Message structure that is being displayed in the View Message activity
+	private ContactContainer currentContact; //The contact associated with the current message being viewed
+	private SmsMessageHandler smsMessageHandler; // /handler used to the delete the message if chosen
+	private Context context; //The 
+
 	// Touch event related variables
-	int touchState;
-	final int IDLE = 0;
-	final int TOUCH = 1;
-	final int PINCH = 2;
-	float dist0, distCurrent;
+	int touchState; 
+	final int IDLE = 0; //no fingers touching
+	final int TOUCH = 1; // one finger touching
+	final int PINCH = 2; //two fingers touching 
+	float dist0, distCurrent; //The distances used to figure out how much to zoom
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,6 +55,7 @@ public class ViewMessageActivity extends Activity {
 
 		currentMessage = new MessageContainer();
 
+		//Fill in the message container with information from the message clicked
 		currentMessage.setBody(extras.getString("msgBody"));
 		currentMessage.setDate(extras.getLong("timeAndDate"));
 		currentMessage.setContactId(extras
@@ -58,6 +63,7 @@ public class ViewMessageActivity extends Activity {
 		currentMessage.setPhoneNumber(extras
 				.getString(SmsMessageHandler.COL_NAME_PHONE_NUMBER));
 		currentMessage.setType(extras.getString("msgType"));
+		currentMessage.setId(extras.getLong("msgID"));
 
 		currentContact = ContactsUtil.getContactByPhoneNumber(this.getContentResolver(), currentMessage.getPhoneNumber());
 		updateUI();
@@ -69,6 +75,8 @@ public class ViewMessageActivity extends Activity {
 
 		touchState = IDLE;
 
+		context = this;
+		
 		Log.d("ViewMessageActivity",
 				"view Message Activity: " + currentMessage.getBody() + " from "
 						+ currentMessage.getContactId());
@@ -120,7 +128,7 @@ public class ViewMessageActivity extends Activity {
 			msg = Toast.makeText(this, "Forward...", Toast.LENGTH_LONG);
 			msg.show();
 
-			Intent forwardIntent = new Intent(this,
+			Intent forwardIntent = new Intent(this,// Create intent for forward - the message body will already be filled
 					NewConversationActivity.class);
 
 			forwardIntent.putExtra("fwdBody", currentMessage.getBody());
@@ -132,44 +140,64 @@ public class ViewMessageActivity extends Activity {
 			msg = Toast.makeText(this, "Reply...", Toast.LENGTH_LONG);
 			msg.show();
 
-			Intent replyIntent = new Intent(this, NewConversationActivity.class);
+			Intent replyIntent = new Intent(this, NewConversationActivity.class); // Create intent for reply - the number will already be filled
 
 			replyIntent.putExtra("replyContact",
-					currentMessage.getPhoneNumber());
+					currentMessage.getPhoneNumber()); 
 			startActivity(replyIntent);
 			break;
-		// case R.id.action_delete:
-		// try{
-		// AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-		// this);
-		// final CharSequence[] items = { "Delete", "Cancel" };
-		// alertDialogBuilder.setItems(items,
-		// new DialogInterface.OnClickListener() {
-		// @Override
-		// public void onClick(DialogInterface dialog,
-		// int which) {
-		// switch (which) {
-		// case 0:
-		// MessageContainer[] msgArr = { currentMessage };
-		// DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
-		// deleteThread.execute(msgArr);
-		// break;
-		// case 1:
-		// dialog.cancel();
-		// break;
-		// }
-		// }
-		// });
-		// AlertDialog alertDialog = alertDialogBuilder.create();
-		// alertDialog.show();
-		// }catch(Exception x) {
-		// Log.d("ViewMessageActivity", "Threw Error on delete:" +
-		// x.getMessage());
-		// }
+		case R.id.action_delete:
+			try{
 
+				DialogInterface.OnClickListener DeleteOnClick = new DialogInterface.OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						switch(which){
+						case DialogInterface.BUTTON_POSITIVE:
+							deleteMessage();
+							break;
+						case DialogInterface.BUTTON_NEGATIVE:
+							break;
+						
+						}
+					}		
+				};
+
+				AlertDialog.Builder b = new AlertDialog.Builder(this);
+				b.setTitle("Are you sure you want to delete this message?");
+				b.setPositiveButton("OK",DeleteOnClick);
+
+				b.setNegativeButton("CANCEL", DeleteOnClick);
+				b.create().show();
+
+
+
+
+			}catch(Exception x) {
+				Log.d("ViewMessageActivity", "Threw Error on delete:" +
+						x.getMessage());
+			}
+
+
+			break;
 		}
 
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void deleteMessage(){
+		Toast msg = Toast.makeText(this, "Deleting...", Toast.LENGTH_LONG);
+		msg.show();
+		
+		MessageContainer[] msgArr = { currentMessage };
+		DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
+		deleteThread.execute(msgArr);
+		
+		Intent converListIntent = new Intent(this , ConversationsListActivity.class); //Create intent for the root screen
+		converListIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Should make it so that you can't go back with back button
+		startActivity(converListIntent); 
 	}
 
 	private void updateFontSize() {
@@ -247,17 +275,33 @@ public class ViewMessageActivity extends Activity {
 	};
 
 	private class DeleteMessageFromDbTask extends
-			AsyncTask<MessageContainer, Void, Void> {
+	AsyncTask<MessageContainer, Void, Void> {
 		@Override
 		protected Void doInBackground(MessageContainer... objects) {
 			if (context != null) {
 				for (MessageContainer msg : objects) {
-					smsMessageHandler.deleteMessage(msg);
+					getSmsMessageHandler().deleteMessage(msg);
 				}
-				smsMessageHandler.close();
+				getSmsMessageHandler().close();
 			}
 			return null;
 		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			Intent newMsgIntent = new Intent(
+					SmsMessageHandler.UPDATE_MSG_INTENT);
+			context.sendBroadcast(newMsgIntent);
+		}
+
+
+	}
+
+	
+	private SmsMessageHandler getSmsMessageHandler() {
+		if (smsMessageHandler == null)
+			smsMessageHandler = new SmsMessageHandler(context);
+		return smsMessageHandler;
 	}
 
 }
