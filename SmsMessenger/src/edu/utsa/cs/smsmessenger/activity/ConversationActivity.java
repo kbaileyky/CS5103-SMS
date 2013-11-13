@@ -63,8 +63,10 @@ public class ConversationActivity extends Activity {
 		public void onClick(View v) {
 			String message = messageEditText.getText().toString();
 			message = message.trim();
-			if (!message.isEmpty())
+			if (!message.isEmpty()) {
 				sendSmsMessage(contactPhoneNumber, message);
+				sendMessageImageButton.setEnabled(false);
+			}
 		}
 	};
 
@@ -215,6 +217,7 @@ public class ConversationActivity extends Activity {
 					SaveNewMessageToDbTask saveThread = new SaveNewMessageToDbTask();
 					saveThread.execute(msgArr);
 					messageEditText.setText("");
+					sendMessageImageButton.setEnabled(true);
 					break;
 				case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
 					Toast.makeText(getBaseContext(), "Generic failure",
