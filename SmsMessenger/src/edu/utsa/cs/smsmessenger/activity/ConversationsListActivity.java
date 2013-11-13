@@ -58,7 +58,6 @@ public class ConversationsListActivity extends Activity implements
 		setContentView(R.layout.conversations_list);
 		registerNewMsgReceiver();
 		fillConversationsList();
-
 	}
 
 	@Override
@@ -119,17 +118,8 @@ public class ConversationsListActivity extends Activity implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void closeAllExistingNotifications() {
-		// Since we are in the conversation list, we will see new messages so we
-		// can close notifications
-		NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		notificationmanager.cancelAll();
-	}
-
 	public void fillConversationsList() {
-		// If we are filling the conversation list, then we don't need to show
-		// notifications
-		closeAllExistingNotifications();
+		
 		Log.d("ConversationsListActivity", "fillConversation()");
 		HashMap<String, ConversationPreview> convPrevMap = getSmsMessageHandler()
 				.getConversationPreviewItmes(this);

@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
+import edu.utsa.cs.smsmessenger.activity.ConversationsListActivity;
 import edu.utsa.cs.smsmessenger.model.ConversationPreview;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
@@ -14,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,6 +84,8 @@ public class ConversationPreviewAdapter extends
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(layoutResourceId, parent, false);
 		}
+
+		// Get the need view items
 		ImageView contactImageView = (ImageView) convertView
 				.findViewById(R.id.contactImageView);
 		TextView contactNameTextView = (TextView) convertView
@@ -91,26 +95,29 @@ public class ConversationPreviewAdapter extends
 		TextView countTextView = (TextView) convertView
 				.findViewById(R.id.notReadCountTextView);
 
+		// Get the ConversationPreview object
 		ConversationPreview preview = objects.get(position);
-		contactNameTextView.setText(preview.getContactName());
-		
-		previewTextView.setText(preview.getPreviewText());
-		countTextView.setText(""+preview.getNotReadCount());
 
-		if(preview.getNotReadCount()<1)
+		// Set the view item values
+		contactNameTextView.setText(preview.getContactName());
+		previewTextView.setText(preview.getPreviewText());
+		countTextView.setText(String.valueOf(preview.getNotReadCount()));
+
+		// if all messages in Conversation are read, hide the not read count
+		// TextView
+		if (preview.getNotReadCount() < 1)
 			countTextView.setVisibility(View.INVISIBLE);
-		
-		if(preview.getContactImgUri()!=null)
-		{
-			contactImageView.setImageURI(Uri.parse( preview.getContactImgUri() ));
-		}
-		else
-		{
+
+		// if contact photo uri is not null show the photo, else use default
+		if (preview.getContactImgUri() != null) {
+			contactImageView.setImageURI(Uri.parse(preview.getContactImgUri()));
+		} else {
 			contactImageView.setImageResource(R.drawable.hg_new_contact);
 		}
 
 		final ConversationPreview finalPreview = preview;
 		final TextView finalCountTextView = countTextView;
+
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -128,7 +135,16 @@ public class ConversationPreviewAdapter extends
 			public boolean onLongClick(View arg0) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						context);
-				final CharSequence[] items = { "Delete", "Cancel" };
+
+				// If contact is invalid, add option to create contact for phone
+				// number
+				final CharSequence[] items;
+				if (finalPreview.getContactId() != -1)
+					items = new CharSequence[] { "Delete", "Cancel" };
+				else
+					items = new CharSequence[] { "Add to contacts", "Delete",
+							"Cancel" };
+
 				alertDialogBuilder.setItems(items,
 						new DialogInterface.OnClickListener() {
 							@Override
@@ -136,11 +152,30 @@ public class ConversationPreviewAdapter extends
 									int which) {
 								switch (which) {
 								case 0:
-									ConversationPreview[] convArr = { finalPreview };
-									DeleteConversationFromDbTask deleteThread = new DeleteConversationFromDbTask();
-									deleteThread.execute(convArr);
+									if (finalPreview.getContactId() != -1) {
+										ConversationPreview[] convArr = { finalPreview };
+										DeleteConversationFromDbTask deleteThread = new DeleteConversationFromDbTask();
+										deleteThread.execute(convArr);
+									} else {
+										Intent intent = new Intent(
+												Intent.ACTION_INSERT);
+										intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+										intent.putExtra(
+												ContactsContract.Intents.Insert.PHONE,
+												finalPreview.getPhoneNumber());
+										context.startActivity(intent);
+									}
 									break;
 								case 1:
+									if (finalPreview.getContactId() != -1) {
+										dialog.cancel();
+									} else {
+										ConversationPreview[] convArr = { finalPreview };
+										DeleteConversationFromDbTask deleteThread = new DeleteConversationFromDbTask();
+										deleteThread.execute(convArr);
+									}
+									break;
+								case 2:
 									dialog.cancel();
 									break;
 								}
