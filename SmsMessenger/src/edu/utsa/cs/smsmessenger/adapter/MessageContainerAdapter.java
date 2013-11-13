@@ -125,13 +125,20 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 		msgDateTextView.setText(sdf.format(cal.getTime()));
 
 		if (message.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
-			if (contactUri != null)
+			if (contactUri != null){
 				msgImageView.setImageURI(Uri.parse(contactUri));
-			else
+			}
+			else {
 				msgImageView.setImageResource(R.drawable.hg_new_contact);
+			}
+			
+			msgBodyTextView.setBackgroundResource(R.drawable.speech_bubble_left);
+			
+			
 		} else {
 			msgImageView.setImageResource(R.drawable.hg_new_contact);
 			convertView.setBackgroundColor(context.getResources().getColor(R.color.RowColor2));
+			msgBodyTextView.setBackgroundResource(R.drawable.speech_bubble_right);
 
 		}
 
