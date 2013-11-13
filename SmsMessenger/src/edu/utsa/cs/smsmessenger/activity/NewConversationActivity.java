@@ -76,7 +76,10 @@ public class NewConversationActivity extends Activity {
 						getActivity(), number);
 				if (phoneNumber != null) {
 					if (!sent)
+					{
 						sendSmsMessage(phoneNumber, message);
+						sendNewMessageButton.setEnabled(false);
+					}
 					Log.d("NewConversationActivity", "" + sent);
 				}
 			}
@@ -311,6 +314,7 @@ public class NewConversationActivity extends Activity {
 							Toast.LENGTH_SHORT).show();
 					break;
 				}
+				sendNewMessageButton.setEnabled(true);
 				unregisterReceiver(this);
 			}
 		}, new IntentFilter(SmsMessageHandler.SMS_SENT));

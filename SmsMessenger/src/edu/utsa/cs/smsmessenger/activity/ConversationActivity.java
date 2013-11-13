@@ -217,7 +217,6 @@ public class ConversationActivity extends Activity {
 					SaveNewMessageToDbTask saveThread = new SaveNewMessageToDbTask();
 					saveThread.execute(msgArr);
 					messageEditText.setText("");
-					sendMessageImageButton.setEnabled(true);
 					break;
 				case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
 					Toast.makeText(getBaseContext(), "Generic failure",
@@ -236,6 +235,7 @@ public class ConversationActivity extends Activity {
 							Toast.LENGTH_SHORT).show();
 					break;
 				}
+				sendMessageImageButton.setEnabled(true);
 				unregisterReceiver(this);
 			}
 		}, new IntentFilter(SmsMessageHandler.SMS_SENT));
