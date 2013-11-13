@@ -97,7 +97,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 		// Create a new map of values, where column names are the keys
 		ContentValues values = new ContentValues();
-		values.put(COL_NAME_PHONE_NUMBER, message.getPhoneNumber());
+		values.put(COL_NAME_PHONE_NUMBER, message.getPhoneNumber().replaceAll("[^\\d]", "" ));
 		values.put(COL_NAME_CONTACT_ID, message.getContactId());
 		values.put(COL_NAME_DATE, message.getDate());
 		values.put(COL_NAME_SUBJECT, message.getSubject());
@@ -130,7 +130,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 		// New value for one column
 		ContentValues values = new ContentValues();
-		values.put(COL_NAME_PHONE_NUMBER, message.getPhoneNumber());
+		values.put(COL_NAME_PHONE_NUMBER, message.getPhoneNumber().replaceAll("[^\\d]", "" ));
 		values.put(COL_NAME_CONTACT_ID, message.getContactId());
 		values.put(COL_NAME_DATE, message.getDate());
 		values.put(COL_NAME_SUBJECT, message.getSubject());

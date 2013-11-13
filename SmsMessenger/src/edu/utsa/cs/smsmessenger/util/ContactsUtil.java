@@ -2,13 +2,16 @@ package edu.utsa.cs.smsmessenger.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle.Control;
 
 import edu.utsa.cs.smsmessenger.model.ContactContainer;
 
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.PhoneLookup;
 import android.util.Log;
 
 /**
@@ -51,10 +54,69 @@ public class ContactsUtil {
 		} catch (NullPointerException e) {
 			Log.e("getAllContactNames()", e.getMessage());
 		}
-		
+
 		return lContactNamesList;
 	}
 
+	public static ContactContainer getContactById(
+			ContentResolver contentResolver, int id) {
+		Log.d("getContactById", "id = " + id);
+		id = 2;
+		ContactContainer contact = new ContactContainer();
+		if(id==-1)
+			return contact;
+		String strId = ""+id;
+		contact.setId(strId);
+		Cursor cursor = contentResolver.query(
+				ContactsContract.CommonDataKinds.Phone.CONTENT_URI, 
+		        null, 
+		        ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
+		        new String[]{strId}, null);
+
+
+		while(cursor.moveToNext())
+		{
+			String name = cursor
+					.getString(cursor
+							.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+			String photoUri = cursor
+					.getString(cursor
+							.getColumnIndex(ContactsContract.Contacts.Photo.PHOTO_URI));
+			String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+			contact.setDisplayName(name);
+			contact.setPhotoUri(photoUri);
+			contact.setPhoneNumber(phoneNumber);
+			return contact;
+		}
+		cursor.close();
+		return contact;
+	}
+	public static ContactContainer getContactByPhoneNumber(ContentResolver contentResolver, String number){
+		ContactContainer contact = new ContactContainer();
+		contact.setPhoneNumber(number);
+		Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+		Cursor cur = contentResolver.query(uri, 
+				new String[] {PhoneLookup._ID, PhoneLookup.DISPLAY_NAME, PhoneLookup.PHOTO_URI}, 
+				null, 
+				null, 
+				null);
+		if(cur!=null){
+			if(cur.moveToFirst()){
+				for(String names : cur.getColumnNames())
+				{
+					Log.d("names: ", names);
+				}
+	            String name = cur.getString(cur.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
+	            String id = cur.getString(cur.getColumnIndex(ContactsContract.Data._ID));
+	            String photoUri = cur.getString(cur.getColumnIndex(ContactsContract.Data.PHOTO_URI));
+	            contact.setId(id);
+	            contact.setDisplayName(name);
+	            contact.setPhotoUri(photoUri);
+			}
+			cur.close();
+		}
+		return contact;
+	}
 	public static String getPhoneNumberByContactName(Activity activity,
 			String contactName) {
 		ContentResolver cr = activity.getContentResolver();
@@ -98,17 +160,17 @@ public class ContactsUtil {
 		return null;
 	}
 
-	public static ContactContainer getContactByPhoneNumber(
+	public static ContactContainer getContactByPhoneNumberSlow(
 			ContentResolver contentResolver, String lookUpPhoneNumber) {
 
-		//Log.e("getContactByPhoneNumber", "**********start");
+		// Log.e("getContactByPhoneNumber", "**********start");
 		ContactContainer contact = new ContactContainer();
 		contact.setPhoneNumber(lookUpPhoneNumber);
 
 		String phoneNumber = lookUpPhoneNumber.replaceAll("[^\\d]", "");// ("[^0-9]",
 																		// "");
 		if (!isAPhoneNumber(phoneNumber)) {
-			//Log.e("getContactByPhoneNumber", "**********Not phone number");
+			// Log.e("getContactByPhoneNumber", "**********Not phone number");
 			return contact;
 		}
 
@@ -162,25 +224,25 @@ public class ContactsUtil {
 									contact.setId(id);
 									contact.setDisplayName(name);
 									contact.setPhotoUri(photoUri);
-									//Log.e("getContactByPhoneNumber",
-									//		"**********Found match contact, end");
+									// Log.e("getContactByPhoneNumber",
+									// "**********Found match contact, end");
 									pCur.close();
 									cur.close();
 									return contact;
 								}
 							}
 							pCur.close();
-						} //else
-							//Log.e("getContactByPhoneNumber",
-							//		"**********pCur is null");
+						} // else
+							// Log.e("getContactByPhoneNumber",
+							// "**********pCur is null");
 					}
 
 				}
 			}
 			cur.close();
-		} //else
-			//Log.e("getContactByPhoneNumber", "**********cur is null");
-		//Log.e("getContactByPhoneNumber", "**********end");
+		} // else
+			// Log.e("getContactByPhoneNumber", "**********cur is null");
+		// Log.e("getContactByPhoneNumber", "**********end");
 		return contact;
 	}
 

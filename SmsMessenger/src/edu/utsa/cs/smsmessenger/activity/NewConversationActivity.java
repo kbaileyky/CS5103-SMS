@@ -312,22 +312,6 @@ public class NewConversationActivity extends Activity {
 				case Activity.RESULT_OK:
 					Toast.makeText(getBaseContext(), "SMS delivered",
 							Toast.LENGTH_SHORT).show();
-					if (messageContainer.isSaved()) {
-						messageContainer.setDate(Calendar.getInstance()
-								.getTimeInMillis());
-						messageContainer.setStatus(SmsMessageHandler.SMS_DELIVERED);
-						MessageContainer[] msgArr = { messageContainer };
-						SaveNewMessageToDbStartConversationTask saveThread = new SaveNewMessageToDbStartConversationTask();
-						saveThread.execute(msgArr);
-					} else {
-						messageContainer.setDate(Calendar.getInstance()
-								.getTimeInMillis());
-						messageContainer
-								.setStatus(SmsMessageHandler.SMS_DELIVERED);
-						MessageContainer[] msgArr = { messageContainer };
-						UpdateMessageToDbTask updateThread = new UpdateMessageToDbTask();
-						updateThread.execute(msgArr);
-					}
 					break;
 				case Activity.RESULT_CANCELED:
 					Toast.makeText(getBaseContext(), "SMS not delivered",

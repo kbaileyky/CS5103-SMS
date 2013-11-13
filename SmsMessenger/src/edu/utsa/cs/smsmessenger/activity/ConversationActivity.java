@@ -65,7 +65,6 @@ public class ConversationActivity extends Activity {
 			message = message.trim();
 			if (!message.isEmpty())
 				sendSmsMessage(contactPhoneNumber, message);
-			messageEditText.setText("");
 		}
 	};
 
@@ -215,6 +214,7 @@ public class ConversationActivity extends Activity {
 					MessageContainer[] msgArr = { messageContainer };
 					SaveNewMessageToDbTask saveThread = new SaveNewMessageToDbTask();
 					saveThread.execute(msgArr);
+					messageEditText.setText("");
 					break;
 				case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
 					Toast.makeText(getBaseContext(), "Generic failure",
@@ -245,23 +245,6 @@ public class ConversationActivity extends Activity {
 				case Activity.RESULT_OK:
 					Toast.makeText(getBaseContext(), "SMS delivered",
 							Toast.LENGTH_SHORT).show();
-
-					if (messageContainer.isSaved()) {
-						messageContainer.setDate(Calendar.getInstance()
-								.getTimeInMillis());
-						messageContainer.setStatus(SmsMessageHandler.SMS_DELIVERED);
-						MessageContainer[] msgArr = { messageContainer };
-						SaveNewMessageToDbTask saveThread = new SaveNewMessageToDbTask();
-						saveThread.execute(msgArr);
-					} else {
-						messageContainer.setDate(Calendar.getInstance()
-								.getTimeInMillis());
-						messageContainer
-								.setStatus(SmsMessageHandler.SMS_DELIVERED);
-						MessageContainer[] msgArr = { messageContainer };
-						UpdateMessageToDbTask updateThread = new UpdateMessageToDbTask();
-						updateThread.execute(msgArr);
-					}
 					break;
 				case Activity.RESULT_CANCELED:
 					Toast.makeText(getBaseContext(), "SMS not delivered",
