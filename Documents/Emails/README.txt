@@ -1,0 +1,1 @@
+This folder contains emails about the project.
