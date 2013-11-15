@@ -58,65 +58,94 @@ public class ContactsUtil {
 		return lContactNamesList;
 	}
 
+	/**
+	 * This method takes an ID and queries for a ContactContainer object that
+	 * contains display name, Photo URI and Phone Number.
+	 * 
+	 * @param contentResolver
+	 *            The ContentResolver which to use for querying.
+	 * @param contactId
+	 *            The ContentID query parameter.
+	 * @return returns a new ContactContainer instance specified by Contact ID.
+	 */
 	public static ContactContainer getContactById(
-			ContentResolver contentResolver, int id) {
-		Log.d("getContactById", "id = " + id);
-		id = 2;
+			ContentResolver contentResolver, int contactId) {
+		Log.d("getContactById", "id = " + contactId);
+		contactId = 2;
 		ContactContainer contact = new ContactContainer();
-		if(id==-1)
+		if (contactId == -1)
 			return contact;
-		String strId = ""+id;
+		String strId = "" + contactId;
 		contact.setId(strId);
 		Cursor cursor = contentResolver.query(
-				ContactsContract.CommonDataKinds.Phone.CONTENT_URI, 
-		        null, 
-		        ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
-		        new String[]{strId}, null);
+				ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+				ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+				new String[] { strId }, null);
 
-
-		while(cursor.moveToNext())
-		{
-			String name = cursor
+		while (cursor.moveToNext()) {
+			String name = cursor.getString(cursor
+					.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+			String photoUri = cursor.getString(cursor
+					.getColumnIndex(ContactsContract.Contacts.Photo.PHOTO_URI));
+			String phoneNumber = cursor
 					.getString(cursor
-							.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-			String photoUri = cursor
-					.getString(cursor
-							.getColumnIndex(ContactsContract.Contacts.Photo.PHOTO_URI));
-			String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+							.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 			contact.setDisplayName(name);
 			contact.setPhotoUri(photoUri);
 			contact.setPhoneNumber(phoneNumber);
+			cursor.close();
 			return contact;
 		}
 		cursor.close();
 		return contact;
 	}
-	public static ContactContainer getContactByPhoneNumber(ContentResolver contentResolver, String number){
+
+	/**
+	 * This method takes a String PhoneNumber and queries for a ContactContainer
+	 * object that contains display name, Photo URI and Phone Number.
+	 * 
+	 * @param contentResolver
+	 *            The ContentResolver which to use for querying.
+	 * @param phoneNumber
+	 *            The Phone Number to use for querying.
+	 * @return returns a new ContactContainer instance specified by PhoneNumber.
+	 */
+	public static ContactContainer getContactByPhoneNumber(
+			ContentResolver contentResolver, String phoneNumber) {
 		ContactContainer contact = new ContactContainer();
-		contact.setPhoneNumber(number);
-		Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
-		Cursor cur = contentResolver.query(uri, 
-				new String[] {PhoneLookup._ID, PhoneLookup.DISPLAY_NAME, PhoneLookup.PHOTO_URI}, 
-				null, 
-				null, 
+		contact.setPhoneNumber(phoneNumber);
+		Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI,
+				Uri.encode(phoneNumber));
+		Cursor cur = contentResolver.query(uri, new String[] { PhoneLookup._ID,
+				PhoneLookup.DISPLAY_NAME, PhoneLookup.PHOTO_URI }, null, null,
 				null);
-		if(cur!=null){
-			if(cur.moveToFirst()){
-				for(String names : cur.getColumnNames())
-				{
+		if (cur != null) {
+			if (cur.moveToFirst()) {
+				for (String names : cur.getColumnNames()) {
 					Log.d("names: ", names);
 				}
-	            String name = cur.getString(cur.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
-	            String id = cur.getString(cur.getColumnIndex(ContactsContract.Data._ID));
-	            String photoUri = cur.getString(cur.getColumnIndex(ContactsContract.Data.PHOTO_URI));
-	            contact.setId(id);
-	            contact.setDisplayName(name);
-	            contact.setPhotoUri(photoUri);
+				String name = cur.getString(cur
+						.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
+				String id = cur.getString(cur
+						.getColumnIndex(ContactsContract.Data._ID));
+				String photoUri = cur.getString(cur
+						.getColumnIndex(ContactsContract.Data.PHOTO_URI));
+				contact.setId(id);
+				contact.setDisplayName(name);
+				contact.setPhotoUri(photoUri);
 			}
 			cur.close();
 		}
 		return contact;
 	}
+
+	/*
+	 * 
+	 * 
+	 * TODO: This function will be optimized in final release to use one query
+	 * for the contactName and then one simple query off tha row for the
+	 * PhoneNumber.
+	 */
 	public static String getPhoneNumberByContactName(Activity activity,
 			String contactName) {
 		ContentResolver cr = activity.getContentResolver();
@@ -160,92 +189,15 @@ public class ContactsUtil {
 		return null;
 	}
 
-	public static ContactContainer getContactByPhoneNumberSlow(
-			ContentResolver contentResolver, String lookUpPhoneNumber) {
-
-		// Log.e("getContactByPhoneNumber", "**********start");
-		ContactContainer contact = new ContactContainer();
-		contact.setPhoneNumber(lookUpPhoneNumber);
-
-		String phoneNumber = lookUpPhoneNumber.replaceAll("[^\\d]", "");// ("[^0-9]",
-																		// "");
-		if (!isAPhoneNumber(phoneNumber)) {
-			// Log.e("getContactByPhoneNumber", "**********Not phone number");
-			return contact;
-		}
-
-		// String phoneNumber = lookUpPhoneNumber.replaceAll("[^\\d]", ""
-		// );//("[^0-9]", "");
-
-		contact.setDisplayName(phoneNumber);
-		contact.setPhoneNumber(phoneNumber);
-		if (phoneNumber.length() == 10) {
-			phoneNumber = "1" + phoneNumber;
-		}
-
-		// ContentResolver cr = activity.getContentResolver();
-		Cursor cur = contentResolver.query(
-				ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-		if (cur != null) // null pointer exception on phone
-		{
-			if (cur.getCount() > 0) {
-				while (cur.moveToNext()) {
-					String id = cur.getString(cur
-							.getColumnIndex(ContactsContract.Contacts._ID));
-					String name = cur
-							.getString(cur
-									.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-					String photoUri = cur
-							.getString(cur
-									.getColumnIndex(ContactsContract.Contacts.Photo.PHOTO_URI));
-
-					if (Integer
-							.parseInt(cur.getString(cur
-									.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-
-						Cursor pCur = contentResolver
-								.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-										null,
-										ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-												+ " = ?", new String[] { id },
-										null);
-						if (pCur != null) // Null pointer exception on phone
-						{
-							while (pCur.moveToNext()) {
-								String phoneNo = pCur
-										.getString(
-												pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-										.replaceAll("[^0-9]", "");
-								if (phoneNo.length() == 10) {
-									phoneNo = "1" + phoneNo;
-								}
-
-								if (phoneNumber.equals(phoneNo)) {
-									contact.setId(id);
-									contact.setDisplayName(name);
-									contact.setPhotoUri(photoUri);
-									// Log.e("getContactByPhoneNumber",
-									// "**********Found match contact, end");
-									pCur.close();
-									cur.close();
-									return contact;
-								}
-							}
-							pCur.close();
-						} // else
-							// Log.e("getContactByPhoneNumber",
-							// "**********pCur is null");
-					}
-
-				}
-			}
-			cur.close();
-		} // else
-			// Log.e("getContactByPhoneNumber", "**********cur is null");
-		// Log.e("getContactByPhoneNumber", "**********end");
-		return contact;
-	}
-
+	/**
+	 * This static method takes a String Contact verifies if it is a phone
+	 * number.
+	 * 
+	 * @param contact
+	 *            the contact will be checked to see if passes phone number
+	 *            validation.
+	 * @return returns true if it is a phone number.
+	 */
 	public static boolean isAPhoneNumber(String contact) {
 		if (contact
 				.matches("^\\d{10}|^\\d{11}|^[1]?(\\(\\d{3}\\)\\s?)?\\d{3}-\\d{4}$|^\\d{3}([.-])\\d{3}\\2\\d{4}$")) {

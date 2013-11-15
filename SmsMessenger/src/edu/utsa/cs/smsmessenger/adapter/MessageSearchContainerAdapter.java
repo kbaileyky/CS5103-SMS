@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
+import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
+import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
 /**
@@ -90,14 +93,25 @@ public class MessageSearchContainerAdapter extends
 				.findViewById(R.id.msgBodyTextView);
 		TextView msgDateTextView = (TextView) convertView
 				.findViewById(R.id.msgDateTextView);
-		// TODO - look up contact name
-		msgSenderTextView.setText(message.getPhoneNumber());
+
+		ContactContainer contact = new ContactContainer();
+		contact = ContactsUtil.getContactByPhoneNumber(
+				context.getContentResolver(), message.getPhoneNumber());
+
+		msgSenderTextView
+				.setText(message.getType() == SmsMessageHandler.MSG_TYPE_IN
+						&& contact.getDisplayName() != null ? contact
+						.getDisplayName() : message.getPhoneNumber());
 		msgBodyTextView.setText(message.getBody());
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(message.getDate());
 		msgDateTextView.setText(sdf.format(cal.getTime()));
 
-		// TODO - mark view to indicate if message has not been read
+		if (message.getType() == SmsMessageHandler.MSG_TYPE_IN
+				&& contact.getPhotoUri() != null)
+			msgImageView.setImageURI(Uri.parse(contact.getPhotoUri()));
+		else
+			msgImageView.setImageResource(R.drawable.hg_new_contact);
 
 		final MessageContainer finalMessage = message;
 		convertView.setOnClickListener(new OnClickListener() {
