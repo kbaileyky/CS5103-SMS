@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources><color name="lightGrey">#c6c6c6</color>
-    <color name="darkGrey">#365255</color>
+    <color name="darkGrey">#4B4D52</color>
+    
     <color name="limeGreen">#abda4e</color>
+    
     <color name="teal">#ABDA4E</color>
     <color name="offWhite">#C6E093</color>
     
-    <color name="RowColor1">#C6E093</color>
-    <color name="RowColor2">#ABDA4E</color>
-
+    <color name="RowColor1">#D0CABF</color>
+    <color name="RowColor2">#FFF2E7</color>
+	<color name="backroundColor">#B9B1A8</color>
+    <color name="popColor">#DE8642</color>
+    <color name="titlebarColor">#4B4D52</color>
+    
+     <color name="buttonHighlightColor">#777a82</color>
+	
 </resources>

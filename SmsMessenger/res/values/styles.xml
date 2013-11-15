@@ -17,6 +17,14 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
         
+    <style name="ThemeSelector" parent="android:Theme.Light">
+        <item name="android:windowTitleBackgroundStyle">@style/WindowTitleBackground</item>
+    </style>
+ 
+    <style name="WindowTitleBackground">     
+        <item name="android:background">@color/titlebarColor</item>
+    </style>
+    
     
     <!-- Button Theme -->
     <style name="ButtonStyle">
@@ -27,11 +35,20 @@
     
     <!-- List style -->
     <style name="ListViewStyle" parent="@android:style/Widget.ListView">
-    <item name="android:background">@color/offWhite</item>
+    <item name="android:background">@color/backroundColor</item>
     <item name="android:divider">@android:color/transparent</item>
     <item name="android:dividerHeight">0dp</item>
     <item name="android:textColor">@color/darkGrey</item>
     </style>
+    
+        <!-- Conversation style -->
+    <style name="ConversListViewStyle" parent="@android:style/Widget.ListView">
+    <item name="android:background">@color/backroundColor</item>
+    <item name="android:divider">@android:color/transparent</item>
+    <item name="android:dividerHeight">0dp</item>
+    <item name="android:textColor">@color/darkGrey</item>
+    </style>
+    
     
     <!-- Input Body style -->
     <style name="inputBodyStyle">
@@ -41,7 +58,7 @@
     <item name="android:layout_weight">2</item>
     <item name="android:inputType">textMultiLine</item>
     <item name="android:ems">10</item>
-    <item name="android:background">@color/offWhite</item>
+    <item name="android:background">@color/backroundColor</item>
     </style>
     
    

@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewParent;
 import android.widget.EditText;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -97,6 +98,16 @@ public class ViewMessageActivity extends Activity {
 		// Temporary - replace with contact name
 		setTitle(currentContact.getDisplayName() != null ? currentContact
 				.getDisplayName() : currentMessage.getPhoneNumber());
+		
+		//Sets the color of the titlebar
+//		View titleView = getWindow().findViewById(android.R.id.title);
+//	    if (titleView != null) {
+//	      ViewParent parent = titleView.getParent();
+//	      if (parent != null && (parent instanceof View)) {
+//	        View parentView = (View)parent;
+//	        parentView.setBackgroundColor(getResources().getColor(R.color.titlebarColor));
+//	      }
+//	    }
 
 		txtMsgBody = (TextView) findViewById(R.id.msgBodyTextView);
 		txtMsgBody.setText(currentMessage.getBody());

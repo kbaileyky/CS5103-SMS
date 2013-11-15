@@ -5,7 +5,7 @@
     android:clickable="true"
     android:longClickable="true"
     android:padding="6dip"
-        android:background="@color/offWhite"
+        android:background="@color/backroundColor"
          >
 
     <ImageView

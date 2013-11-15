@@ -6,7 +6,7 @@
     android:paddingBottom="3dip"
     android:paddingLeft="8dip"
     android:paddingRight="8dip"
-        android:background="@color/offWhite" >
+        android:background="@color/backroundColor" >
 
     <TableRow
         android:id="@+id/tableRow1"

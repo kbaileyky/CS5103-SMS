@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
@@ -137,7 +135,6 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 			
 		} else {
 			msgImageView.setImageResource(R.drawable.hg_new_contact);
-			convertView.setBackgroundColor(context.getResources().getColor(R.color.RowColor2));
 			msgBodyTextView.setBackgroundResource(R.drawable.speech_bubble_right);
 
 		}
