@@ -18,11 +18,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="7dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/contact_image_desc"
             android:maxHeight="50dp"
             android:maxWidth="50dp"
-            android:layout_marginLeft="7dp"
+            android:minHeight="50dp"
+            android:minWidth="50dp"
             android:scaleType="fitStart"
             android:src="@drawable/hg_launcher_icon" />
 

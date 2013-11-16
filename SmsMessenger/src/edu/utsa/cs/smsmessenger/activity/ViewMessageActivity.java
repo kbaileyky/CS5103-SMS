@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -22,6 +23,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewParent;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,6 +77,7 @@ public class ViewMessageActivity extends Activity {
 
 		currentContact = ContactsUtil.getContactByPhoneNumber(
 				this.getContentResolver(), currentMessage.getPhoneNumber());
+		
 		updateUI();
 
 		distCurrent = 1; // Dummy default distance
@@ -96,18 +99,20 @@ public class ViewMessageActivity extends Activity {
 	private void updateUI() {
 
 		// Temporary - replace with contact name
-		setTitle(currentContact.getDisplayName() != null ? currentContact
-				.getDisplayName() : currentMessage.getPhoneNumber());
-		
-		//Sets the color of the titlebar
-//		View titleView = getWindow().findViewById(android.R.id.title);
-//	    if (titleView != null) {
-//	      ViewParent parent = titleView.getParent();
-//	      if (parent != null && (parent instanceof View)) {
-//	        View parentView = (View)parent;
-//	        parentView.setBackgroundColor(getResources().getColor(R.color.titlebarColor));
-//	      }
-//	    }
+		setTitle( currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_OUT) ? getResources().getString(
+				R.string.self_reference) :
+				(currentContact.getDisplayName() != null ? currentContact
+				.getDisplayName() : currentMessage.getPhoneNumber()));
+
+		// Sets the color of the titlebar
+		// View titleView = getWindow().findViewById(android.R.id.title);
+		// if (titleView != null) {
+		// ViewParent parent = titleView.getParent();
+		// if (parent != null && (parent instanceof View)) {
+		// View parentView = (View)parent;
+		// parentView.setBackgroundColor(getResources().getColor(R.color.titlebarColor));
+		// }
+		// }
 
 		txtMsgBody = (TextView) findViewById(R.id.msgBodyTextView);
 		txtMsgBody.setText(currentMessage.getBody());
@@ -115,6 +120,15 @@ public class ViewMessageActivity extends Activity {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
 		TextView txtTimeAndDate = (TextView) findViewById(R.id.msgDateTextView);
 		txtTimeAndDate.setText(sdf.format(currentMessage.getDate()));
+		
+		ImageView contactImageView = (ImageView) findViewById(R.id.msgImageView);
+		
+		if(currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN) && currentContact.getPhotoUri()!=null)
+		{
+			contactImageView.setImageURI(Uri.parse(currentContact.getPhotoUri()));
+			if(contactImageView.getDrawable()==null)
+				contactImageView.setImageResource(R.drawable.hg_new_contact);
+		}
 
 		rootTable = (TableRow) findViewById(R.id.tableRow1);
 		// tableRow1

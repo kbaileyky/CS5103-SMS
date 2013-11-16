@@ -108,6 +108,8 @@ public class ConversationPreviewAdapter extends
 		// if contact photo uri is not null show the photo, else use default
 		if (preview.getContactImgUri() != null) {
 			contactImageView.setImageURI(Uri.parse(preview.getContactImgUri()));
+			if(contactImageView.getDrawable()==null)
+				contactImageView.setImageResource(R.drawable.hg_new_contact);
 		} else {
 			contactImageView.setImageResource(R.drawable.hg_new_contact);
 		}
