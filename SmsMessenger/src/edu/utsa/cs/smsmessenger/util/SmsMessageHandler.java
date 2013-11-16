@@ -1,6 +1,5 @@
 package edu.utsa.cs.smsmessenger.util;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -286,23 +285,17 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	public HashMap<String, ConversationPreview> getConversationPreviewItmes(
 			Activity activity) {
 		
+		//Get message list for database
 		ArrayList<MessageContainer> inMsgList = getSmsMessages(null, null,
 				COL_NAME_DATE + " DESC", MSG_TYPE_IN);
 		ArrayList<MessageContainer> outMsgList = getSmsMessages(null, null,
 				COL_NAME_DATE + " DESC", MSG_TYPE_OUT);
 
 		ArrayList<MessageContainer> msgList = inMsgList;
-		
+		//merge lists
 		msgList.addAll(outMsgList);
-		
+		//sort merged lists
 		Collections.sort(msgList, Collections.reverseOrder());
-		
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//		
-//		for(MessageContainer msg : msgList)
-//		{
-//			Log.d(">>>>>>>>>", sdf.format(msg.getDate())+" "+msg.getPhoneNumber()+" " +msg.getType());
-//		}
 		
 		HashMap<String, ConversationPreview> convPrevList = new HashMap<String, ConversationPreview>();
 

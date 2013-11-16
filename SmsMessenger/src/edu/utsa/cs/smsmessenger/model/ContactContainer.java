@@ -13,8 +13,12 @@ public class ContactContainer {
     private String displayName;
     private String phoneNumber;
     private String photoUri;
-    private String id;
+    private long id;
 
+    public ContactContainer()
+    {
+    	id = -1;
+    }
 	/**
 	 * @param displayName
 	 *            represent the display name to set for the contact
@@ -59,11 +63,11 @@ public class ContactContainer {
         this.photoUri = photoUri;
     }
 
-	public String getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
     

@@ -38,7 +38,7 @@ import android.widget.Toast;
 public class ConversationActivity extends Activity {
 
 	private String contactPhoneNumber;
-	private int contactId;
+	private long contactId;
 	private ListView conversationListView;
 	private SmsMessageHandler smsMessageHandler;
 	private MessageContainerAdapter messageContainerAdapter;
@@ -146,8 +146,7 @@ public class ConversationActivity extends Activity {
 	private void closeExistingNotifications() {
 		// Close notifications for this user
 		NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		notificationmanager.cancel(contactId);
-		// menu
+		notificationmanager.cancel((int)contactId);
 	}
 
 	public void fillConversationListView() {

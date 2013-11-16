@@ -13,6 +13,7 @@ import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -119,11 +120,18 @@ public class ConversationsListActivity extends Activity implements
 	}
 
 	//
+	// This method fetches closes all notifications for this app
+	//
+	private void closeExistingNotifications() {
+		NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notificationmanager.cancelAll();
+	}
+	
+	//
 	// This method fetches the latest conversation preview lists from the app
 	// message database.
 	//
 	private void fillConversationsList() {
-
 		HashMap<String, ConversationPreview> convPrevMap = getSmsMessageHandler()
 				.getConversationPreviewItmes(this);
 
@@ -148,6 +156,7 @@ public class ConversationsListActivity extends Activity implements
 				getConversationListView().setAdapter(emptyAdapter);
 			}
 		}
+		closeExistingNotifications();
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {
