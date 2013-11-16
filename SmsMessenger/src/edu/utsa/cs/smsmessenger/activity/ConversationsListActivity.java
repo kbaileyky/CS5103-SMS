@@ -1,6 +1,7 @@
 package edu.utsa.cs.smsmessenger.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,6 @@ import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -118,27 +118,27 @@ public class ConversationsListActivity extends Activity implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void fillConversationsList() {
-		
-		Log.d("ConversationsListActivity", "fillConversation()");
+	//
+	// This method fetches the latest conversation preview lists from the app
+	// message database.
+	//
+	private void fillConversationsList() {
+
 		HashMap<String, ConversationPreview> convPrevMap = getSmsMessageHandler()
 				.getConversationPreviewItmes(this);
-		Log.d("ConversationsListActivity", "convPrevMap: " + convPrevMap);
 
 		ArrayList<ConversationPreview> convPrevArrayList = new ArrayList<ConversationPreview>();
 
 		for (Map.Entry<String, ConversationPreview> entry : convPrevMap
-				.entrySet()) {
-			Log.d("ConversationsListActivity", "Iterate Map");
+				.entrySet()) 
 			convPrevArrayList.add(entry.getValue());
-		}
+
+		//Sort array list
+		Collections.sort(convPrevArrayList, Collections.reverseOrder());
+		
 		if (convPrevArrayList.size() > 0) {
 			conversationPreviewAdapter = new ConversationPreviewAdapter(this,
 					R.layout.conversations_list_item, convPrevArrayList);
-			Log.d("ConversationsListActivity", "conversationPreviewAdapter: "
-					+ conversationPreviewAdapter);
-			Log.d("ConversationsListActivity", "conversationListView: "
-					+ getConversationListView());
 			getConversationListView().setAdapter(conversationPreviewAdapter);
 		} else {
 			if (getConversationListView().getAdapter() != null) {

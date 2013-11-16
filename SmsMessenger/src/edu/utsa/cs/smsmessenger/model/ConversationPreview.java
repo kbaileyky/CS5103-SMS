@@ -10,7 +10,7 @@ package edu.utsa.cs.smsmessenger.model;
  * @since 1.0
  * 
  */
-public class ConversationPreview {
+public class ConversationPreview implements Comparable<ConversationPreview>{
 
 	private String contactImgUri;
 	private String contactName;
@@ -181,6 +181,15 @@ public class ConversationPreview {
 				+ previewText + ", phoneNumber=" + phoneNumber + ", contactId="
 				+ contactId + ", date=" + date + ", notReadCount="
 				+ notReadCount + "]";
+	}
+
+	@Override
+	public int compareTo(ConversationPreview another) {
+		if (this.getDate() > another.getDate())
+			return 1;
+		if (this.getDate() < another.getDate())
+			return -1;
+		return 0;
 	}
 
 }
