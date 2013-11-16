@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="2" 
-        style="@style/ListViewStyle" 
-        >
+        style="@style/ListViewStyle" >
     </ListView>
 
     <LinearLayout
@@ -31,7 +30,6 @@
             android:gravity="top"
             android:padding="7dip"
 			>
-            <requestFocus />
         </EditText>
 
         <ImageButton
