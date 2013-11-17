@@ -112,7 +112,7 @@ public class ConversationPreviewAdapter extends
 		if (preview.getContactImgUri() != null) {
 			contactImageView.setImageURI(Uri.parse(preview.getContactImgUri()));
 		} else {
-			contactImageView.setImageResource(R.drawable.hg_new_contact);
+			contactImageView.setImageResource(R.drawable.hg_contact);
 		}
 
 		final ConversationPreview finalPreview = preview;

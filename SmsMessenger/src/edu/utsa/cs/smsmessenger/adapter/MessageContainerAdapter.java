@@ -127,14 +127,14 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 				msgImageView.setImageURI(Uri.parse(contactUri));
 			}
 			else {
-				msgImageView.setImageResource(R.drawable.hg_new_contact);
+				msgImageView.setImageResource(R.drawable.hg_contact);
 			}
 			
 			msgBodyTextView.setBackgroundResource(R.drawable.speech_bubble_left);
 			
 			
 		} else {
-			msgImageView.setImageResource(R.drawable.hg_new_contact);
+			msgImageView.setImageResource(R.drawable.me_icon);
 			msgBodyTextView.setBackgroundResource(R.drawable.speech_bubble_right);
 
 		}

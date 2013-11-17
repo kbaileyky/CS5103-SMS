@@ -22,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewParent;
 import android.widget.EditText;
+import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +35,7 @@ import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
 public class ViewMessageActivity extends Activity {
 
-	private TableRow rootTable;
+	private TableLayout rootTable;
 	private TextView txtMsgBody; // Where the body of the message being view is
 									// shown
 	private MessageContainer currentMessage; // Message structure that is being
@@ -80,7 +81,7 @@ public class ViewMessageActivity extends Activity {
 		distCurrent = 1; // Dummy default distance
 		dist0 = 1; // Dummy default distance
 
-		rootTable.setOnTouchListener(MyOnTouchListener);
+		rootTable.setOnTouchListener(ZoomListener);
 
 		touchState = IDLE;
 
@@ -116,16 +117,16 @@ public class ViewMessageActivity extends Activity {
 		TextView txtTimeAndDate = (TextView) findViewById(R.id.msgDateTextView);
 		txtTimeAndDate.setText(sdf.format(currentMessage.getDate()));
 
-		rootTable = (TableRow) findViewById(R.id.tableRow1);
+		rootTable = (TableLayout) findViewById(R.id.viewMsgTable);
 		// tableRow1
 
 		// Find the root view
 		View root = rootTable.getRootView();
 
 		if (currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
-			root.setBackgroundColor(getResources().getColor(R.color.RowColor1));
+			root.setBackgroundColor(getResources().getColor(R.color.backroundColor));
 		} else {
-			root.setBackgroundColor(getResources().getColor(R.color.RowColor2));
+			root.setBackgroundColor(getResources().getColor(R.color.RowColor1));
 		}
 
 		return;
@@ -249,14 +250,14 @@ public class ViewMessageActivity extends Activity {
 			newsize = 9;
 		}
 
-		if (newsize > 24) {
-			newsize = 24;
+		if (newsize > 56) {
+			newsize = 56;
 		}
 
 		txtMsgBody.setTextSize(newsize);
 	}
 
-	OnTouchListener MyOnTouchListener = new OnTouchListener() {
+	OnTouchListener ZoomListener = new OnTouchListener() {
 
 		@Override
 		public boolean onTouch(View view, MotionEvent event) {
