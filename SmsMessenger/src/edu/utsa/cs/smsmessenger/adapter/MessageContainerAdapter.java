@@ -125,6 +125,8 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 		if (message.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
 			if (contactUri != null){
 				msgImageView.setImageURI(Uri.parse(contactUri));
+				if(msgImageView.getDrawable()==null)
+					msgImageView.setImageResource(R.drawable.hg_new_contact);
 			}
 			else {
 				msgImageView.setImageResource(R.drawable.hg_contact);

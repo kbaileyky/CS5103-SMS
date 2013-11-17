@@ -38,7 +38,7 @@ import android.widget.Toast;
 public class ConversationActivity extends Activity {
 
 	private String contactPhoneNumber;
-	private int contactId;
+	private long contactId;
 	private ListView conversationListView;
 	private SmsMessageHandler smsMessageHandler;
 	private MessageContainerAdapter messageContainerAdapter;
@@ -88,24 +88,6 @@ public class ConversationActivity extends Activity {
 		}
 	}
 
-	private class UpdateMessageToDbTask extends
-			AsyncTask<MessageContainer, Void, Void> {
-		@Override
-		protected Void doInBackground(MessageContainer... objects) {
-			for (MessageContainer msg : objects)
-				getSmsMessageHandler().updateSmsMessage(msg);
-			getSmsMessageHandler().close();
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			Intent newMsgIntent = new Intent(
-					SmsMessageHandler.UPDATE_MSG_INTENT);
-			getContext().sendBroadcast(newMsgIntent);
-		}
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -123,6 +105,7 @@ public class ConversationActivity extends Activity {
 				: contactPhoneNumber);
 
 		messageEditText = (EditText) findViewById(R.id.msgEditText);
+		
 		sendMessageImageButton = (ImageButton) findViewById(R.id.sendMsgImageButton);
 		sendMessageImageButton.setOnClickListener(sendMessageOnClickListener);
 
@@ -146,8 +129,7 @@ public class ConversationActivity extends Activity {
 	private void closeExistingNotifications() {
 		// Close notifications for this user
 		NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		notificationmanager.cancel(contactId);
-		// menu
+		notificationmanager.cancel((int)contactId);
 	}
 
 	public void fillConversationListView() {
@@ -164,14 +146,24 @@ public class ConversationActivity extends Activity {
 		Log.d("ConversationActivity", "conversationListView: "
 				+ getConversationListView());
 		getConversationListView().setAdapter(messageContainerAdapter);
-		getConversationListView().setSelection(
-				messageContainerAdapter.getCount() - 1);
+		
+		scrollListViewToBottom();
 
 	}
 
+	private void scrollListViewToBottom()
+	{
+		getConversationListView().setSelection(
+				getConversationListView().getCount() - 1);
+	}
 	public ListView getConversationListView() {
 		if (conversationListView == null)
+		{
 			conversationListView = (ListView) findViewById(R.id.conversationListView);
+
+			conversationListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
+			conversationListView.setStackFromBottom(true);
+		}
 		return conversationListView;
 	}
 
@@ -265,4 +257,5 @@ public class ConversationActivity extends Activity {
 	private Context getContext() {
 		return this;
 	}
+	
 }

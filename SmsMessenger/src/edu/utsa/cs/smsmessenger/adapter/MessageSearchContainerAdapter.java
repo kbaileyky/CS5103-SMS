@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
+import edu.utsa.cs.smsmessenger.activity.ViewMessageActivity;
 import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.ContactsUtil;
@@ -98,31 +99,44 @@ public class MessageSearchContainerAdapter extends
 		contact = ContactsUtil.getContactByPhoneNumber(
 				context.getContentResolver(), message.getPhoneNumber());
 
-		msgSenderTextView
-				.setText(message.getType() == SmsMessageHandler.MSG_TYPE_IN
-						&& contact.getDisplayName() != null ? contact
-						.getDisplayName() : message.getPhoneNumber());
+		msgSenderTextView.setText(message.getType().equals(
+				SmsMessageHandler.MSG_TYPE_OUT) ? context.getResources()
+				.getString(R.string.self_reference)
+				: contact.getDisplayName() != null ? contact.getDisplayName()
+						: message.getPhoneNumber());
 		msgBodyTextView.setText(message.getBody());
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(message.getDate());
 		msgDateTextView.setText(sdf.format(cal.getTime()));
 
 		if (message.getType() == SmsMessageHandler.MSG_TYPE_IN
-				&& contact.getPhotoUri() != null)
+				&& contact.getPhotoUri() != null) {
 			msgImageView.setImageURI(Uri.parse(contact.getPhotoUri()));
-		else
+			if (msgImageView.getDrawable() == null)
+				msgImageView.setImageResource(R.drawable.hg_new_contact);
+		} else
 			msgImageView.setImageResource(R.drawable.hg_new_contact);
 
 		final MessageContainer finalMessage = message;
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent intent = new Intent(context, ConversationActivity.class);
-				intent.putExtra(SmsMessageHandler.COL_NAME_PHONE_NUMBER,
+				Intent viewMsgIntent = new Intent(context,
+						ViewMessageActivity.class);
+
+				// store message details in
+				viewMsgIntent.putExtra(SmsMessageHandler.COL_NAME_PHONE_NUMBER,
 						finalMessage.getPhoneNumber());
-				intent.putExtra(SmsMessageHandler.COL_NAME_CONTACT_ID,
+				viewMsgIntent.putExtra(SmsMessageHandler.COL_NAME_CONTACT_ID,
 						finalMessage.getContactId());
-				context.startActivity(intent);
+				viewMsgIntent.putExtra("contactName",
+						finalMessage.getPhoneNumber());
+				viewMsgIntent.putExtra("timeAndDate", finalMessage.getDate());
+				viewMsgIntent.putExtra("msgBody", finalMessage.getBody());
+				viewMsgIntent.putExtra("msgType", finalMessage.getType());
+				viewMsgIntent.putExtra("msgID", finalMessage.getId());
+
+				context.startActivity(viewMsgIntent);
 			}
 		});
 		convertView.setOnLongClickListener(new OnLongClickListener() {

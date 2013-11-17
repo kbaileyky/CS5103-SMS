@@ -1,6 +1,7 @@
 package edu.utsa.cs.smsmessenger.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -118,27 +119,34 @@ public class ConversationsListActivity extends Activity implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void fillConversationsList() {
-		
-		Log.d("ConversationsListActivity", "fillConversation()");
+	//
+	// This method fetches closes all notifications for this app
+	//
+	private void closeExistingNotifications() {
+		NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notificationmanager.cancelAll();
+	}
+	
+	//
+	// This method fetches the latest conversation preview lists from the app
+	// message database.
+	//
+	private void fillConversationsList() {
 		HashMap<String, ConversationPreview> convPrevMap = getSmsMessageHandler()
 				.getConversationPreviewItmes(this);
-		Log.d("ConversationsListActivity", "convPrevMap: " + convPrevMap);
 
 		ArrayList<ConversationPreview> convPrevArrayList = new ArrayList<ConversationPreview>();
 
 		for (Map.Entry<String, ConversationPreview> entry : convPrevMap
-				.entrySet()) {
-			Log.d("ConversationsListActivity", "Iterate Map");
+				.entrySet()) 
 			convPrevArrayList.add(entry.getValue());
-		}
+
+		//Sort array list
+		Collections.sort(convPrevArrayList, Collections.reverseOrder());
+		
 		if (convPrevArrayList.size() > 0) {
 			conversationPreviewAdapter = new ConversationPreviewAdapter(this,
 					R.layout.conversations_list_item, convPrevArrayList);
-			Log.d("ConversationsListActivity", "conversationPreviewAdapter: "
-					+ conversationPreviewAdapter);
-			Log.d("ConversationsListActivity", "conversationListView: "
-					+ getConversationListView());
 			getConversationListView().setAdapter(conversationPreviewAdapter);
 		} else {
 			if (getConversationListView().getAdapter() != null) {
@@ -148,6 +156,7 @@ public class ConversationsListActivity extends Activity implements
 				getConversationListView().setAdapter(emptyAdapter);
 			}
 		}
+		closeExistingNotifications();
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {

@@ -10,13 +10,13 @@ package edu.utsa.cs.smsmessenger.model;
  * @since 1.0
  * 
  */
-public class ConversationPreview {
+public class ConversationPreview implements Comparable<ConversationPreview>{
 
 	private String contactImgUri;
 	private String contactName;
 	private String previewText;
 	private String phoneNumber;
-	private int contactId;
+	private long contactId;
 	private long date;
 	private int notReadCount;
 
@@ -35,7 +35,7 @@ public class ConversationPreview {
 	 */
 	public ConversationPreview(String contactImgUri, String contactName,
 			String previewText, int notReadCount, long date,
-			String phoneNumber, int contactId) {
+			String phoneNumber, long contactId) {
 		super();
 		this.contactImgUri = contactImgUri;
 		this.contactName = contactName;
@@ -67,7 +67,7 @@ public class ConversationPreview {
 	 * @return returns the contact id for the contact, and not the user, in the
 	 *         conversation.
 	 */
-	public int getContactId() {
+	public long getContactId() {
 		return contactId;
 	}
 
@@ -76,7 +76,7 @@ public class ConversationPreview {
 	 *            represents the contact id for the contact, and not the user,
 	 *            in the conversation.
 	 */
-	public void setContactId(int contactId) {
+	public void setContactId(long contactId) {
 		this.contactId = contactId;
 	}
 
@@ -181,6 +181,15 @@ public class ConversationPreview {
 				+ previewText + ", phoneNumber=" + phoneNumber + ", contactId="
 				+ contactId + ", date=" + date + ", notReadCount="
 				+ notReadCount + "]";
+	}
+
+	@Override
+	public int compareTo(ConversationPreview another) {
+		if (this.getDate() > another.getDate())
+			return 1;
+		if (this.getDate() < another.getDate())
+			return -1;
+		return 0;
 	}
 
 }

@@ -69,14 +69,17 @@ public class ContactsUtil {
 	 * @return returns a new ContactContainer instance specified by Contact ID.
 	 */
 	public static ContactContainer getContactById(
-			ContentResolver contentResolver, int contactId) {
+			ContentResolver contentResolver, long contactId) {
+		
 		Log.d("getContactById", "id = " + contactId);
-		contactId = 2;
+		
 		ContactContainer contact = new ContactContainer();
 		if (contactId == -1)
 			return contact;
+		
 		String strId = "" + contactId;
-		contact.setId(strId);
+		contact.setId(contactId);
+		
 		Cursor cursor = contentResolver.query(
 				ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
 				ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
@@ -112,6 +115,7 @@ public class ContactsUtil {
 	 */
 	public static ContactContainer getContactByPhoneNumber(
 			ContentResolver contentResolver, String phoneNumber) {
+		
 		ContactContainer contact = new ContactContainer();
 		contact.setPhoneNumber(phoneNumber);
 		Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI,
@@ -126,10 +130,12 @@ public class ContactsUtil {
 				}
 				String name = cur.getString(cur
 						.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
-				String id = cur.getString(cur
+				long id = cur.getLong(cur
 						.getColumnIndex(ContactsContract.Data._ID));
 				String photoUri = cur.getString(cur
 						.getColumnIndex(ContactsContract.Data.PHOTO_URI));
+				
+				//Set contact data
 				contact.setId(id);
 				contact.setDisplayName(name);
 				contact.setPhotoUri(photoUri);

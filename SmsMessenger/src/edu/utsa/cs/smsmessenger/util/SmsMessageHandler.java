@@ -284,15 +284,22 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	 */
 	public HashMap<String, ConversationPreview> getConversationPreviewItmes(
 			Activity activity) {
-		Log.d("SmsMessageHandler", "getConversationPreviewItmes()");
+		
+		//Get message list for database
 		ArrayList<MessageContainer> inMsgList = getSmsMessages(null, null,
 				COL_NAME_DATE + " DESC", MSG_TYPE_IN);
 		ArrayList<MessageContainer> outMsgList = getSmsMessages(null, null,
 				COL_NAME_DATE + " DESC", MSG_TYPE_OUT);
 
+		ArrayList<MessageContainer> msgList = inMsgList;
+		//merge lists
+		msgList.addAll(outMsgList);
+		//sort merged lists
+		Collections.sort(msgList, Collections.reverseOrder());
+		
 		HashMap<String, ConversationPreview> convPrevList = new HashMap<String, ConversationPreview>();
 
-		for (MessageContainer msg : inMsgList) {
+		for (MessageContainer msg : msgList) {
 			// Since they are in order, no need to check if next is more recent
 			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
 
@@ -303,7 +310,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 				ConversationPreview preview = new ConversationPreview(contact.getPhotoUri(),
 						contact.getDisplayName() != null ? contact
 								.getDisplayName() : msg.getPhoneNumber(),
-						msg.getBody(), msg.isRead() ? 0 : 1, msg.getDate(),
+						msg.getBody(), msg.isRead() || msg.getType() == MSG_TYPE_IN ? 0 : 1, msg.getDate(),
 						msg.getPhoneNumber(), msg.getContactId());
 				convPrevList.put(msg.getPhoneNumber(), preview);
 			} else {
@@ -312,42 +319,43 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 				existing.incremtNotReadCount(!msg.isRead());
 			}
 		}
-		for (MessageContainer msg : outMsgList) {
-			// Since they are in order, no need to check if next is more recent
-			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
-
-				ContactContainer contact = ContactsUtil
-						.getContactByPhoneNumber(context.getContentResolver(),
-								msg.getPhoneNumber());
-
-				ConversationPreview preview = new ConversationPreview(contact.getPhotoUri(),
-						contact.getDisplayName() != null ? contact
-								.getDisplayName() : msg.getPhoneNumber(),
-						msg.getBody(), 0, msg.getDate(), msg.getPhoneNumber(),
-						msg.getContactId());
-				convPrevList.put(msg.getPhoneNumber(), preview);
-			} else {
-				ConversationPreview existing = convPrevList.get(msg
-						.getPhoneNumber());
-				if (existing.getDate() < msg.getDate()) {
-					ConversationPreview preview = convPrevList.get(msg
-							.getPhoneNumber());
-					preview.setDate(msg.getDate());
-					preview.setPreviewText(msg.getBody());
-					preview.setPhoneNumber(msg.getPhoneNumber());
-					preview.setContactId(msg.getContactId());
-					preview.setNotReadCount(existing.getNotReadCount());
-
-					ContactContainer contact = ContactsUtil
-							.getContactByPhoneNumber(
-									context.getContentResolver(),
-									msg.getPhoneNumber());
-					preview.setContactName(contact.getDisplayName() != null ? contact
-							.getDisplayName() : msg.getPhoneNumber());
-					preview.setContactImgUri(contact.getPhotoUri());
-				}
-			}
-		}
+		
+//		for (MessageContainer msg : outMsgList) {
+//			// Since they are in order, no need to check if next is more recent
+//			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
+//
+//				ContactContainer contact = ContactsUtil
+//						.getContactByPhoneNumber(context.getContentResolver(),
+//								msg.getPhoneNumber());
+//
+//				ConversationPreview preview = new ConversationPreview(contact.getPhotoUri(),
+//						contact.getDisplayName() != null ? contact
+//								.getDisplayName() : msg.getPhoneNumber(),
+//						msg.getBody(), 0, msg.getDate(), msg.getPhoneNumber(),
+//						msg.getContactId());
+//				convPrevList.put(msg.getPhoneNumber(), preview);
+//			} else {
+//				ConversationPreview existing = convPrevList.get(msg
+//						.getPhoneNumber());
+//				if (existing.getDate() < msg.getDate()) {
+//					ConversationPreview preview = convPrevList.get(msg
+//							.getPhoneNumber());
+//					preview.setDate(msg.getDate());
+//					preview.setPreviewText(msg.getBody());
+//					preview.setPhoneNumber(msg.getPhoneNumber());
+//					preview.setContactId(msg.getContactId());
+//					preview.setNotReadCount(existing.getNotReadCount());
+//
+//					ContactContainer contact = ContactsUtil
+//							.getContactByPhoneNumber(
+//									context.getContentResolver(),
+//									msg.getPhoneNumber());
+//					preview.setContactName(contact.getDisplayName() != null ? contact
+//							.getDisplayName() : msg.getPhoneNumber());
+//					preview.setContactImgUri(contact.getPhotoUri());
+//				}
+//			}
+//		}
 		return convPrevList;
 	}
 

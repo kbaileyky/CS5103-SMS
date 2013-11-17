@@ -99,8 +99,8 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 					ContactContainer contact = ContactsUtil.getContactByPhoneNumber(context.getContentResolver(), msg.getPhoneNumber());
 					
 					msg.setPhoneNumber(contact.getPhoneNumber());
-					if(contact.getId()!=null && ContactsUtil.isInteger(contact.getId()))
-						msg.setContactId(Integer.parseInt(contact.getId()));
+					if(contact.getId()!=-1)
+						msg.setContactId(contact.getId());
 
 					Log.d("IncomingSMSReceiver",
 							"phoneNumber: " + msg.getPhoneNumber()
@@ -158,8 +158,9 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 		// Create Notification Manager
 		NotificationManager notificationmanager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
+		
 		// Build Notification with Notification Manager
-		notificationmanager.notify(msg.getContactId(), builder.getNotification());
+		notificationmanager.notify((int)msg.getContactId(), builder.getNotification());
 	}
 
 }

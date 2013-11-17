@@ -12,7 +12,7 @@ public class MessageContainer implements Comparable<MessageContainer> {
 
 	private long id;
 	private String phoneNumber;
-	private int contactId;
+	private long contactId;
 	private long date;
 	private String subject;
 	private String body;
@@ -140,7 +140,7 @@ public class MessageContainer implements Comparable<MessageContainer> {
 	 * @return for both incoming and outgoing messages, returns the contact id
 	 *         for the contact and not the user.
 	 */
-	public int getContactId() {
+	public long getContactId() {
 		return contactId;
 	}
 
@@ -149,7 +149,7 @@ public class MessageContainer implements Comparable<MessageContainer> {
 	 *            for both incoming and outgoing messages, represents the
 	 *            contact id for the contact and not the user.
 	 */
-	public void setContactId(int contactId) {
+	public void setContactId(long contactId) {
 		this.contactId = contactId;
 	}
 

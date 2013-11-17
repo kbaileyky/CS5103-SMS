@@ -20,5 +20,6 @@
     <string name="action_reply">Reply</string>
     <string name="action_forward">Forward</string>
     <string name="action_delete">Delete</string>
+    <string name="self_reference">Me</string>
 
 </resources>

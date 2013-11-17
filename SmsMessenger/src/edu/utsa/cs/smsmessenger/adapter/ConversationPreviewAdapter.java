@@ -5,7 +5,6 @@ import java.util.List;
 
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
-import edu.utsa.cs.smsmessenger.activity.ConversationsListActivity;
 import edu.utsa.cs.smsmessenger.model.ConversationPreview;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
@@ -16,7 +15,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -25,7 +23,6 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.RelativeLayout;
 
 /**
  * This class is used to adapter and fill a ListView with an ArrayList of
@@ -111,6 +108,8 @@ public class ConversationPreviewAdapter extends
 		// if contact photo uri is not null show the photo, else use default
 		if (preview.getContactImgUri() != null) {
 			contactImageView.setImageURI(Uri.parse(preview.getContactImgUri()));
+			if(contactImageView.getDrawable()==null)
+				contactImageView.setImageResource(R.drawable.hg_new_contact);
 		} else {
 			contactImageView.setImageResource(R.drawable.hg_contact);
 		}
@@ -145,6 +144,8 @@ public class ConversationPreviewAdapter extends
 					items = new CharSequence[] { "Add to contacts", "Delete",
 							"Cancel" };
 
+				// Create alert dialog options to Add phone number to contacts,
+				// Delete conversation, or Cancel
 				alertDialogBuilder.setItems(items,
 						new DialogInterface.OnClickListener() {
 							@Override
