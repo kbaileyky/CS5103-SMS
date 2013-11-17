@@ -109,13 +109,18 @@ public class MessageSearchContainerAdapter extends
 		cal.setTimeInMillis(message.getDate());
 		msgDateTextView.setText(sdf.format(cal.getTime()));
 
-		if (message.getType() == SmsMessageHandler.MSG_TYPE_IN
-				&& contact.getPhotoUri() != null) {
-			msgImageView.setImageURI(Uri.parse(contact.getPhotoUri()));
-			if (msgImageView.getDrawable() == null)
+		if (message.getType() == SmsMessageHandler.MSG_TYPE_IN) {
+			if (contact.getDisplayName() != null) {
+				if (contact.getPhotoUri() != null) {
+					msgImageView.setImageURI(Uri.parse(contact.getPhotoUri()));
+					if (msgImageView.getDrawable() == null)
+						msgImageView.setImageResource(R.drawable.hg_contact);
+				} else
+					msgImageView.setImageResource(R.drawable.hg_contact);
+			} else
 				msgImageView.setImageResource(R.drawable.hg_new_contact);
 		} else
-			msgImageView.setImageResource(R.drawable.hg_new_contact);
+			msgImageView.setImageResource(R.drawable.me_icon);
 
 		final MessageContainer finalMessage = message;
 		convertView.setOnClickListener(new OnClickListener() {

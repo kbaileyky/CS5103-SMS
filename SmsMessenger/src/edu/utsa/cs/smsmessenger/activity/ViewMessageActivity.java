@@ -92,10 +92,11 @@ public class ViewMessageActivity extends Activity {
 	private void updateUI() {
 
 		// Temporary - replace with contact name
-		setTitle( currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_OUT) ? getResources().getString(
-				R.string.self_reference) :
-				(currentContact.getDisplayName() != null ? currentContact
-				.getDisplayName() : currentMessage.getPhoneNumber()));
+		setTitle(currentMessage.getType()
+				.equals(SmsMessageHandler.MSG_TYPE_OUT) ? getResources()
+				.getString(R.string.self_reference) : (currentContact
+				.getDisplayName() != null ? currentContact.getDisplayName()
+				: currentMessage.getPhoneNumber()));
 
 		// Sets the color of the titlebar
 		// View titleView = getWindow().findViewById(android.R.id.title);
@@ -116,12 +117,20 @@ public class ViewMessageActivity extends Activity {
 
 		ImageView contactImageView = (ImageView) findViewById(R.id.msgImageView);
 
-		if(currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN) && currentContact.getPhotoUri()!=null)
-		{
-			contactImageView.setImageURI(Uri.parse(currentContact.getPhotoUri()));
-			if(contactImageView.getDrawable()==null)
+		if (currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
+			if (currentContact.getDisplayName() != null) {
+				if (currentContact.getPhotoUri() != null) {
+					contactImageView.setImageURI(Uri.parse(currentContact
+							.getPhotoUri()));
+					if (contactImageView.getDrawable() == null)
+						contactImageView
+								.setImageResource(R.drawable.hg_contact);
+				} else
+					contactImageView.setImageResource(R.drawable.hg_contact);
+			} else
 				contactImageView.setImageResource(R.drawable.hg_new_contact);
-		}
+		} else
+			contactImageView.setImageResource(R.drawable.me_icon);
 
 		rootTable = (TableLayout) findViewById(R.id.viewMsgTable);
 		// tableRow1
@@ -130,7 +139,8 @@ public class ViewMessageActivity extends Activity {
 		View root = rootTable.getRootView();
 
 		if (currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
-			root.setBackgroundColor(getResources().getColor(R.color.backroundColor));
+			root.setBackgroundColor(getResources().getColor(
+					R.color.backroundColor));
 		} else {
 			root.setBackgroundColor(getResources().getColor(R.color.RowColor1));
 		}

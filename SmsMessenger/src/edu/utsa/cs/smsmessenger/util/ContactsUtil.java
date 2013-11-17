@@ -125,9 +125,6 @@ public class ContactsUtil {
 				null);
 		if (cur != null) {
 			if (cur.moveToFirst()) {
-				for (String names : cur.getColumnNames()) {
-					Log.d("names: ", names);
-				}
 				String name = cur.getString(cur
 						.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
 				long id = cur.getLong(cur
@@ -230,5 +227,10 @@ public class ContactsUtil {
 		}
 		// only got here if we didn't return false
 		return true;
+	}
+	
+	public static String getStrippedPhoneNumber(String phoneNumber)
+	{
+		return phoneNumber.replaceAll("[^\\d]", "" );
 	}
 }

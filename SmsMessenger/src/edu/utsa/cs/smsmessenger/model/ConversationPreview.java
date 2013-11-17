@@ -12,8 +12,6 @@ package edu.utsa.cs.smsmessenger.model;
  */
 public class ConversationPreview implements Comparable<ConversationPreview>{
 
-	private String contactImgUri;
-	private String contactName;
 	private String previewText;
 	private String phoneNumber;
 	private long contactId;
@@ -33,12 +31,10 @@ public class ConversationPreview implements Comparable<ConversationPreview>{
 	 * Constructs a ConversationPreview with object fields set to the specified
 	 * values.
 	 */
-	public ConversationPreview(String contactImgUri, String contactName,
+	public ConversationPreview(
 			String previewText, int notReadCount, long date,
 			String phoneNumber, long contactId) {
 		super();
-		this.contactImgUri = contactImgUri;
-		this.contactName = contactName;
 		this.previewText = previewText;
 		this.notReadCount = notReadCount;
 		this.date = date;
@@ -78,39 +74,6 @@ public class ConversationPreview implements Comparable<ConversationPreview>{
 	 */
 	public void setContactId(long contactId) {
 		this.contactId = contactId;
-	}
-
-	/**
-	 * @return returns the image uri of the contact, and not the user, in the
-	 *         conversation.
-	 */
-	public String getContactImgUri() {
-		return contactImgUri;
-	}
-
-	/**
-	 * @param contactImgSrc
-	 *            represents the image uri of the contact, and not the user, in
-	 *            the conversation.
-	 */
-	public void setContactImgUri(String contactImgUri) {
-		this.contactImgUri = contactImgUri;
-	}
-
-	/**
-	 * @return returns the contact name of the contact in the conversation.
-	 */
-	public String getContactName() {
-		return contactName;
-	}
-
-	/**
-	 * @param contactName
-	 *            represents the contact name of the contact in the
-	 *            conversation.
-	 */
-	public void setContactName(String contactName) {
-		this.contactName = contactName;
 	}
 
 	/**
@@ -176,8 +139,7 @@ public class ConversationPreview implements Comparable<ConversationPreview>{
 
 	@Override
 	public String toString() {
-		return "ConversationPreview [contactImgUri=" + contactImgUri
-				+ ", contactName=" + contactName + ", previewText="
+		return "ConversationPreview [previewText="
 				+ previewText + ", phoneNumber=" + phoneNumber + ", contactId="
 				+ contactId + ", date=" + date + ", notReadCount="
 				+ notReadCount + "]";

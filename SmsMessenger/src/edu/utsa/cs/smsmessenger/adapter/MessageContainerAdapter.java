@@ -21,17 +21,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.activity.ViewMessageActivity;
+import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
 /**
  * This class is used to adapter and fill a ListView with an ArrayList of
  * MessageContainer objects
- *
+ * 
  * @author Michael Madrigal
  * @version 1.0
  * @since 1.0
- *
+ * 
  */
 public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 
@@ -39,8 +40,7 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 	private ArrayList<MessageContainer> objects;
 	private SimpleDateFormat sdf;
 	private SmsMessageHandler smsMessageHandler;
-	private String contactUri;
-	private String userUri;
+	private ContactContainer contact;
 
 	private class DeleteMessageFromDbTask extends
 			AsyncTask<MessageContainer, Void, Void> {
@@ -85,13 +85,11 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 	}
 
 	public MessageContainerAdapter(Context context, int textViewResourceId,
-			String contactUri, String userUri,
-			ArrayList<MessageContainer> objects) {
+			ContactContainer contact, ArrayList<MessageContainer> objects) {
 		super(context, textViewResourceId, objects);
 		this.context = context;
 		this.objects = objects;
-		this.contactUri = contactUri;
-		this.userUri = userUri;
+		this.contact = contact;
 		this.sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
 	}
 
@@ -123,21 +121,23 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 		msgDateTextView.setText(sdf.format(cal.getTime()));
 
 		if (message.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
-			if (contactUri != null){
-				msgImageView.setImageURI(Uri.parse(contactUri));
-				if(msgImageView.getDrawable()==null)
-					msgImageView.setImageResource(R.drawable.hg_new_contact);
-			}
-			else {
-				msgImageView.setImageResource(R.drawable.hg_contact);
-			}
-			
-			msgBodyTextView.setBackgroundResource(R.drawable.speech_bubble_left);
-			
-			
+			if (contact.getDisplayName() != null) {
+				if (contact.getPhotoUri() != null) {
+					msgImageView.setImageURI(Uri.parse(contact.getPhotoUri()));
+					if (msgImageView.getDrawable() == null)
+						msgImageView.setImageResource(R.drawable.hg_contact);
+				} else
+					msgImageView.setImageResource(R.drawable.hg_contact);
+			} else
+				msgImageView.setImageResource(R.drawable.hg_new_contact);
+
+			msgBodyTextView
+					.setBackgroundResource(R.drawable.speech_bubble_left);
+
 		} else {
 			msgImageView.setImageResource(R.drawable.me_icon);
-			msgBodyTextView.setBackgroundResource(R.drawable.speech_bubble_right);
+			msgBodyTextView
+					.setBackgroundResource(R.drawable.speech_bubble_right);
 
 		}
 

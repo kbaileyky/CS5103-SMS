@@ -27,5 +27,7 @@
     <string name="reply_toast">Reply…</string>
     <string name="forward_toast">Forward…</string>
     <string name="delete_toast">Deleting…</string>
+    <string name="message_length_error">Message length is limited to %s characters.</string>
+    <string name="text_ratio">%1$d/%2$d</string>
 
 </resources>
