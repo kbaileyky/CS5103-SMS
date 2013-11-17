@@ -8,29 +8,21 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewParent;
-import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.ImageView;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-import edu.utsa.cs.smsmessenger.adapter.MessageContainerAdapter;
 import edu.utsa.cs.smsmessenger.model.ContactContainer;
-import edu.utsa.cs.smsmessenger.model.ConversationPreview;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
@@ -160,7 +152,7 @@ public class ViewMessageActivity extends Activity {
 
 		switch (item.getItemId()) {
 		case R.id.action_forward:
-			msg = Toast.makeText(this, "Forward...", Toast.LENGTH_LONG);
+			msg = Toast.makeText(this, R.string.forward_toast, Toast.LENGTH_LONG);
 			msg.show();
 
 			Intent forwardIntent = new Intent(this,// Create intent for forward
@@ -174,7 +166,7 @@ public class ViewMessageActivity extends Activity {
 
 			break;
 		case R.id.action_reply:
-			msg = Toast.makeText(this, "Reply...", Toast.LENGTH_LONG);
+			msg = Toast.makeText(this, R.string.reply_toast, Toast.LENGTH_LONG);
 			msg.show();
 
 			Intent replyIntent = new Intent(this, NewConversationActivity.class); // Create
@@ -213,10 +205,10 @@ public class ViewMessageActivity extends Activity {
 				};
 
 				AlertDialog.Builder b = new AlertDialog.Builder(this);
-				b.setTitle("Are you sure you want to delete this message?");
-				b.setPositiveButton("OK", DeleteOnClick);
+				b.setTitle(R.string.delete_msg_confirmation);
+				b.setPositiveButton(R.string.acknowlege_descision, DeleteOnClick);
 
-				b.setNegativeButton("CANCEL", DeleteOnClick);
+				b.setNegativeButton(R.string.decline_desicion, DeleteOnClick);
 				b.create().show();
 
 			} catch (Exception x) {
@@ -231,7 +223,7 @@ public class ViewMessageActivity extends Activity {
 	}
 
 	private void deleteMessage() {
-		Toast msg = Toast.makeText(this, "Deleting...", Toast.LENGTH_LONG);
+		Toast msg = Toast.makeText(this, R.string.delete_toast, Toast.LENGTH_LONG);
 		msg.show();
 
 		MessageContainer[] msgArr = { currentMessage };
@@ -258,9 +250,9 @@ public class ViewMessageActivity extends Activity {
 			curScale = 0.1f;
 		}
 
-		newsize = (12 * curScale);
+		newsize = (12 * curScale); //12 is the baseline font size - all alterations will be relative to this
 
-		if (newsize < 9) {
+		if (newsize < 9) { 
 			newsize = 9;
 		}
 
