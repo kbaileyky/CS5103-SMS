@@ -106,8 +106,10 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 							"phoneNumber: " + msg.getPhoneNumber()
 									+ "; message: " + msg.getBody());
 
-					Toast toast = Toast.makeText(context, "New message from: "
-							+ (contact.getDisplayName()!=null?contact.getDisplayName():msg.getPhoneNumber()), Toast.LENGTH_LONG);
+					String notificationStr = String.format(context.getResources().getString(R.string.message_recevied_notification), 
+							(contact.getDisplayName()!=null?contact.getDisplayName():msg.getPhoneNumber()));
+					
+					Toast toast = Toast.makeText(context, notificationStr, Toast.LENGTH_LONG);
 					toast.show();
 
 					newMsgList.add(msg);
@@ -145,9 +147,12 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 		PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 
+		String notificationStr = String.format(context.getResources().getString(R.string.message_recevied_notification), 
+				(contact.getDisplayName()!=null?contact.getDisplayName():msg.getPhoneNumber()));
+		
 		// Create Notification
 		Notification.Builder builder = new Notification.Builder(context)
-				.setContentTitle("New message from: " + contact.getDisplayName()!=null?contact.getDisplayName():msg.getPhoneNumber())
+				.setContentTitle(notificationStr)
 				.setContentText(msg.getBody())
 				.setSmallIcon(R.drawable.hg_launcher_icon).setContentIntent(pIntent)
 				.setAutoCancel(true)

@@ -19,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import edu.utsa.cs.smsmessenger.R;
-import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
 import edu.utsa.cs.smsmessenger.activity.ViewMessageActivity;
 import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
@@ -119,7 +118,7 @@ public class MessageSearchContainerAdapter extends
 				} else
 					msgImageView.setImageResource(R.drawable.hg_contact);
 			} else
-				msgImageView.setImageResource(R.drawable.hg_contact);
+				msgImageView.setImageResource(R.drawable.hg_new_contact);
 		} else
 			msgImageView.setImageResource(R.drawable.me_icon);
 

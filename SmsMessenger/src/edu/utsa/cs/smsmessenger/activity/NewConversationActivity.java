@@ -70,13 +70,17 @@ public class NewConversationActivity extends Activity {
 			String message = newMessageEditText.getText().toString();
 
 			if (ContactsUtil.isAPhoneNumber(number)) {
-				sendSmsMessage(ContactsUtil.getStrippedPhoneNumber(number), message);
+				sendSmsMessage(ContactsUtil.getStrippedPhoneNumber(number),
+						message);
 			} else {
 				String phoneNumber = ContactsUtil.getPhoneNumberByContactName(
 						getActivity(), number);
 				if (phoneNumber != null) {
 					if (!sent) {
-						sendSmsMessage(ContactsUtil.getStrippedPhoneNumber(phoneNumber), message);
+						sendSmsMessage(
+								ContactsUtil
+										.getStrippedPhoneNumber(phoneNumber),
+								message);
 					}
 					Log.d("NewConversationActivity", "" + sent);
 				}
@@ -157,23 +161,23 @@ public class NewConversationActivity extends Activity {
 		}
 	}
 
-//	private class UpdateMessageToDbTask extends
-//			AsyncTask<MessageContainer, Void, Void> {
-//		@Override
-//		protected Void doInBackground(MessageContainer... objects) {
-//			for (MessageContainer msg : objects)
-//				getSmsMessageHandler().updateSmsMessage(msg);
-//			getSmsMessageHandler().close();
-//			return null;
-//		}
-//
-//		@Override
-//		protected void onPostExecute(Void result) {
-//			Intent newMsgIntent = new Intent(
-//					SmsMessageHandler.UPDATE_MSG_INTENT);
-//			getContext().sendBroadcast(newMsgIntent);
-//		}
-//	}
+	// private class UpdateMessageToDbTask extends
+	// AsyncTask<MessageContainer, Void, Void> {
+	// @Override
+	// protected Void doInBackground(MessageContainer... objects) {
+	// for (MessageContainer msg : objects)
+	// getSmsMessageHandler().updateSmsMessage(msg);
+	// getSmsMessageHandler().close();
+	// return null;
+	// }
+	//
+	// @Override
+	// protected void onPostExecute(Void result) {
+	// Intent newMsgIntent = new Intent(
+	// SmsMessageHandler.UPDATE_MSG_INTENT);
+	// getContext().sendBroadcast(newMsgIntent);
+	// }
+	// }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -184,7 +188,7 @@ public class NewConversationActivity extends Activity {
 		newRecipientTextView.setAdapter(new AutoContactFillAdapter(this));
 		newRecipientTextView
 				.setOnFocusChangeListener(recipientTextFieldFocusListener);
-		
+
 		newMessageEditText = (EditText) findViewById(R.id.newMsgTextEditText);
 
 		final String charCountFormat = getResources().getString(
@@ -285,18 +289,19 @@ public class NewConversationActivity extends Activity {
 		}
 		MessageContainer messageContainer = new MessageContainer(
 				SmsMessageHandler.MSG_TYPE_OUT);
-		ContactContainer contact = ContactsUtil.getContactByPhoneNumber(getContentResolver(), phoneNumber);
+		ContactContainer contact = ContactsUtil.getContactByPhoneNumber(
+				getContentResolver(), phoneNumber);
 		messageContainer.setContactId(contact.getId());
 		messageContainer.setPhoneNumber(phoneNumber);
 		messageContainer.setBody(message);
-		
+
 		final MessageContainer finalMessageContainer = messageContainer;
 
 		PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(
 				SmsMessageHandler.SMS_SENT), 0);
 
-		//PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
-		//		new Intent(SmsMessageHandler.SMS_DELIVERED), 0);
+		// PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+		// new Intent(SmsMessageHandler.SMS_DELIVERED), 0);
 
 		// ---when the SMS has been sent---
 		registerReceiver(new BroadcastReceiver() {
@@ -304,7 +309,10 @@ public class NewConversationActivity extends Activity {
 			public void onReceive(Context context, Intent intent) {
 				switch (getResultCode()) {
 				case Activity.RESULT_OK:
-					Toast.makeText(getBaseContext(), "SMS sent",
+					Toast.makeText(
+							getBaseContext(),
+							context.getResources().getString(
+									R.string.sms_message_sent),
 							Toast.LENGTH_SHORT).show();
 					finalMessageContainer.setDate(Calendar.getInstance()
 							.getTimeInMillis());
@@ -315,20 +323,26 @@ public class NewConversationActivity extends Activity {
 					saveThread.execute(msgArr);
 					break;
 				case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-					Toast.makeText(getBaseContext(), "Generic failure",
+					Toast.makeText(
+							getBaseContext(),
+							context.getResources().getString(
+									R.string.sms_send_failed),
 							Toast.LENGTH_SHORT).show();
 					break;
 				case SmsManager.RESULT_ERROR_NO_SERVICE:
-					Toast.makeText(getBaseContext(), "No service",
-							Toast.LENGTH_SHORT).show();
-					break;
 				case SmsManager.RESULT_ERROR_NULL_PDU:
-					Toast.makeText(getBaseContext(), "Null PDU",
+					Toast.makeText(
+							getBaseContext(),
+							context.getResources().getString(
+									R.string.sms_no_service),
 							Toast.LENGTH_SHORT).show();
 					break;
 				case SmsManager.RESULT_ERROR_RADIO_OFF:
-					Toast.makeText(getBaseContext(), "Radio off",
-							Toast.LENGTH_SHORT).show();
+					Toast.makeText(
+							getBaseContext(),
+							context.getResources().getString(
+									R.string.sms_no_signal), Toast.LENGTH_SHORT)
+							.show();
 					break;
 				}
 				sendNewMessageButton.setEnabled(true);
@@ -337,7 +351,8 @@ public class NewConversationActivity extends Activity {
 		}, new IntentFilter(SmsMessageHandler.SMS_SENT));
 
 		// ---when the SMS has been delivered---
-		//registerReceiver(new SmsDeliveredReceiver(), new IntentFilter(SmsMessageHandler.SMS_DELIVERED));
+		// registerReceiver(new SmsDeliveredReceiver(), new
+		// IntentFilter(SmsMessageHandler.SMS_DELIVERED));
 
 		SmsManager sms = SmsManager.getDefault();
 		sms.sendTextMessage(phoneNumber, null, message, sentPI, null);
