@@ -24,7 +24,7 @@ import android.util.Log;
  * @since 1.0
  * 
  */
-  
+
 public class ContactsUtil {
 	/**
 	 * This method retrieves all literal string contact names from the phone
@@ -35,7 +35,8 @@ public class ContactsUtil {
 	 * @return returns an ArrayList of String Contact names for the current
 	 *         Phone Activity.
 	 */
-	public static List<String> getAllContactNames(ContentResolver contentResolver) {
+	public static List<String> getAllContactNames(
+			ContentResolver contentResolver) {
 		List<String> lContactNamesList = new ArrayList<String>();
 		try {
 			// Get all Contacts
@@ -70,16 +71,16 @@ public class ContactsUtil {
 	 */
 	public static ContactContainer getContactById(
 			ContentResolver contentResolver, long contactId) {
-		
+
 		Log.d("getContactById", "id = " + contactId);
-		
+
 		ContactContainer contact = new ContactContainer();
 		if (contactId == -1)
 			return contact;
-		
+
 		String strId = "" + contactId;
 		contact.setId(contactId);
-		
+
 		Cursor cursor = contentResolver.query(
 				ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
 				ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
@@ -115,7 +116,7 @@ public class ContactsUtil {
 	 */
 	public static ContactContainer getContactByPhoneNumber(
 			ContentResolver contentResolver, String phoneNumber) {
-		
+
 		ContactContainer contact = new ContactContainer();
 		contact.setPhoneNumber(phoneNumber);
 		Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI,
@@ -131,8 +132,8 @@ public class ContactsUtil {
 						.getColumnIndex(ContactsContract.Data._ID));
 				String photoUri = cur.getString(cur
 						.getColumnIndex(ContactsContract.Data.PHOTO_URI));
-				
-				//Set contact data
+
+				// Set contact data
 				contact.setId(id);
 				contact.setDisplayName(name);
 				contact.setPhotoUri(photoUri);
@@ -143,29 +144,31 @@ public class ContactsUtil {
 	}
 
 	/**
-	 * This static method takes a String Contact Name and retrieves the
-	 * Phone Number.
+	 * This static method takes a String Contact Name and retrieves the Phone
+	 * Number.
 	 * 
 	 * @param contentResolver
-	 * 			  The ContentResolver to allow querying information from
-	 * 			  the phone contacts.
+	 *            The ContentResolver to allow querying information from the
+	 *            phone contacts.
 	 * @param contactName
 	 *            the contact name used for this query.
-	 * @return returns the String phone number stored on the phone matching
-	 * 		   the contact
+	 * @return returns the String phone number stored on the phone matching the
+	 *         contact
 	 */
-	public static String getPhoneNumberByContactName(ContentResolver contentResolver,
-			String contactName) {
+	public static String getPhoneNumberByContactName(
+			ContentResolver contentResolver, String contactName) {
 		String ret = null;
-		String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" like'%" + contactName +"%'";
-		String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER};
-		Cursor c = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-		        projection, selection, null, null);
+		String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+				+ " like'%" + contactName + "%'";
+		String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER };
+		Cursor c = contentResolver.query(
+				ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection,
+				selection, null, null);
 		if (c.moveToFirst()) {
-		    ret = c.getString(0);
+			ret = c.getString(0);
 		}
 		c.close();
-		
+
 		return ret;
 	}
 
@@ -186,7 +189,8 @@ public class ContactsUtil {
 		return false;
 	}
 
-	public static boolean isAValidPhoneNumber(ContentResolver contentResolver, String contact) {
+	public static boolean isAValidPhoneNumber(ContentResolver contentResolver,
+			String contact) {
 		if (isAPhoneNumber(contact)) {
 			return true;
 		} else if (getPhoneNumberByContactName(contentResolver, contact) != null) {
@@ -195,19 +199,14 @@ public class ContactsUtil {
 			return false;
 		}
 	}
-/*
-	public static boolean isInteger(String s) {
-		try {
-			Integer.parseInt(s);
-		} catch (NumberFormatException e) {
-			return false;
-		}
-		// only got here if we didn't return false
-		return true;
-	}*/
-	
-	public static String getStrippedPhoneNumber(String phoneNumber)
-	{
-		return phoneNumber.replaceAll("[^\\d]", "" );
+
+	/*
+	 * public static boolean isInteger(String s) { try { Integer.parseInt(s); }
+	 * catch (NumberFormatException e) { return false; } // only got here if we
+	 * didn't return false return true; }
+	 */
+
+	public static String getStrippedPhoneNumber(String phoneNumber) {
+		return phoneNumber.replaceAll("[^\\d]", "");
 	}
 }
