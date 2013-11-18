@@ -90,7 +90,9 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 		this.context = context;
 		this.objects = objects;
 		this.contact = contact;
-		this.sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
+		this.sdf = new SimpleDateFormat(context.getResources().getString(
+				R.string.date_time_format), context.getResources()
+				.getConfiguration().locale);
 	}
 
 	@Override
@@ -171,7 +173,6 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 					viewMsgIntent.putExtra("msgBody", finalMessage.getBody());
 					viewMsgIntent.putExtra("msgType", finalMessage.getType());
 					viewMsgIntent.putExtra("msgID", finalMessage.getId());
-
 
 					context.startActivity(viewMsgIntent);
 
