@@ -84,7 +84,7 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 							SmsMessageHandler.MSG_TYPE_IN);
 					msg.setPhoneNumber(currentMessage
 							.getDisplayOriginatingAddress());
-					msg.setPhoneNumber(msg.getPhoneNumber().replaceAll("[^\\d]", "" ));
+					msg.setPhoneNumber(ContactsUtil.getStrippedPhoneNumber(msg.getPhoneNumber()));
 					msg.setBody(currentMessage.getDisplayMessageBody());
 
 					// This is how it should be done, but emulator times are all
@@ -144,8 +144,6 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 
 		PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
-
-		// TODO - display contact name in notification if available
 
 		// Create Notification
 		Notification.Builder builder = new Notification.Builder(context)

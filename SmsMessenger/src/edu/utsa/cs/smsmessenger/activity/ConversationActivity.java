@@ -19,12 +19,15 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -43,6 +46,7 @@ public class ConversationActivity extends Activity {
 	private SmsMessageHandler smsMessageHandler;
 	private MessageContainerAdapter messageContainerAdapter;
 	private EditText messageEditText;
+	private TextView messageCharCountTextView;
 	private ImageButton sendMessageImageButton;
 	private ContactContainer contact;
 
@@ -65,7 +69,6 @@ public class ConversationActivity extends Activity {
 			message = message.trim();
 			if (!message.isEmpty()) {
 				sendSmsMessage(contactPhoneNumber, message);
-				sendMessageImageButton.setEnabled(false);
 			}
 		}
 	};
@@ -96,7 +99,7 @@ public class ConversationActivity extends Activity {
 		Bundle extras = getIntent().getExtras();
 		contactPhoneNumber = extras
 				.getString(SmsMessageHandler.COL_NAME_PHONE_NUMBER);
-		contactId = extras.getInt(SmsMessageHandler.COL_NAME_CONTACT_ID);
+		contactId = extras.getLong(SmsMessageHandler.COL_NAME_CONTACT_ID);
 
 		contact = ContactsUtil.getContactByPhoneNumber(
 				this.getContentResolver(), contactPhoneNumber);
@@ -105,7 +108,35 @@ public class ConversationActivity extends Activity {
 				: contactPhoneNumber);
 
 		messageEditText = (EditText) findViewById(R.id.msgEditText);
-		
+
+		final String charCountFormat = getResources().getString(
+				R.string.text_ratio);
+		messageCharCountTextView = (TextView) findViewById(R.id.msgCharCountTextView);
+		messageCharCountTextView.setText(String.format(charCountFormat, 0,
+				SmsMessageHandler.SMS_MESSAGE_LENGTH));
+		messageEditText.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				String message = messageEditText.getText().toString();
+				messageCharCountTextView.setText(String.format(charCountFormat,
+						message.length(), SmsMessageHandler.SMS_MESSAGE_LENGTH));
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 		sendMessageImageButton = (ImageButton) findViewById(R.id.sendMsgImageButton);
 		sendMessageImageButton.setOnClickListener(sendMessageOnClickListener);
 
@@ -129,7 +160,7 @@ public class ConversationActivity extends Activity {
 	private void closeExistingNotifications() {
 		// Close notifications for this user
 		NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		notificationmanager.cancel((int)contactId);
+		notificationmanager.cancel((int) contactId);
 	}
 
 	public void fillConversationListView() {
@@ -139,29 +170,28 @@ public class ConversationActivity extends Activity {
 		getSmsMessageHandler().close();
 
 		messageContainerAdapter = new MessageContainerAdapter(this,
-				R.layout.conversation_from_message_item, contact.getPhotoUri(),
-				null, msgList);
+				R.layout.conversation_from_message_item, contact, msgList);
 		Log.d("ConversationActivity", "messageContainerAdapter: "
 				+ messageContainerAdapter);
 		Log.d("ConversationActivity", "conversationListView: "
 				+ getConversationListView());
 		getConversationListView().setAdapter(messageContainerAdapter);
-		
+
 		scrollListViewToBottom();
 
 	}
 
-	private void scrollListViewToBottom()
-	{
+	private void scrollListViewToBottom() {
 		getConversationListView().setSelection(
 				getConversationListView().getCount() - 1);
 	}
+
 	public ListView getConversationListView() {
-		if (conversationListView == null)
-		{
+		if (conversationListView == null) {
 			conversationListView = (ListView) findViewById(R.id.conversationListView);
 
-			conversationListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
+			conversationListView
+					.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
 			conversationListView.setStackFromBottom(true);
 		}
 		return conversationListView;
@@ -180,6 +210,20 @@ public class ConversationActivity extends Activity {
 	}
 
 	public void sendSmsMessage(final String phoneNumber, final String message) {
+
+		sendMessageImageButton.setEnabled(false);
+		if (message.length() > SmsMessageHandler.SMS_MESSAGE_LENGTH) {
+			Toast.makeText(
+					this,
+					String.format(
+							getResources().getString(
+									R.string.message_length_error),
+							SmsMessageHandler.SMS_MESSAGE_LENGTH),
+					Toast.LENGTH_LONG).show();
+			sendMessageImageButton.setEnabled(true);
+			return;
+		}
+
 		final MessageContainer messageContainer = new MessageContainer(
 				SmsMessageHandler.MSG_TYPE_OUT);
 		messageContainer.setPhoneNumber(phoneNumber);
@@ -257,5 +301,5 @@ public class ConversationActivity extends Activity {
 	private Context getContext() {
 		return this;
 	}
-	
+
 }

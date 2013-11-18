@@ -43,7 +43,7 @@
                 android:id="@+id/msgBodyTextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
+                android:textSize="14sp"
                 android:text="TextView ad a dasdf asdfasd fsdf a sdasd asd asd asd fasdfasd asd asd asdf asd asd asd asd asd asd asd asdasd as asdas as asdas as asdasdfasdf asd asd asdasd asd ada sdasd asdasdasdfasdasd" />
 
             <TextView
@@ -51,7 +51,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 android:text="9/26/2013 10:30am" />
 
         </LinearLayout>

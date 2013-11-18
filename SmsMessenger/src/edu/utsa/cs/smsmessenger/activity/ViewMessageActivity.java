@@ -102,6 +102,7 @@ public class ViewMessageActivity extends Activity {
 				: currentMessage.getPhoneNumber()));
 
 
+
 		txtMsgBody = (TextView) findViewById(R.id.msgBodyTextView);
 		txtMsgBody.setText(currentMessage.getBody());
 
@@ -112,6 +113,7 @@ public class ViewMessageActivity extends Activity {
 		ImageView contactImageView = (ImageView) findViewById(R.id.msgImageView);
 
 		if (currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
+
 			if (currentContact.getPhotoUri() != null) {
 				contactImageView.setImageURI(Uri.parse(currentContact
 						.getPhotoUri()));
@@ -124,6 +126,7 @@ public class ViewMessageActivity extends Activity {
 		} else {
 			contactImageView.setImageResource(R.drawable.me_icon);
 		}
+
 
 		rootTable = (TableLayout) findViewById(R.id.viewMsgTable);
 		// tableRow1

@@ -5,7 +5,9 @@ import java.util.List;
 
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
+import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.ConversationPreview;
+import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
 import android.app.AlertDialog;
@@ -94,9 +96,11 @@ public class ConversationPreviewAdapter extends
 
 		// Get the ConversationPreview object
 		ConversationPreview preview = objects.get(position);
-
+		ContactContainer contact = ContactsUtil
+		.getContactByPhoneNumber(context.getContentResolver(),
+				preview.getPhoneNumber());
+		
 		// Set the view item values
-		contactNameTextView.setText(preview.getContactName());
 		previewTextView.setText(preview.getPreviewText());
 		countTextView.setText(String.valueOf(preview.getNotReadCount()));
 
@@ -105,16 +109,26 @@ public class ConversationPreviewAdapter extends
 		if (preview.getNotReadCount() < 1)
 			countTextView.setVisibility(View.INVISIBLE);
 
-		// if contact photo uri is not null show the photo, else use default
-		if (preview.getContactImgUri() != null) {
-			contactImageView.setImageURI(Uri.parse(preview.getContactImgUri()));
-			if(contactImageView.getDrawable()==null)
-				contactImageView.setImageResource(R.drawable.hg_new_contact);
-		} else {
-			contactImageView.setImageResource(R.drawable.hg_contact);
+		if(contact.getDisplayName()!=null)
+		{
+			contactNameTextView.setText(contact.getDisplayName());
+			if (contact.getPhotoUri() != null) 
+			{
+				contactImageView.setImageURI(Uri.parse(contact.getPhotoUri()));
+				if(contactImageView.getDrawable()==null)
+					contactImageView.setImageResource(R.drawable.hg_contact);
+			} 
+			else
+				contactImageView.setImageResource(R.drawable.hg_contact);
+		}
+		else
+		{
+			contactNameTextView.setText(contact.getPhoneNumber());
+			contactImageView.setImageResource(R.drawable.hg_new_contact);
 		}
 
 		final ConversationPreview finalPreview = preview;
+		final ContactContainer finalContact = contact;
 		final TextView finalCountTextView = countTextView;
 
 		convertView.setOnClickListener(new OnClickListener() {
@@ -138,7 +152,7 @@ public class ConversationPreviewAdapter extends
 				// If contact is invalid, add option to create contact for phone
 				// number
 				final CharSequence[] items;
-				if (finalPreview.getContactId() != -1)
+				if (finalContact.getDisplayName() != null)
 					items = new CharSequence[] { "Delete", "Cancel" };
 				else
 					items = new CharSequence[] { "Add to contacts", "Delete",
@@ -153,7 +167,7 @@ public class ConversationPreviewAdapter extends
 									int which) {
 								switch (which) {
 								case 0:
-									if (finalPreview.getContactId() != -1) {
+									if (finalContact.getDisplayName() != null) {
 										ConversationPreview[] convArr = { finalPreview };
 										DeleteConversationFromDbTask deleteThread = new DeleteConversationFromDbTask();
 										deleteThread.execute(convArr);
@@ -168,7 +182,7 @@ public class ConversationPreviewAdapter extends
 									}
 									break;
 								case 1:
-									if (finalPreview.getContactId() != -1) {
+									if (finalContact.getDisplayName() != null) {
 										dialog.cancel();
 									} else {
 										ConversationPreview[] convArr = { finalPreview };

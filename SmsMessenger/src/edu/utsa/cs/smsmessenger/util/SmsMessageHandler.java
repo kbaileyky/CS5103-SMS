@@ -27,6 +27,9 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 	public static final String UPDATE_MSG_INTENT = "edu.utsa.cs.smsmessenger.UPDATE_MSG_INTENT";
 
+	//Message Characteristics
+	public static final int SMS_MESSAGE_LENGTH = 160;
+	
 	// Message status
 	public static final String SMS_DRAFT = "SMS_DRAFT";
 	public static final String SMS_SENT = "SMS_SENT";
@@ -303,13 +306,11 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 			// Since they are in order, no need to check if next is more recent
 			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
 
-				ContactContainer contact = ContactsUtil
-						.getContactByPhoneNumber(context.getContentResolver(),
-								msg.getPhoneNumber());
+//				ContactContainer contact = ContactsUtil
+//						.getContactByPhoneNumber(context.getContentResolver(),
+//								msg.getPhoneNumber());
 
-				ConversationPreview preview = new ConversationPreview(contact.getPhotoUri(),
-						contact.getDisplayName() != null ? contact
-								.getDisplayName() : msg.getPhoneNumber(),
+				ConversationPreview preview = new ConversationPreview(
 						msg.getBody(), msg.isRead() || msg.getType() == MSG_TYPE_IN ? 0 : 1, msg.getDate(),
 						msg.getPhoneNumber(), msg.getContactId());
 				convPrevList.put(msg.getPhoneNumber(), preview);
