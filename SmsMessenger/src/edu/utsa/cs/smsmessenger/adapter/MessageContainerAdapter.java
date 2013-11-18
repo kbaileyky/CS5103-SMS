@@ -171,6 +171,7 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 					viewMsgIntent.putExtra("msgBody", finalMessage.getBody());
 					viewMsgIntent.putExtra("msgType", finalMessage.getType());
 					viewMsgIntent.putExtra("msgID", finalMessage.getId());
+					viewMsgIntent.putExtra("contactURI", contactUri);
 
 					context.startActivity(viewMsgIntent);
 

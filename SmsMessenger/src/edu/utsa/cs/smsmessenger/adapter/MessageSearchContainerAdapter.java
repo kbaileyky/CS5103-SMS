@@ -113,9 +113,9 @@ public class MessageSearchContainerAdapter extends
 				&& contact.getPhotoUri() != null) {
 			msgImageView.setImageURI(Uri.parse(contact.getPhotoUri()));
 			if (msgImageView.getDrawable() == null)
-				msgImageView.setImageResource(R.drawable.hg_new_contact);
+				msgImageView.setImageResource(R.drawable.hg_contact);
 		} else
-			msgImageView.setImageResource(R.drawable.hg_new_contact);
+			msgImageView.setImageResource(R.drawable.hg_contact);
 
 		final MessageContainer finalMessage = message;
 		convertView.setOnClickListener(new OnClickListener() {

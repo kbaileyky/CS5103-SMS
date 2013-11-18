@@ -39,7 +39,10 @@ public class ViewMessageActivity extends Activity {
 												// current message being viewed
 	private SmsMessageHandler smsMessageHandler; // /handler used to the delete
 													// the message if chosen
-	private Context context; // The
+	private Context context; // Context - this - used for deleting messages
+
+	private String contactURI; // string used to get the contact image from the
+								// contacts app
 
 	// Touch event related variables
 	int touchState;
@@ -91,21 +94,13 @@ public class ViewMessageActivity extends Activity {
 
 	private void updateUI() {
 
-		// Temporary - replace with contact name
-		setTitle( currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_OUT) ? getResources().getString(
-				R.string.self_reference) :
-				(currentContact.getDisplayName() != null ? currentContact
-				.getDisplayName() : currentMessage.getPhoneNumber()));
 
-		// Sets the color of the titlebar
-		// View titleView = getWindow().findViewById(android.R.id.title);
-		// if (titleView != null) {
-		// ViewParent parent = titleView.getParent();
-		// if (parent != null && (parent instanceof View)) {
-		// View parentView = (View)parent;
-		// parentView.setBackgroundColor(getResources().getColor(R.color.titlebarColor));
-		// }
-		// }
+		setTitle(currentMessage.getType()
+				.equals(SmsMessageHandler.MSG_TYPE_OUT) ? getResources()
+				.getString(R.string.self_reference) : (currentContact
+				.getDisplayName() != null ? currentContact.getDisplayName()
+				: currentMessage.getPhoneNumber()));
+
 
 		txtMsgBody = (TextView) findViewById(R.id.msgBodyTextView);
 		txtMsgBody.setText(currentMessage.getBody());
@@ -116,11 +111,18 @@ public class ViewMessageActivity extends Activity {
 
 		ImageView contactImageView = (ImageView) findViewById(R.id.msgImageView);
 
-		if(currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN) && currentContact.getPhotoUri()!=null)
-		{
-			contactImageView.setImageURI(Uri.parse(currentContact.getPhotoUri()));
-			if(contactImageView.getDrawable()==null)
-				contactImageView.setImageResource(R.drawable.hg_new_contact);
+		if (currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
+			if (currentContact.getPhotoUri() != null) {
+				contactImageView.setImageURI(Uri.parse(currentContact
+						.getPhotoUri()));
+				if (contactImageView.getDrawable() == null) {
+					contactImageView.setImageResource(R.drawable.hg_contact);
+				}
+			} else {
+				contactImageView.setImageResource(R.drawable.hg_contact);
+			}
+		} else {
+			contactImageView.setImageResource(R.drawable.me_icon);
 		}
 
 		rootTable = (TableLayout) findViewById(R.id.viewMsgTable);
@@ -130,7 +132,8 @@ public class ViewMessageActivity extends Activity {
 		View root = rootTable.getRootView();
 
 		if (currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
-			root.setBackgroundColor(getResources().getColor(R.color.backroundColor));
+			root.setBackgroundColor(getResources().getColor(
+					R.color.backroundColor));
 		} else {
 			root.setBackgroundColor(getResources().getColor(R.color.RowColor1));
 		}
@@ -152,7 +155,8 @@ public class ViewMessageActivity extends Activity {
 
 		switch (item.getItemId()) {
 		case R.id.action_forward:
-			msg = Toast.makeText(this, R.string.forward_toast, Toast.LENGTH_LONG);
+			msg = Toast.makeText(this, R.string.forward_toast,
+					Toast.LENGTH_LONG);
 			msg.show();
 
 			Intent forwardIntent = new Intent(this,// Create intent for forward
@@ -206,7 +210,8 @@ public class ViewMessageActivity extends Activity {
 
 				AlertDialog.Builder b = new AlertDialog.Builder(this);
 				b.setTitle(R.string.delete_msg_confirmation);
-				b.setPositiveButton(R.string.acknowlege_descision, DeleteOnClick);
+				b.setPositiveButton(R.string.acknowlege_descision,
+						DeleteOnClick);
 
 				b.setNegativeButton(R.string.decline_desicion, DeleteOnClick);
 				b.create().show();
@@ -223,7 +228,8 @@ public class ViewMessageActivity extends Activity {
 	}
 
 	private void deleteMessage() {
-		Toast msg = Toast.makeText(this, R.string.delete_toast, Toast.LENGTH_LONG);
+		Toast msg = Toast.makeText(this, R.string.delete_toast,
+				Toast.LENGTH_LONG);
 		msg.show();
 
 		MessageContainer[] msgArr = { currentMessage };
@@ -250,9 +256,10 @@ public class ViewMessageActivity extends Activity {
 			curScale = 0.1f;
 		}
 
-		newsize = (12 * curScale); //12 is the baseline font size - all alterations will be relative to this
+		newsize = (12 * curScale); // 12 is the baseline font size - all
+									// alterations will be relative to this
 
-		if (newsize < 9) { 
+		if (newsize < 9) {
 			newsize = 9;
 		}
 
