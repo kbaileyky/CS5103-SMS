@@ -24,7 +24,7 @@ import android.util.Log;
  * @since 1.0
  * 
  */
-
+  
 public class ContactsUtil {
 	/**
 	 * This method retrieves all literal string contact names from the phone
@@ -35,11 +35,11 @@ public class ContactsUtil {
 	 * @return returns an ArrayList of String Contact names for the current
 	 *         Phone Activity.
 	 */
-	public static List<String> getAllContactNames(Activity activity) {
+	public static List<String> getAllContactNames(ContentResolver contentResolver) {
 		List<String> lContactNamesList = new ArrayList<String>();
 		try {
 			// Get all Contacts
-			Cursor lPeople = activity.getContentResolver().query(
+			Cursor lPeople = contentResolver.query(
 					ContactsContract.Contacts.CONTENT_URI, null, null, null,
 					null);
 			if (lPeople != null) {
@@ -142,54 +142,31 @@ public class ContactsUtil {
 		return contact;
 	}
 
-	/*
+	/**
+	 * This static method takes a String Contact Name and retrieves the
+	 * Phone Number.
 	 * 
-	 * 
-	 * TODO: This function will be optimized in final release to use one query
-	 * for the contactName and then one simple query off tha row for the
-	 * PhoneNumber.
+	 * @param contentResolver
+	 * 			  The ContentResolver to allow querying information from
+	 * 			  the phone contacts.
+	 * @param contactName
+	 *            the contact name used for this query.
+	 * @return returns the String phone number stored on the phone matching
+	 * 		   the contact
 	 */
-	public static String getPhoneNumberByContactName(Activity activity,
+	public static String getPhoneNumberByContactName(ContentResolver contentResolver,
 			String contactName) {
-		ContentResolver cr = activity.getContentResolver();
-		Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null,
-				null, null, null);
-
-		if (cur.getCount() > 0) {
-			while (cur.moveToNext()) {
-				String id = cur.getString(cur
-						.getColumnIndex(ContactsContract.Contacts._ID));
-				String name = cur
-						.getString(cur
-								.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-				if (name.equalsIgnoreCase(contactName)) {
-					if (Integer
-							.parseInt(cur.getString(cur
-									.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-
-						Cursor pCur = cr
-								.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-										null,
-										ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-												+ " = ?", new String[] { id },
-										null);
-
-						while (pCur.moveToNext()) {
-							String phoneNo = pCur
-									.getString(pCur
-											.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-							pCur.close();
-							cur.close();
-							return phoneNo;
-						}
-						pCur.close();
-					}
-				}
-
-			}
-			cur.close();
+		String ret = null;
+		String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" like'%" + contactName +"%'";
+		String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER};
+		Cursor c = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+		        projection, selection, null, null);
+		if (c.moveToFirst()) {
+		    ret = c.getString(0);
 		}
-		return null;
+		c.close();
+		
+		return ret;
 	}
 
 	/**
@@ -209,16 +186,16 @@ public class ContactsUtil {
 		return false;
 	}
 
-	public static boolean isAValidPhoneNumber(Activity activity, String contact) {
+	public static boolean isAValidPhoneNumber(ContentResolver contentResolver, String contact) {
 		if (isAPhoneNumber(contact)) {
 			return true;
-		} else if (getPhoneNumberByContactName(activity, contact) != null) {
+		} else if (getPhoneNumberByContactName(contentResolver, contact) != null) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-
+/*
 	public static boolean isInteger(String s) {
 		try {
 			Integer.parseInt(s);
@@ -227,7 +204,7 @@ public class ContactsUtil {
 		}
 		// only got here if we didn't return false
 		return true;
-	}
+	}*/
 	
 	public static String getStrippedPhoneNumber(String phoneNumber)
 	{

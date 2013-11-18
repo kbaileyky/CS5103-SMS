@@ -74,7 +74,7 @@ public class NewConversationActivity extends Activity {
 						message);
 			} else {
 				String phoneNumber = ContactsUtil.getPhoneNumberByContactName(
-						getActivity(), number);
+						getActivity().getContentResolver(), number);
 				if (phoneNumber != null) {
 					if (!sent) {
 						sendSmsMessage(
@@ -98,7 +98,7 @@ public class NewConversationActivity extends Activity {
 				if (newRecipientTextView.getText().length() == 0) {
 					sendNewMessageButton.setEnabled(false);
 				} else {
-					if (ContactsUtil.isAValidPhoneNumber(actvty,
+					if (ContactsUtil.isAValidPhoneNumber(actvty.getContentResolver(),
 							newRecipientTextView.getText().toString())) {
 						if (ContactsUtil.isAPhoneNumber(newRecipientTextView
 								.getText().toString())) {
