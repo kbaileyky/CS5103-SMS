@@ -196,6 +196,18 @@ public class ContactsUtil {
 		return false;
 	}
 
+	/**
+	 * This static method that checks if a phone number or contact name has a
+	 * valid phone number.
+	 * 
+	 * @param contentResolver
+	 *            The ContentResolver to allow querying information from the
+	 *            phone contacts.
+	 * @param contact
+	 *            the contact name or contact phone number used for this query.
+	 * @return returns true if contact has a valid phone number.
+	 * 
+	 */
 	public static boolean isAValidPhoneNumber(ContentResolver contentResolver,
 			String contact) {
 		if (isAPhoneNumber(contact)) {
@@ -207,12 +219,16 @@ public class ContactsUtil {
 		}
 	}
 
-	/*
-	 * public static boolean isInteger(String s) { try { Integer.parseInt(s); }
-	 * catch (NumberFormatException e) { return false; } // only got here if we
-	 * didn't return false return true; }
+	/**
+	 * This static method strips all non integer characters for a phone number.
+	 * 
+	 * @param phoneNumber
+	 *            The phone to remove all non integer characters from.
+	 * 
+	 * @return returns a string representing the passed in phone number with all
+	 *         non integer characters removed.
+	 * 
 	 */
-
 	public static String getStrippedPhoneNumber(String phoneNumber) {
 		return phoneNumber.replaceAll("[^\\d]", "");
 	}

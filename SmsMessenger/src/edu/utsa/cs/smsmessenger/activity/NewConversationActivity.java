@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import edu.utsa.cs.smsmessenger.R;
+import edu.utsa.cs.smsmessenger.adapter.AutoContactFillAdapter;
 import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
-import edu.utsa.cs.smsmessenger.util.AutoContactFillAdapter;
 import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.app.Activity;
