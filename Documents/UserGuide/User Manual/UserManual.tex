@@ -1,0 +1,268 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+
+\begin{document}
+\title{Mercury Messenger User's Manual 1.0}
+\maketitle
+
+\tableofcontents
+
+\section{General Information}
+
+\subsection{System Overview}
+\par The Mercury Messenger is intended to manage the transmission and reception of SMS messages by organizing messages and allowing users to send, receive, and delete messages. Messages are organized into conversations by contact name/ contact number, so that all messages from a contact can be viewed from a single location.
+\par With limited usage the Mercury Messenger will access the stock contacts application with the purpose of obtaining information that may be convenient to the user. For example, retrieving the names of contacts associated with number or being able to select a number from contacts when writing a message.
+\par Mercury Messenger has a distinct user interface which will be discussed more in-depth during the system summary (Section~\ref{sec:UsingMercMess}). The Mercury Messenger is accessible from the application view on the Android operating system 4.0.
+\par Mercury Messenger has two tiers of operations. The first consists of operations with which the user is able to interact, such as view messages or creating messages. The second tier is background operations which update the application when messages are deleted, send, and received. The Mercury Messenger also constructs a database upon installation where all of the SMS messages that are transmitted or received while the Mercury Messenger is active are stored.
+\par The software delivered in this iteration is fully functional.
+
+
+\subsection{Points of Contact}
+
+For additional information, Team Mercury can be contacted through liaison Kendall Bailey (kbailey@trinity.com).
+
+\section{System Summary}
+\label{sec:SysSummary}
+
+\subsection{System Configuration}
+The Mercury Messenger is contained entirely within a single system and operates on mobile devices with an Android operating system. The operating system on the Android device on which the Mercury Messenger is being installed must be version 4.0 or higher. The device must be able to send and receive SMS Messenger to function properly. No Internet connection is required. There must be enough space on the SD card of the phone to hold and maintain the Mercury Messenger message database.
+
+\subsection{User Access Levels}
+Everyone can use this application.
+
+\section{Getting Started}
+Extracting, Installing, and Running Mercury Messenger.
+
+\subsection{Getting Mercury Messenger}
+\begin{enumerate}
+\item Begin by going to \url{https://github.com/kbaileyky/CS5103-SMS} and downloading the zip of all Mercury Messenger files.
+\item After downloading the zip, unzip and go into the folder/directory.
+\item Go into the "Releases" folder/directory, you should see the file "MercuryMessenger\_xxxxxxx.apk", where the x's are some number. This is what needs to be installed, copy this file.
+
+
+\end{enumerate}
+
+\subsection{Installing Mercury Messenger}
+\begin{enumerate}
+\item Plug in you phone to the computer via a USB cable. Open the phone in camera mode.
+\item Navigate to your phone from your PC, you should see a device labeled Phone, click on it.
+\item The next level down should have a few folders/directories. Navigate to the "files" folder/directory.
+\item Copy the Mercury Messenger apk file to this folder.
+\item On the phone, navigate to the "files" folder/directory and click on it.
+\item Follow the instructions from the phone's installation wizard.
+\item Congratulations, you have now installed the Mercury Messenger application.
+\end{enumerate}
+
+
+
+
+
+
+\section{Using Mercury Messenger}
+\label{sec:UsingMercMess}
+
+\subsection{Button Basics}
+
+\begin{figure}[h!]
+\centering
+	\begin{subfigure}[b]{0.3\textwidth}
+		\includegraphics[width=1cm]{"./Screen_shots/New_Message_Button"}{}
+		\caption{New Message Button}
+	\end{subfigure} %
+	\begin{subfigure}[b]{0.3\textwidth}
+\includegraphics[width=1cm]{"./Screen_shots/Get_Contact_Button"}{}
+\caption{Get Contact Button}
+\label{fig:GetContactButton}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.3\textwidth}
+\includegraphics[width=1cm]{"./Screen_shots/Send_Message_Button"}{}
+\caption{Send Message Button}
+\label{fig:sendMessage}
+	\end{subfigure}
+	\caption{Mercury Messenger Buttons}
+
+\end{figure}
+
+\par When the New Message Button is pressed the Mercury Messenger application will launch the New Message screen  will allow the user to compose a new message (Section~\ref{sec:NewMessage}).
+
+
+\par When the Get Contact Button is pressed, the Mercury Messenger application will access the phone's stock contact application. This will allow users to easily send SMS messages to existing contacts.
+
+\par When the Send Message Button is pressed, the Mercury Messenger application will send a valid (has both a recipient and a body) message.
+
+
+
+
+\subsection{Start Up Screen: Conversation Lists}
+\label{sec:ConvoList}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.25\textwidth]{"./Screen_shots/Main_Screen"}{}
+\caption{Conversation List Screen}
+
+\end{figure}
+
+
+
+\par Upon first starting the Mercury Messenger, the user will be shown a list of the conversations currently stored in the phone. The first time that a user accesses this screen it may be blank, but after sending or receiving messages the screen will fill in.
+
+\par In the screen the messages are organized by contact with the last received or sent message within that conversation being shown next to the icon of the sender. If the other party in the conversation is in the user's contacts, Mercury Messenger will display the name and the photo stored in the contacts application next to the most recent message.
+If information cannot be found in the contacts applications, the most recent message will be shown with the stock contact icon and/or the phone number of the other party.
+
+\par From the Conversations List screen the user can create a new conversation or add to an existing conversation by clicking on the New Message Button located on the title bar. 
+
+
+\begin{figure}[h!]
+\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\includegraphics[width=.49\textwidth]{"./Screen_shots/Conversation_screen_Menu"}{}
+		\caption{Menu}
+		\label{fig:MainScreenMenu}
+	\end{subfigure} %
+	\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=.49\textwidth]{"./Screen_shots/Main_Screen_Long_Press"}{}
+\caption{Long Press Menu}
+\label{fig:MainScreenLong}
+	\end{subfigure}
+	\caption{Conversation List Screen: Sub-Screens}
+
+\end{figure}
+
+
+
+\par If the user presses the menu button on the phone (Figure \ref{fig:MainScreenMenu}), he or she is presented with the option to view the applications settings (~\autoref{sec:Settings}) or search the messages(~\autoref{sec:Search}).
+\par If the user presses the screen for approximately three seconds while clicking on a conversation he will be presented with two or three options (Figure \ref{fig:MainScreenLong}).
+If the user does not have the selected conversation's other party added to the contacts application, Mercury Messenger will display the option to "Add to Contacts". Selecting this option will launch the contact application on the phone.
+If the user selects the "Delete" option the entire conversation that was selected will be deleted.
+\pagebreak
+\subsection{Settings Screen}
+\label{sec:Settings}
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=.25\textwidth]{"./Screen_shots/Settings_Screen"}{}
+\caption{Settings Screen}
+\label{fig:SettingsScreen}
+
+\end{figure}
+
+\par By selecting the check box, the user allows received SMS messages to be handled by both the stock messenger application on the phone and Mercury Messenger. The user will receive notifications for both applications if the box is checked.
+If the box is unchecked the user indicates that he or she will solely use the Mercury Messenger application to handle SMS messages. The user will only receive notifications from the Mercury Messenger application.
+
+\subsection{Search Screen}
+\label{sec:Search}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.25\textwidth]{"./Screen_shots/Search_Screen"}{}
+\caption{Settings Screen}
+\label{fig:SearchScreen}
+
+\end{figure}
+
+After selecting the "Search" option, a search bar will appear on the title bar. 
+As the user fills in his or her search criteria the application will search the database for messages containing the criteria.
+The messages with matching criteria will be updated as the user types.
+When the user has found the message that he or she desires, the user can click on the message. After clicking on a message, the user will enter the View Message (Section~\autoref{sec:ViewMessage})screen of the selected message.
+If a message with the entered criteria is not found then no messages will be listed on the screen.
+
+
+\subsection{Send New Message Screen}
+\label{sec:NewMessage}
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=.25\textwidth]{"./Screen_shots/Send_Message_Screen"}{}
+\caption{Send New Message Screen}
+\label{fig:NewMessage}
+\end{figure}
+
+\par From the Send New Message screen the user can start a new conversation or add to an existing conversation. The user has the ability to type phone numbers in to the recipient field and the option to add existing contacts by clicking on the Get Contact Button (Figure~\ref{fig:GetContactButton}). 
+As the user is typing a recipients name if the recipient is a member of the user's contacts, Mercury Messenger will display a list of matches from the contacts and allow the user to select the recipient from that list as well (Figure~\ref{fig:NewMessageAutoFill}). The user can add up to ten recipients of a text message.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.25\textwidth]{"./Screen_shots/Auto_Fill_Send_Msg"}{}
+\caption{Send New Message Screen}
+\label{fig:NewMessageAutoFill}
+\end{figure}
+
+
+\par The user is able to type in the body of his or her message into the message field. The user can type as many characters as he or she wishes, but the text messages will be split along a 256 character boundary.
+This means that the sending a single message may result in the recipient receiving multiple SMS messages and users thus be wary of texting limits.
+
+\par After the user has completed both their message and the recipients list, the user can press the Send Message Button to send his or her message(Figure~\ref{fig:sendMessage}).
+If the message is unable to be sent, the user will be notified with a pop-up.
+\pagebreak
+
+\subsection{Conversation Screen}
+\label{sec:Conversation}
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=.25\textwidth]{"./Screen_shots/Conversation_Screen"}{}
+\caption{Conversation Screen}
+\label{fig:ConversationScreen}
+\end{figure}
+
+\par The Conversation Screen shows the messages between the user and a certain contact or set of contacts. Each message is also shown with a time stamp of when the message was sent or received.
+The title bar of the Conversation Screen will show the name of the other party if it is available in the contacts list or the number other party if unavailable.
+Messages in an orange speech bubble are messages that Mercury Messenger has received from outside parties. 
+If the sender has their picture stored the user's contacts, then the image next to the speech bubble with the contact's picture, otherwise it will be the Mercury Messenger stock contact icon.
+Messages send by the user will be shown in cream speech bubbles next to the Mercury Messenger Me icon (shown above).
+
+\par From the Conversation Screen, the user is able to reply to messages in the conversation easily by typing his or her message into the message field at the bottom of the screen and clicking the send button to send.
+After sending the message the screen is updated to reflect the newly sent message.
+If the message is unable to be sent, the user will be notified with a pop-up.
+
+\par If the user would like to examine a message more closely, he or she can press on a message and will be taken to the View Message Screen (\autoref{sec:ViewMessage}).
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.25\textwidth]{"./Screen_shots/Conversation_Long_Press"}{}
+\caption{Conversation Screen: Long Press}
+\label{fig:ConversationLongPress}
+\end{figure}
+
+\par If the user wishes to delete a message, he or she can press on the message's speech bubble or icon for approximately three seconds and a menu will appear with the option to delete that message.
+
+
+\pagebreak
+\subsection{View Message Screen}
+\label{sec:ViewMessage}
+
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=.25\textwidth]{"./Screen_shots/View_Individual_message"}{}
+\caption{View Message Screen}
+\label{fig:ViewMsg}
+\end{figure}
+
+\par This screen will allow the user to more closely examine a message. If the user chooses, using a pinching action on this screen will either increase or decrease the font size.
+The background color of this screen will vary slightly depending on if the message being examined is a sent message or a received message, with a received message having a slightly darker background.
+If the message is sent by the user, the Me icon will appear next to the message (See Figure~\ref{fig:ConversationScreen}).
+If the message is received by the user then the image shown will either be the image stored in the user's contacts applications, if available, or the stock contact icon.
+The title bar will always display the name of the sender of the message.
+
+
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=.25\textwidth]{"./Screen_shots/View_Individual_message_Menu"}{}
+\caption{View Message Screen: Menu}
+\label{fig:ViewMsgMenu}
+\end{figure}
+
+
+\par The View Message Screen also provides the user with the option to reply to, forward, or delete the message when the phone's menu button is pressed. 
+If the user chooses to reply, he or she is taken to the New Message Screen (Section~\ref{sec:NewMessage}) with the contact information already filled in.
+ If the forward option is chosen, then the application will jump to the New Message Screen with the message body already filled in with the selected message.
+Choosing the delete option will give the user a last chance to decline deleting the message before removing it from the database.
+After this option is confirmed and the message deleted, the user is returned to the Conversations List Screen (\autoref{sec:ConvoList}).
+
+
+
+\end{document}
