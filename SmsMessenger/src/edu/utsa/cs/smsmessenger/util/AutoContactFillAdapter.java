@@ -8,6 +8,6 @@ public class AutoContactFillAdapter extends ArrayAdapter<String> {
 
 	public AutoContactFillAdapter(Activity activity) {
 		super(activity.getApplicationContext(), R.layout.single_contact,
-				R.id.tv_ContactName, ContactsUtil.getAllContactNames(activity));
+				R.id.tv_ContactName, ContactsUtil.getAllContactNames(activity.getContentResolver()));
 	}
 }

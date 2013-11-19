@@ -29,5 +29,13 @@
     <string name="delete_toast">Deleting…</string>
     <string name="message_length_error">Message length is limited to %s characters.</string>
     <string name="text_ratio">%1$d/%2$d</string>
+    <string name="message_recevied_notification">New message from: %s</string>
+    <string name="sms_message_sent">Message sent.</string>
+    <string name="sms_send_failed">Failed to send message.</string>
+    <string name="sms_no_service">Failed to send message because no service.</string>
+    <string name="sms_no_signal">Failed to send message because no signal.</string>
+    <string name="sms_delivered">Message delivered.</string>
+    <string name="sms_not_delivered">Failed to deliver message.</string>
+    <string name="date_time_format">MM/dd/yyyy h:mm:ss a</string>
 
 </resources>

@@ -19,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import edu.utsa.cs.smsmessenger.R;
-import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
 import edu.utsa.cs.smsmessenger.activity.ViewMessageActivity;
 import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
@@ -29,11 +28,11 @@ import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 /**
  * This class is used to adapter and fill a ListView with an ArrayList of
  * MessageContainer objects used in the search message list
- *
+ * 
  * @author Michael Madrigal
  * @version 1.0
  * @since 1.0
- *
+ * 
  */
 public class MessageSearchContainerAdapter extends
 		ArrayAdapter<MessageContainer> {
@@ -69,7 +68,9 @@ public class MessageSearchContainerAdapter extends
 		super(context, textViewResourceId, objects);
 		this.context = context;
 		this.objects = objects;
-		this.sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
+		this.sdf = new SimpleDateFormat(context.getResources().getString(
+				R.string.date_time_format), context.getResources()
+				.getConfiguration().locale);
 	}
 
 	@Override
@@ -109,7 +110,6 @@ public class MessageSearchContainerAdapter extends
 		cal.setTimeInMillis(message.getDate());
 		msgDateTextView.setText(sdf.format(cal.getTime()));
 
-
 		if (message.getType() == SmsMessageHandler.MSG_TYPE_IN) {
 			if (contact.getDisplayName() != null) {
 				if (contact.getPhotoUri() != null) {
@@ -119,10 +119,9 @@ public class MessageSearchContainerAdapter extends
 				} else
 					msgImageView.setImageResource(R.drawable.hg_contact);
 			} else
-				msgImageView.setImageResource(R.drawable.hg_contact);
+				msgImageView.setImageResource(R.drawable.hg_new_contact);
 		} else
 			msgImageView.setImageResource(R.drawable.me_icon);
-
 
 		final MessageContainer finalMessage = message;
 		convertView.setOnClickListener(new OnClickListener() {

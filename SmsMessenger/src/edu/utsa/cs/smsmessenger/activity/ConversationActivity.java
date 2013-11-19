@@ -235,6 +235,7 @@ public class ConversationActivity extends Activity {
 		PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
 				new Intent(SmsMessageHandler.SMS_DELIVERED), 0);
 
+		final Context context = this.getContext();
 		// ---when the SMS has been sent---
 		registerReceiver(new BroadcastReceiver() {
 			@Override
@@ -243,7 +244,10 @@ public class ConversationActivity extends Activity {
 						+ getResultCode());
 				switch (getResultCode()) {
 				case Activity.RESULT_OK:
-					Toast.makeText(getBaseContext(), "SMS sent",
+					Toast.makeText(
+							getBaseContext(),
+							context.getResources().getString(
+									R.string.sms_message_sent),
 							Toast.LENGTH_SHORT).show();
 					messageContainer.setDate(Calendar.getInstance()
 							.getTimeInMillis());
@@ -255,20 +259,26 @@ public class ConversationActivity extends Activity {
 					messageEditText.setText("");
 					break;
 				case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-					Toast.makeText(getBaseContext(), "Generic failure",
+				case SmsManager.RESULT_ERROR_NULL_PDU:
+					Toast.makeText(
+							getBaseContext(),
+							context.getResources().getString(
+									R.string.sms_send_failed),
 							Toast.LENGTH_SHORT).show();
 					break;
 				case SmsManager.RESULT_ERROR_NO_SERVICE:
-					Toast.makeText(getBaseContext(), "No service",
-							Toast.LENGTH_SHORT).show();
-					break;
-				case SmsManager.RESULT_ERROR_NULL_PDU:
-					Toast.makeText(getBaseContext(), "Null PDU",
+					Toast.makeText(
+							getBaseContext(),
+							context.getResources().getString(
+									R.string.sms_no_service),
 							Toast.LENGTH_SHORT).show();
 					break;
 				case SmsManager.RESULT_ERROR_RADIO_OFF:
-					Toast.makeText(getBaseContext(), "Radio off",
-							Toast.LENGTH_SHORT).show();
+					Toast.makeText(
+							getBaseContext(),
+							context.getResources().getString(
+									R.string.sms_no_signal), Toast.LENGTH_SHORT)
+							.show();
 					break;
 				}
 				sendMessageImageButton.setEnabled(true);
@@ -282,11 +292,17 @@ public class ConversationActivity extends Activity {
 			public void onReceive(Context arg0, Intent arg1) {
 				switch (getResultCode()) {
 				case Activity.RESULT_OK:
-					Toast.makeText(getBaseContext(), "SMS delivered",
-							Toast.LENGTH_SHORT).show();
+					Toast.makeText(
+							getBaseContext(),
+							context.getResources().getString(
+									R.string.sms_delivered), Toast.LENGTH_SHORT)
+							.show();
 					break;
 				case Activity.RESULT_CANCELED:
-					Toast.makeText(getBaseContext(), "SMS not delivered",
+					Toast.makeText(
+							getBaseContext(),
+							context.getResources().getString(
+									R.string.sms_not_delivered),
 							Toast.LENGTH_SHORT).show();
 					break;
 				}

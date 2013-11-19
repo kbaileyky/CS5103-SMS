@@ -94,19 +94,18 @@ public class ViewMessageActivity extends Activity {
 
 	private void updateUI() {
 
-
 		setTitle(currentMessage.getType()
 				.equals(SmsMessageHandler.MSG_TYPE_OUT) ? getResources()
 				.getString(R.string.self_reference) : (currentContact
 				.getDisplayName() != null ? currentContact.getDisplayName()
 				: currentMessage.getPhoneNumber()));
 
-
-
 		txtMsgBody = (TextView) findViewById(R.id.msgBodyTextView);
 		txtMsgBody.setText(currentMessage.getBody());
 
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
+		SimpleDateFormat sdf = new SimpleDateFormat(context.getResources()
+				.getString(R.string.date_time_format), context.getResources()
+				.getConfiguration().locale);
 		TextView txtTimeAndDate = (TextView) findViewById(R.id.msgDateTextView);
 		txtTimeAndDate.setText(sdf.format(currentMessage.getDate()));
 
@@ -126,7 +125,6 @@ public class ViewMessageActivity extends Activity {
 		} else {
 			contactImageView.setImageResource(R.drawable.me_icon);
 		}
-
 
 		rootTable = (TableLayout) findViewById(R.id.viewMsgTable);
 		// tableRow1
