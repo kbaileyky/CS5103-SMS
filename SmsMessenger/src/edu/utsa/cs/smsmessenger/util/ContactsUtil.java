@@ -2,11 +2,9 @@ package edu.utsa.cs.smsmessenger.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle.Control;
 
 import edu.utsa.cs.smsmessenger.model.ContactContainer;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -121,24 +119,33 @@ public class ContactsUtil {
 		contact.setPhoneNumber(phoneNumber);
 		Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI,
 				Uri.encode(phoneNumber));
-		Cursor cur = contentResolver.query(uri, new String[] { PhoneLookup._ID,
-				PhoneLookup.DISPLAY_NAME, PhoneLookup.PHOTO_URI }, null, null,
-				null);
-		if (cur != null) {
-			if (cur.moveToFirst()) {
-				String name = cur.getString(cur
-						.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
-				long id = cur.getLong(cur
-						.getColumnIndex(ContactsContract.Data._ID));
-				String photoUri = cur.getString(cur
-						.getColumnIndex(ContactsContract.Data.PHOTO_URI));
+		Cursor cur;
+		try {
+			cur = contentResolver.query(uri, new String[] { PhoneLookup._ID,
+					PhoneLookup.DISPLAY_NAME, PhoneLookup.PHOTO_URI }, null,
+					null, null);
+			if (cur != null) {
+				if (cur.moveToFirst()) {
+					String name = cur
+							.getString(cur
+									.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
+					long id = cur.getLong(cur
+							.getColumnIndex(ContactsContract.Data._ID));
+					String photoUri = cur.getString(cur
+							.getColumnIndex(ContactsContract.Data.PHOTO_URI));
 
-				// Set contact data
-				contact.setId(id);
-				contact.setDisplayName(name);
-				contact.setPhotoUri(photoUri);
+					// Set contact data
+					contact.setId(id);
+					contact.setDisplayName(name);
+					contact.setPhotoUri(photoUri);
+				}
+				cur.close();
 			}
-			cur.close();
+
+		} catch (Exception e) {
+			Log.d("ContactsUtil",
+					"getContactByPhoneNumber Error getting contacts");
+
 		}
 		return contact;
 	}
