@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.ConversationPreview;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 
@@ -27,11 +26,11 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 
 	public static final String UPDATE_MSG_INTENT = "edu.utsa.cs.smsmessenger.UPDATE_MSG_INTENT";
 
-	//Message Characteristics
+	// Message Characteristics
 	public static final int SMS_MESSAGE_LENGTH = 160;
 	public static final int MAX_CONVERSATIONS = 256;
 	public static final int MAX_MSGS_IN_CONVERSATION = 256;
-	
+
 	// Message status
 	public static final String SMS_NEW_DRAFT = "SMS_NEW_DRAFT";
 	public static final String SMS_DRAFT = "SMS_DRAFT";
@@ -91,7 +90,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 		db.execSQL(String.format(CREATE_SMS_MSG_TABLE, MSG_TYPE_IN));
 		db.execSQL(String.format(CREATE_SMS_MSG_TABLE, MSG_TYPE_DRAFT));
 	}
-	
+
 	/**
 	 * This method saves a MessageContainer object to the OS database table
 	 * specified by the MessageContainer's type.
@@ -244,12 +243,22 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 				+ toMsgList.size());
 
 		fromMsgList.addAll(toMsgList);
-		Collections.sort(fromMsgList);
+		ArrayList<MessageContainer> msgList = fromMsgList; 
+		Collections.sort(msgList);
+		
+		if(msgList.size()>MAX_MSGS_IN_CONVERSATION)
+		{
+			for(int count = 0; count < msgList.size() - MAX_MSGS_IN_CONVERSATION; count++)
+			{
+				deleteMessage(msgList.get(0));
+				msgList.remove(0);
+			}
+		}
 		Log.d("SmsMessageHandler",
 				"getConversationWithUser() fromMsgList merged: "
 						+ fromMsgList.size());
 
-		return fromMsgList;
+		return msgList;
 	}
 
 	/**
@@ -294,36 +303,52 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	 */
 	public HashMap<String, ConversationPreview> getConversationPreviewItmes(
 			Activity activity) {
-		
-		//Get message list for database
+
+		// Get message list for database
 		ArrayList<MessageContainer> inMsgList = getSmsMessages(null, null,
 				COL_NAME_DATE + " DESC", MSG_TYPE_IN);
 		ArrayList<MessageContainer> outMsgList = getSmsMessages(null, null,
 				COL_NAME_DATE + " DESC", MSG_TYPE_OUT);
 
 		ArrayList<MessageContainer> msgList = inMsgList;
-		//merge lists
+		// merge lists
 		msgList.addAll(outMsgList);
-		//sort merged lists
+		// sort merged lists
 		Collections.sort(msgList, Collections.reverseOrder());
-		
-		HashMap<String, ConversationPreview> convPrevList = new HashMap<String, ConversationPreview>();
 
+		HashMap<String, ConversationPreview> convPrevList = new HashMap<String, ConversationPreview>();
+		
+		ArrayList<String> conversationsToDelete = new ArrayList<String>();
 		for (MessageContainer msg : msgList) {
+			Log.d("SmsMessageHandler", "convPrevList.size():" +convPrevList.size() );
 			// Since they are in order, no need to check if next is more recent
 			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
-
-				ConversationPreview preview = new ConversationPreview(
-						msg.getBody(), msg.isRead() || msg.getType() == MSG_TYPE_IN ? 0 : 1, msg.getDate(),
-						msg.getPhoneNumber(), msg.getContactId());
-				convPrevList.put(msg.getPhoneNumber(), preview);
+				if (convPrevList.size() < MAX_CONVERSATIONS) {
+					ConversationPreview preview = new ConversationPreview(
+							msg.getBody(), msg.isRead()
+									|| msg.getType() == MSG_TYPE_IN ? 0 : 1,
+							msg.getDate(), msg.getPhoneNumber(),
+							msg.getContactId());
+					convPrevList.put(msg.getPhoneNumber(), preview);
+				}
+				else
+				{
+					Log.d("SmsMessageHandler", "convPrevList.size(): " +convPrevList.size() + ", MAX: " + MAX_CONVERSATIONS);
+					if(!conversationsToDelete.contains(msg.getPhoneNumber()))
+						conversationsToDelete.add(msg.getPhoneNumber());
+				}
 			} else {
 				ConversationPreview existing = convPrevList.get(msg
 						.getPhoneNumber());
 				existing.incremtNotReadCount(!msg.isRead());
 			}
 		}
-		
+		//Delete all conversations that exceed the limit
+		if(conversationsToDelete.size()>0)
+		{
+			for(String phoneNumber : conversationsToDelete)
+				deleteConversation(phoneNumber);
+		}
 		return convPrevList;
 	}
 
@@ -362,7 +387,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 		return db.delete(message.getType(),
 				COL_NAME_ID + "=" + message.getId(), null) > 0;
 	}
-	
+
 	/**
 	 * This method uses deletes all outgoing message with a NEW_DRAFT status
 	 * 
@@ -375,34 +400,35 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 		String selectString = COL_NAME_STATUS + " = ?";
 		String[] selectArgs = { SMS_NEW_DRAFT };
 		String sortOrder = COL_NAME_DATE + " DESC";
-		
-		
-		
+
 		String[] projection = { COL_NAME_ID };
 
 		// How you want the results sorted in the resulting Cursor
 		// String sortOrder = COL_NAME_DATE + " DESC";
 
-		Cursor c = db.query(MSG_TYPE_DRAFT, projection, selectString, selectArgs, null,
-				null, sortOrder);
+		Cursor c = db.query(MSG_TYPE_DRAFT, projection, selectString,
+				selectArgs, null, null, sortOrder);
 
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			do {
-				Log.d("SmsMessageHandler", "deleting " + c.getLong(c.getColumnIndex(COL_NAME_ID)));
-				
-				db.delete(MSG_TYPE_DRAFT,
-						COL_NAME_ID + "=" + c.getLong(c.getColumnIndex(COL_NAME_ID)), null);
+				Log.d("SmsMessageHandler",
+						"deleting " + c.getLong(c.getColumnIndex(COL_NAME_ID)));
+
+				db.delete(
+						MSG_TYPE_DRAFT,
+						COL_NAME_ID + "="
+								+ c.getLong(c.getColumnIndex(COL_NAME_ID)),
+						null);
 			} while (c.moveToNext());
-		}
-		else
+		} else
 			return false;
-		
+
 		return true;
 	}
 
 	/**
-	 * This method uses deletes all outgoing message with a NEW_DRAFT status
+	 * This method uses deletes all outgoing message with a DRAFT status for a phone number
 	 * 
 	 * @return returns true if delete affected more that one row in any table,
 	 *         returns false if no rows were deleted.
@@ -411,27 +437,30 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		String sortOrder = COL_NAME_DATE + " DESC";
-				
+
 		String[] projection = { COL_NAME_ID };
 
 		// How you want the results sorted in the resulting Cursor
 		// String sortOrder = COL_NAME_DATE + " DESC";
 
-		Cursor c = db.query(MSG_TYPE_DRAFT, projection, selectString, selectArgs, null,
-				null, sortOrder);
+		Cursor c = db.query(MSG_TYPE_DRAFT, projection, selectString,
+				selectArgs, null, null, sortOrder);
 
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			do {
-				Log.d("SmsMessageHandler", "deleting " + c.getLong(c.getColumnIndex(COL_NAME_ID)));
-				
-				db.delete(MSG_TYPE_DRAFT,
-						COL_NAME_ID + "=" + c.getLong(c.getColumnIndex(COL_NAME_ID)), null);
+				Log.d("SmsMessageHandler",
+						"deleting " + c.getLong(c.getColumnIndex(COL_NAME_ID)));
+
+				db.delete(
+						MSG_TYPE_DRAFT,
+						COL_NAME_ID + "="
+								+ c.getLong(c.getColumnIndex(COL_NAME_ID)),
+						null);
 			} while (c.moveToNext());
-		}
-		else
+		} else
 			return false;
-		
+
 		return true;
 	}
 }
