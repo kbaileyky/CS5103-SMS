@@ -73,6 +73,9 @@ public class ViewMessageActivity extends Activity {
 
 		currentContact = ContactsUtil.getContactByPhoneNumber(
 				this.getContentResolver(), currentMessage.getPhoneNumber());
+		
+
+		context = this;
 
 		updateUI();
 
@@ -83,7 +86,6 @@ public class ViewMessageActivity extends Activity {
 
 		touchState = IDLE;
 
-		context = this;
 
 		Log.d("ViewMessageActivity",
 				"view Message Activity: " + currentMessage.getBody() + " from "
@@ -103,8 +105,8 @@ public class ViewMessageActivity extends Activity {
 		txtMsgBody = (TextView) findViewById(R.id.msgBodyTextView);
 		txtMsgBody.setText(currentMessage.getBody());
 
-		SimpleDateFormat sdf = new SimpleDateFormat(context.getResources()
-				.getString(R.string.date_time_format), context.getResources()
+		SimpleDateFormat sdf = new SimpleDateFormat(this.getResources()
+				.getString(R.string.date_time_format), this.getResources()
 				.getConfiguration().locale);
 		TextView txtTimeAndDate = (TextView) findViewById(R.id.msgDateTextView);
 		txtTimeAndDate.setText(sdf.format(currentMessage.getDate()));
