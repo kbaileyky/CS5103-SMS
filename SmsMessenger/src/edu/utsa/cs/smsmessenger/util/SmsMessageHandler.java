@@ -325,8 +325,8 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
 				if (convPrevList.size() < MAX_CONVERSATIONS) {
 					ConversationPreview preview = new ConversationPreview(
-							msg.getBody(), msg.isRead()
-									|| msg.getType() == MSG_TYPE_IN ? 0 : 1,
+							msg.getBody(), 
+							( msg.isRead() || msg.getType() == MSG_TYPE_OUT ? 0 : 1),
 							msg.getDate(), msg.getPhoneNumber(),
 							msg.getContactId());
 					convPrevList.put(msg.getPhoneNumber(), preview);
@@ -340,6 +340,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 			} else {
 				ConversationPreview existing = convPrevList.get(msg
 						.getPhoneNumber());
+				Log.d("SmsMessageHandler", "Message from " + msg.getPhoneNumber() + " is not read: " + !msg.isRead());
 				existing.incremtNotReadCount(!msg.isRead());
 			}
 		}
