@@ -2,11 +2,9 @@ package edu.utsa.cs.smsmessenger.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle.Control;
 
 import edu.utsa.cs.smsmessenger.model.ContactContainer;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -121,24 +119,33 @@ public class ContactsUtil {
 		contact.setPhoneNumber(phoneNumber);
 		Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI,
 				Uri.encode(phoneNumber));
-		Cursor cur = contentResolver.query(uri, new String[] { PhoneLookup._ID,
-				PhoneLookup.DISPLAY_NAME, PhoneLookup.PHOTO_URI }, null, null,
-				null);
-		if (cur != null) {
-			if (cur.moveToFirst()) {
-				String name = cur.getString(cur
-						.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
-				long id = cur.getLong(cur
-						.getColumnIndex(ContactsContract.Data._ID));
-				String photoUri = cur.getString(cur
-						.getColumnIndex(ContactsContract.Data.PHOTO_URI));
+		Cursor cur;
+		try {
+			cur = contentResolver.query(uri, new String[] { PhoneLookup._ID,
+					PhoneLookup.DISPLAY_NAME, PhoneLookup.PHOTO_URI }, null,
+					null, null);
+			if (cur != null) {
+				if (cur.moveToFirst()) {
+					String name = cur
+							.getString(cur
+									.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
+					long id = cur.getLong(cur
+							.getColumnIndex(ContactsContract.Data._ID));
+					String photoUri = cur.getString(cur
+							.getColumnIndex(ContactsContract.Data.PHOTO_URI));
 
-				// Set contact data
-				contact.setId(id);
-				contact.setDisplayName(name);
-				contact.setPhotoUri(photoUri);
+					// Set contact data
+					contact.setId(id);
+					contact.setDisplayName(name);
+					contact.setPhotoUri(photoUri);
+				}
+				cur.close();
 			}
-			cur.close();
+
+		} catch (Exception e) {
+			Log.d("ContactsUtil",
+					"getContactByPhoneNumber Error getting contacts");
+
 		}
 		return contact;
 	}
@@ -189,6 +196,18 @@ public class ContactsUtil {
 		return false;
 	}
 
+	/**
+	 * This static method that checks if a phone number or contact name has a
+	 * valid phone number.
+	 * 
+	 * @param contentResolver
+	 *            The ContentResolver to allow querying information from the
+	 *            phone contacts.
+	 * @param contact
+	 *            the contact name or contact phone number used for this query.
+	 * @return returns true if contact has a valid phone number.
+	 * 
+	 */
 	public static boolean isAValidPhoneNumber(ContentResolver contentResolver,
 			String contact) {
 		if (isAPhoneNumber(contact)) {
@@ -200,12 +219,16 @@ public class ContactsUtil {
 		}
 	}
 
-	/*
-	 * public static boolean isInteger(String s) { try { Integer.parseInt(s); }
-	 * catch (NumberFormatException e) { return false; } // only got here if we
-	 * didn't return false return true; }
+	/**
+	 * This static method strips all non integer characters for a phone number.
+	 * 
+	 * @param phoneNumber
+	 *            The phone to remove all non integer characters from.
+	 * 
+	 * @return returns a string representing the passed in phone number with all
+	 *         non integer characters removed.
+	 * 
 	 */
-
 	public static String getStrippedPhoneNumber(String phoneNumber) {
 		return phoneNumber.replaceAll("[^\\d]", "");
 	}

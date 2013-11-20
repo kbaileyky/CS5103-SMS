@@ -73,6 +73,24 @@ public class ConversationActivity extends Activity {
 		}
 	};
 
+	private class SaveNewDraftoDbTask extends
+			AsyncTask<MessageContainer, Void, MessageContainer> {
+		@Override
+		protected MessageContainer doInBackground(MessageContainer... objects) {
+			MessageContainer message = null;
+			String selectString = SmsMessageHandler.COL_NAME_PHONE_NUMBER + " = ? AND " + SmsMessageHandler.COL_NAME_STATUS + " = ? ";
+			String[] selectArgs = { ContactsUtil.getStrippedPhoneNumber(contact.getPhoneNumber()), SmsMessageHandler.SMS_DRAFT };
+			
+			for (MessageContainer msg : objects) {
+				message = msg;
+				getSmsMessageHandler().deleteDraftMessage(selectString, selectArgs);
+				getSmsMessageHandler().saveSmsToDB(msg);
+			}
+			getSmsMessageHandler().close();
+			return message;
+		}
+	}
+
 	private class SaveNewMessageToDbTask extends
 			AsyncTask<MessageContainer, Void, Void> {
 		@Override
@@ -147,6 +165,7 @@ public class ConversationActivity extends Activity {
 	@Override
 	protected void onPause() {
 		unregisterReceiver(newMsgReceiver);
+		OnUserLeavesActivity();
 		super.onPause();
 	}
 
@@ -154,6 +173,9 @@ public class ConversationActivity extends Activity {
 	protected void onResume() {
 		registerNewMsgReceiver();
 		fillConversationListView();
+		MessageContainer draft = GetDraft();
+		if(draft!=null)
+			messageEditText.setText(draft.getBody());
 		super.onResume();
 	}
 
@@ -316,6 +338,49 @@ public class ConversationActivity extends Activity {
 
 	private Context getContext() {
 		return this;
+	}
+
+	private void OnUserLeavesActivity() {
+
+		String messageBody = messageEditText.getText().toString().trim();
+
+		if (!messageBody.isEmpty()) {
+			// Save message as new draft
+			MessageContainer message = new MessageContainer();
+			message.setBody(messageBody);
+			message.setType(SmsMessageHandler.MSG_TYPE_DRAFT);
+			message.setStatus(SmsMessageHandler.SMS_DRAFT);
+			message.setPhoneNumber(contact.getPhoneNumber());
+			if (contact.getDisplayName() != null)
+				message.setId(contact.getId());
+			message.setDate(Calendar.getInstance().getTimeInMillis());
+
+			MessageContainer[] msgArr = { message };
+			SaveNewDraftoDbTask saveThread = new SaveNewDraftoDbTask();
+			saveThread.execute(msgArr);
+		}
+	}
+
+	private MessageContainer GetDraft() {
+		String selectString = SmsMessageHandler.COL_NAME_PHONE_NUMBER + " = ? AND " + SmsMessageHandler.COL_NAME_STATUS + " = ? ";
+		String[] selectArgs = { ContactsUtil.getStrippedPhoneNumber(contact.getPhoneNumber()), SmsMessageHandler.SMS_DRAFT };
+		String sortOrder = SmsMessageHandler.COL_NAME_DATE + " DESC";
+
+		ArrayList<MessageContainer> newDraftList = getSmsMessageHandler()
+				.getSmsMessages(selectString, selectArgs, sortOrder,
+						SmsMessageHandler.MSG_TYPE_DRAFT);
+
+		// There should only be one or zero, so let's grab the first
+		if (newDraftList.size() > 0) {
+			Log.d("ConversationActivity",
+					"draftList size:" + newDraftList.size());
+			Log.d("ConversationActivity", "draftList 0 phoneNumber:"
+					+ newDraftList.get(0).getPhoneNumber());
+			Log.d("ConversationActivity", "draftList 0 message:"
+					+ newDraftList.get(0).getBody());
+			return newDraftList.get(0);
+		}
+		return null;
 	}
 
 }

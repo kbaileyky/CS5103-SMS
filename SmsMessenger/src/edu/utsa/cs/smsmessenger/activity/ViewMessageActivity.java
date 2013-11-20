@@ -27,6 +27,14 @@ import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
+/**
+ * This class is the Activity that an indvidual message.
+ * 
+ * @author Kendall Bailey
+ * @version 1.0
+ * @since 1.0
+ * 
+ */
 public class ViewMessageActivity extends Activity {
 
 	private TableLayout rootTable;

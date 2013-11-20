@@ -1,11 +1,12 @@
 package edu.utsa.cs.smsmessenger.activity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import edu.utsa.cs.smsmessenger.R;
+import edu.utsa.cs.smsmessenger.adapter.AutoContactFillAdapter;
 import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
-import edu.utsa.cs.smsmessenger.util.AutoContactFillAdapter;
 import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.app.Activity;
@@ -63,24 +64,18 @@ public class NewConversationActivity extends Activity {
 	private OnClickListener sendNewMessageOnClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			// TODO - input should be a contact, and not limited to a number.
-			// Also should try to resolve contact and show message if bad input
 			System.out.println("onClick send New Message!!!");
 			String number = newRecipientTextView.getText().toString();
 			String message = newMessageEditText.getText().toString();
 
 			if (ContactsUtil.isAPhoneNumber(number)) {
-				sendSmsMessage(ContactsUtil.getStrippedPhoneNumber(number),
-						message);
+				sendSmsMessage(number, message);
 			} else {
 				String phoneNumber = ContactsUtil.getPhoneNumberByContactName(
 						getActivity().getContentResolver(), number);
 				if (phoneNumber != null) {
 					if (!sent) {
-						sendSmsMessage(
-								ContactsUtil
-										.getStrippedPhoneNumber(phoneNumber),
-								message);
+						sendSmsMessage(phoneNumber, message);
 					}
 					Log.d("NewConversationActivity", "" + sent);
 				}
@@ -98,8 +93,9 @@ public class NewConversationActivity extends Activity {
 				if (newRecipientTextView.getText().length() == 0) {
 					sendNewMessageButton.setEnabled(false);
 				} else {
-					if (ContactsUtil.isAValidPhoneNumber(actvty.getContentResolver(),
-							newRecipientTextView.getText().toString())) {
+					if (ContactsUtil.isAValidPhoneNumber(actvty
+							.getContentResolver(), newRecipientTextView
+							.getText().toString())) {
 						if (ContactsUtil.isAPhoneNumber(newRecipientTextView
 								.getText().toString())) {
 							ContactContainer contact = ContactsUtil
@@ -132,6 +128,26 @@ public class NewConversationActivity extends Activity {
 
 	};
 
+	private class SaveNewDraftoDbTask extends
+			AsyncTask<MessageContainer, Void, MessageContainer> {
+		@Override
+		protected MessageContainer doInBackground(MessageContainer... objects) {
+			MessageContainer message = null;
+			for (MessageContainer msg : objects) {
+				message = msg;
+				getSmsMessageHandler().deleteNewDraftMessage();
+				getSmsMessageHandler().saveSmsToDB(msg);
+			}
+			getSmsMessageHandler().close();
+			return message;
+		}
+
+		@Override
+		protected void onPostExecute(MessageContainer result) {
+			getActivity().finish();
+		}
+	}
+
 	private class SaveNewMessageToDbStartConversationTask extends
 			AsyncTask<MessageContainer, Void, MessageContainer> {
 		@Override
@@ -139,6 +155,7 @@ public class NewConversationActivity extends Activity {
 			MessageContainer message = null;
 			for (MessageContainer msg : objects) {
 				message = msg;
+				getSmsMessageHandler().deleteNewDraftMessage();
 				getSmsMessageHandler().saveSmsToDB(msg);
 			}
 			getSmsMessageHandler().close();
@@ -160,24 +177,6 @@ public class NewConversationActivity extends Activity {
 			getActivity().finish();
 		}
 	}
-
-	// private class UpdateMessageToDbTask extends
-	// AsyncTask<MessageContainer, Void, Void> {
-	// @Override
-	// protected Void doInBackground(MessageContainer... objects) {
-	// for (MessageContainer msg : objects)
-	// getSmsMessageHandler().updateSmsMessage(msg);
-	// getSmsMessageHandler().close();
-	// return null;
-	// }
-	//
-	// @Override
-	// protected void onPostExecute(Void result) {
-	// Intent newMsgIntent = new Intent(
-	// SmsMessageHandler.UPDATE_MSG_INTENT);
-	// getContext().sendBroadcast(newMsgIntent);
-	// }
-	// }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -237,7 +236,11 @@ public class NewConversationActivity extends Activity {
 			newRecipientTextView.setText(getIntent().getExtras().getString(
 					"replyContact"));
 		}
-
+		MessageContainer draft = GetNewDraft();
+		if (draft != null) {
+			newMessageEditText.setText(draft.getBody());
+			newRecipientTextView.setText(draft.getPhoneNumber());
+		}
 	}
 
 	@Override
@@ -275,6 +278,8 @@ public class NewConversationActivity extends Activity {
 
 	public void sendSmsMessage(final String phoneNumber, final String message) {
 
+		String strippedNumber = ContactsUtil
+				.getStrippedPhoneNumber(phoneNumber);
 		sendNewMessageButton.setEnabled(false);
 		if (message.length() > SmsMessageHandler.SMS_MESSAGE_LENGTH) {
 			Toast.makeText(
@@ -290,9 +295,9 @@ public class NewConversationActivity extends Activity {
 		MessageContainer messageContainer = new MessageContainer(
 				SmsMessageHandler.MSG_TYPE_OUT);
 		ContactContainer contact = ContactsUtil.getContactByPhoneNumber(
-				getContentResolver(), phoneNumber);
+				getContentResolver(), strippedNumber);
 		messageContainer.setContactId(contact.getId());
-		messageContainer.setPhoneNumber(phoneNumber);
+		messageContainer.setPhoneNumber(strippedNumber);
 		messageContainer.setBody(message);
 
 		final MessageContainer finalMessageContainer = messageContainer;
@@ -304,7 +309,7 @@ public class NewConversationActivity extends Activity {
 		// new Intent(SmsMessageHandler.SMS_DELIVERED), 0);
 
 		// ---when the SMS has been sent---
-		registerReceiver(new BroadcastReceiver() {
+		BroadcastReceiver sendMessageBroadcastReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				switch (getResultCode()) {
@@ -348,14 +353,12 @@ public class NewConversationActivity extends Activity {
 				sendNewMessageButton.setEnabled(true);
 				unregisterReceiver(this);
 			}
-		}, new IntentFilter(SmsMessageHandler.SMS_SENT));
-
-		// ---when the SMS has been delivered---
-		// registerReceiver(new SmsDeliveredReceiver(), new
-		// IntentFilter(SmsMessageHandler.SMS_DELIVERED));
+		};
+		registerReceiver(sendMessageBroadcastReceiver, new IntentFilter(
+				SmsMessageHandler.SMS_SENT));
 
 		SmsManager sms = SmsManager.getDefault();
-		sms.sendTextMessage(phoneNumber, null, message, sentPI, null);
+		sms.sendTextMessage(strippedNumber, null, message, sentPI, null);
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {
@@ -371,4 +374,56 @@ public class NewConversationActivity extends Activity {
 	private NewConversationActivity getActivity() {
 		return this;
 	}
+
+	private MessageContainer GetNewDraft() {
+		String selectString = SmsMessageHandler.COL_NAME_STATUS + " = ?";
+		String[] selectArgs = { SmsMessageHandler.SMS_NEW_DRAFT };
+		String sortOrder = SmsMessageHandler.COL_NAME_DATE + " DESC";
+
+		ArrayList<MessageContainer> newDraftList = getSmsMessageHandler()
+				.getSmsMessages(selectString, selectArgs, sortOrder,
+						SmsMessageHandler.MSG_TYPE_DRAFT);
+
+		// There should only be one or zero, so let's grab the first
+		if (newDraftList.size() > 0) {
+			Log.d("NewConversationActivity",
+					"draftList size:" + newDraftList.size());
+			Log.d("NewConversationActivity", "draftList 0 phoneNumber:"
+					+ newDraftList.get(0).getPhoneNumber());
+			Log.d("NewConversationActivity", "draftList 0 message:"
+					+ newDraftList.get(0).getBody());
+			return newDraftList.get(0);
+		}
+		return null;
+	}
+
+	private void OnUserLeavesActivity() {
+
+		String messageBody = newMessageEditText.getText().toString().trim();
+		String phoneNumber = newRecipientTextView.getText().toString().trim();
+
+		if (!messageBody.isEmpty() || !phoneNumber.isEmpty()) {
+			if(!messageBody.isEmpty() && !phoneNumber.isEmpty())
+				sendNewMessageButton.setEnabled(true);
+			// Save message as new draft
+			MessageContainer message = new MessageContainer();
+			message.setBody(messageBody);
+			message.setType(SmsMessageHandler.MSG_TYPE_DRAFT);
+			message.setStatus(SmsMessageHandler.SMS_NEW_DRAFT);
+			message.setPhoneNumber(phoneNumber);
+			message.setDate(Calendar.getInstance().getTimeInMillis());
+
+			MessageContainer[] msgArr = { message };
+			SaveNewDraftoDbTask saveThread = new SaveNewDraftoDbTask();
+			saveThread.execute(msgArr);
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		Log.d("NewConversationActivity", "onPause");
+		OnUserLeavesActivity();
+		super.onPause();
+	}
+
 }

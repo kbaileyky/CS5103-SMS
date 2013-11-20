@@ -115,10 +115,10 @@ public class ConversationsListActivity extends Activity implements
 	//
 	// This method fetches closes all notifications for this app
 	//
-	private void closeExistingNotifications() {
-		NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		notificationmanager.cancelAll();
-	}
+//	private void closeExistingNotifications() {
+//		NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//		notificationmanager.cancelAll();
+//	}
 	
 	//
 	// This method fetches the latest conversation preview lists from the app
@@ -149,7 +149,7 @@ public class ConversationsListActivity extends Activity implements
 				getConversationListView().setAdapter(emptyAdapter);
 			}
 		}
-		closeExistingNotifications();
+		//closeExistingNotifications();
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {

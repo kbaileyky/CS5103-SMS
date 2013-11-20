@@ -104,7 +104,7 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 
 					Log.d("IncomingSMSReceiver",
 							"phoneNumber: " + msg.getPhoneNumber()
-									+ "; message: " + msg.getBody());
+									+ "; message: " + msg.getBody() + "; is read: " + msg.isRead());
 
 					String notificationStr = String.format(context.getResources().getString(R.string.message_recevied_notification), 
 							(contact.getDisplayName()!=null?contact.getDisplayName():msg.getPhoneNumber()));
