@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -43,17 +42,10 @@ public class SentSmsMessageReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		// 1. Vibrate for 500 milliseconds
-		long milliseconds = 500;
 		Log.d("SentSmsMessageReceiver", "OnReceive getResultCode: "
 				+ getResultCode());
 		this.context = context;
 		
-		Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-
-
-
-
 		final Bundle bundle = intent.getExtras();
 		MessageContainer message = (MessageContainer) bundle
 				.getSerializable("edu.utsa.cs.smsmessenger.MessageContainer");
@@ -68,23 +60,17 @@ public class SentSmsMessageReceiver extends BroadcastReceiver {
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
 			updateDatabase(context, message, context.getResources().getString(R.string.sms_send_failed));
-			v.vibrate(milliseconds);
-			Log.i("SentSMSMessageReceiver","Vibration - .5 sec");
 			break;
 		case SmsManager.RESULT_ERROR_NULL_PDU:
 		case SmsManager.RESULT_ERROR_NO_SERVICE:
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
 			updateDatabase(context, message, context.getResources().getString(R.string.sms_no_service));
-			v.vibrate(milliseconds);
-			Log.i("SentSMSMessageReceiver","Vibration - .5 sec");
 			break;
 		case SmsManager.RESULT_ERROR_RADIO_OFF:
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
 			updateDatabase(context, message, context.getResources().getString(R.string.sms_no_signal));
-			v.vibrate(milliseconds);
-			Log.i("SentSMSMessageReceiver","Vibration - .5 sec");
 			break;
 		}
 	}
