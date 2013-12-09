@@ -1,5 +1,7 @@
 package edu.utsa.cs.smsmessenger.model;
 
+import java.io.Serializable;
+
 /**
  * This class is a data model representing a message.
  * 
@@ -8,8 +10,12 @@ package edu.utsa.cs.smsmessenger.model;
  * @since 1.0
  * 
  */
-public class MessageContainer implements Comparable<MessageContainer> {
+public class MessageContainer implements Comparable<MessageContainer>, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private long id;
 	private String phoneNumber;
 	private long contactId;
@@ -20,6 +26,7 @@ public class MessageContainer implements Comparable<MessageContainer> {
 	private String status;
 	private String type;
 	private boolean saved;
+	public static boolean groupContainsPendingMessage = false;
 
 	/**
 	 * Constructs a MessageContainer with id set to -1, contactId initialized to

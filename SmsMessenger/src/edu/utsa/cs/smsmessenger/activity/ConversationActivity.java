@@ -68,7 +68,7 @@ public class ConversationActivity extends Activity {
 			String message = messageEditText.getText().toString();
 			message = message.trim();
 			if (!message.isEmpty()) {
-				sendSmsMessage(contactPhoneNumber, message);
+				handleSmsMessageSend(contactPhoneNumber, message);
 			}
 		}
 	};
@@ -78,12 +78,16 @@ public class ConversationActivity extends Activity {
 		@Override
 		protected MessageContainer doInBackground(MessageContainer... objects) {
 			MessageContainer message = null;
-			String selectString = SmsMessageHandler.COL_NAME_PHONE_NUMBER + " = ? AND " + SmsMessageHandler.COL_NAME_STATUS + " = ? ";
-			String[] selectArgs = { ContactsUtil.getStrippedPhoneNumber(contact.getPhoneNumber()), SmsMessageHandler.SMS_DRAFT };
-			
+			String selectString = SmsMessageHandler.COL_NAME_PHONE_NUMBER
+					+ " = ? AND " + SmsMessageHandler.COL_NAME_STATUS + " = ? ";
+			String[] selectArgs = {
+					ContactsUtil.getStrippedPhoneNumber(contact
+							.getPhoneNumber()), SmsMessageHandler.SMS_DRAFT };
+
 			for (MessageContainer msg : objects) {
 				message = msg;
-				getSmsMessageHandler().deleteDraftMessage(selectString, selectArgs);
+				getSmsMessageHandler().deleteDraftMessage(selectString,
+						selectArgs);
 				getSmsMessageHandler().saveSmsToDB(msg);
 			}
 			getSmsMessageHandler().close();
@@ -92,20 +96,30 @@ public class ConversationActivity extends Activity {
 	}
 
 	private class SaveNewMessageToDbTask extends
-			AsyncTask<MessageContainer, Void, Void> {
+			AsyncTask<MessageContainer, Void, MessageContainer> {
 		@Override
-		protected Void doInBackground(MessageContainer... objects) {
-			for (MessageContainer msg : objects)
+		protected MessageContainer doInBackground(MessageContainer... objects) {
+			MessageContainer message = null;
+			for (MessageContainer msg : objects) {
+				message = msg;
 				getSmsMessageHandler().saveSmsToDB(msg);
+			}
 			getSmsMessageHandler().close();
-			return null;
+			return message;
 		}
 
 		@Override
-		protected void onPostExecute(Void result) {
+		protected void onPostExecute(MessageContainer result) {
+
+			// Send SMS Message
+			sendSmsMessage(result);
+
 			Intent newMsgIntent = new Intent(
 					SmsMessageHandler.UPDATE_MSG_INTENT);
 			getContext().sendBroadcast(newMsgIntent);
+			
+			//Enable send button
+			//sendMessageImageButton.setEnabled(true);
 		}
 	}
 
@@ -174,7 +188,7 @@ public class ConversationActivity extends Activity {
 		registerNewMsgReceiver();
 		fillConversationListView();
 		MessageContainer draft = GetDraft();
-		if(draft!=null)
+		if (draft != null)
 			messageEditText.setText(draft.getBody());
 		super.onResume();
 	}
@@ -187,6 +201,7 @@ public class ConversationActivity extends Activity {
 
 	public void fillConversationListView() {
 		closeExistingNotifications();
+		MessageContainer.groupContainsPendingMessage = false;
 		ArrayList<MessageContainer> msgList = getSmsMessageHandler()
 				.getConversationWithUser(contactPhoneNumber);
 		getSmsMessageHandler().close();
@@ -200,6 +215,12 @@ public class ConversationActivity extends Activity {
 		getConversationListView().setAdapter(messageContainerAdapter);
 
 		scrollListViewToBottom();
+		
+		if(MessageContainer.groupContainsPendingMessage)
+			sendMessageImageButton.setEnabled(false);
+		else
+			sendMessageImageButton.setEnabled(true);
+			
 
 	}
 
@@ -231,7 +252,8 @@ public class ConversationActivity extends Activity {
 		registerReceiver(newMsgReceiver, filter);
 	}
 
-	public void sendSmsMessage(final String phoneNumber, final String message) {
+	public void handleSmsMessageSend(final String phoneNumber,
+			final String message) {
 
 		sendMessageImageButton.setEnabled(false);
 		if (message.length() > SmsMessageHandler.SMS_MESSAGE_LENGTH) {
@@ -250,90 +272,38 @@ public class ConversationActivity extends Activity {
 				SmsMessageHandler.MSG_TYPE_OUT);
 		messageContainer.setPhoneNumber(phoneNumber);
 		messageContainer.setBody(message);
+		messageContainer.setDate(Calendar.getInstance().getTimeInMillis());
+		messageContainer.setStatus(SmsMessageHandler.SMS_PENDING);
 
-		PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(
-				SmsMessageHandler.SMS_SENT), 0);
+		MessageContainer[] msgArr = { messageContainer };
+		SaveNewMessageToDbTask saveThread = new SaveNewMessageToDbTask();
+		saveThread.execute(msgArr);
+		messageEditText.setText("");
+	}
 
-		PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
-				new Intent(SmsMessageHandler.SMS_DELIVERED), 0);
+	public void sendSmsMessage(MessageContainer messageContainer) {
+		
+		// Intent for send
+		Intent sentIntent = new Intent("edu.utsa.cs.smsmessenger.SMS_SENT");
+		sentIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer", messageContainer);
+		
+		PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, 0,
+				sentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-		final Context context = this.getContext();
-		// ---when the SMS has been sent---
-		registerReceiver(new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context arg0, Intent arg1) {
-				Log.d("ConversationActivity", "OnReceive getResultCode: "
-						+ getResultCode());
-				switch (getResultCode()) {
-				case Activity.RESULT_OK:
-					Toast.makeText(
-							getBaseContext(),
-							context.getResources().getString(
-									R.string.sms_message_sent),
-							Toast.LENGTH_SHORT).show();
-					messageContainer.setDate(Calendar.getInstance()
-							.getTimeInMillis());
-					messageContainer.setStatus(SmsMessageHandler.SMS_SENT);
+		// Intent for delivery
+		Intent deliveredIntent = new Intent(
+				"edu.utsa.cs.smsmessenger.SMS_DELIVERED");
+		deliveredIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer", messageContainer);
+		
+		PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this,
+				0, deliveredIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-					MessageContainer[] msgArr = { messageContainer };
-					SaveNewMessageToDbTask saveThread = new SaveNewMessageToDbTask();
-					saveThread.execute(msgArr);
-					messageEditText.setText("");
-					break;
-				case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-				case SmsManager.RESULT_ERROR_NULL_PDU:
-					Toast.makeText(
-							getBaseContext(),
-							context.getResources().getString(
-									R.string.sms_send_failed),
-							Toast.LENGTH_SHORT).show();
-					break;
-				case SmsManager.RESULT_ERROR_NO_SERVICE:
-					Toast.makeText(
-							getBaseContext(),
-							context.getResources().getString(
-									R.string.sms_no_service),
-							Toast.LENGTH_SHORT).show();
-					break;
-				case SmsManager.RESULT_ERROR_RADIO_OFF:
-					Toast.makeText(
-							getBaseContext(),
-							context.getResources().getString(
-									R.string.sms_no_signal), Toast.LENGTH_SHORT)
-							.show();
-					break;
-				}
-				sendMessageImageButton.setEnabled(true);
-				unregisterReceiver(this);
-			}
-		}, new IntentFilter(SmsMessageHandler.SMS_SENT));
-
-		// ---when the SMS has been delivered---
-		registerReceiver(new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context arg0, Intent arg1) {
-				switch (getResultCode()) {
-				case Activity.RESULT_OK:
-					Toast.makeText(
-							getBaseContext(),
-							context.getResources().getString(
-									R.string.sms_delivered), Toast.LENGTH_SHORT)
-							.show();
-					break;
-				case Activity.RESULT_CANCELED:
-					Toast.makeText(
-							getBaseContext(),
-							context.getResources().getString(
-									R.string.sms_not_delivered),
-							Toast.LENGTH_SHORT).show();
-					break;
-				}
-				unregisterReceiver(this);
-			}
-		}, new IntentFilter(SmsMessageHandler.SMS_DELIVERED));
-
+		// Send Message
 		SmsManager sms = SmsManager.getDefault();
-		sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+		sms.sendTextMessage(messageContainer.getPhoneNumber(), null,
+				messageContainer.getBody(), sentPendingIntent,
+				null);
+
 	}
 
 	private Context getContext() {
@@ -362,8 +332,11 @@ public class ConversationActivity extends Activity {
 	}
 
 	private MessageContainer GetDraft() {
-		String selectString = SmsMessageHandler.COL_NAME_PHONE_NUMBER + " = ? AND " + SmsMessageHandler.COL_NAME_STATUS + " = ? ";
-		String[] selectArgs = { ContactsUtil.getStrippedPhoneNumber(contact.getPhoneNumber()), SmsMessageHandler.SMS_DRAFT };
+		String selectString = SmsMessageHandler.COL_NAME_PHONE_NUMBER
+				+ " = ? AND " + SmsMessageHandler.COL_NAME_STATUS + " = ? ";
+		String[] selectArgs = {
+				ContactsUtil.getStrippedPhoneNumber(contact.getPhoneNumber()),
+				SmsMessageHandler.SMS_DRAFT };
 		String sortOrder = SmsMessageHandler.COL_NAME_DATE + " DESC";
 
 		ArrayList<MessageContainer> newDraftList = getSmsMessageHandler()

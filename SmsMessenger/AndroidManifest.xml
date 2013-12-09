@@ -62,6 +62,18 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
+        <receiver android:name="edu.utsa.cs.smsmessenger.receiver.SentSmsMessageReceiver" android:exported="false">
+            <intent-filter android:priority="9999">
+                <action android:name="edu.utsa.cs.smsmessenger.SMS_SENT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name="edu.utsa.cs.smsmessenger.receiver.DeliveredSmsMessageReceiver" android:exported="false">
+            <intent-filter android:priority="9999" >
+                <action android:name="edu.utsa.cs.smsmessenger.SMS_DELIVERED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
 
         
     </application>

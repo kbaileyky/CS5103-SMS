@@ -120,7 +120,13 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(message.getDate());
-		msgDateTextView.setText(sdf.format(cal.getTime()));
+		
+		if(SmsMessageHandler.SMS_PENDING.equals(message.getStatus()))
+			msgDateTextView.setText("Sending... >");
+		else if(SmsMessageHandler.SMS_FAILED.equals(message.getStatus()))
+			msgDateTextView.setText("Failed.");
+		else
+			msgDateTextView.setText(sdf.format(cal.getTime()));
 
 		if (message.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
 			if (contact.getDisplayName() != null) {
@@ -271,5 +277,4 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 			smsMessageHandler = new SmsMessageHandler(context);
 		return smsMessageHandler;
 	}
-
 }
