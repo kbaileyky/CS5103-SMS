@@ -11,10 +11,8 @@ import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -69,13 +67,13 @@ public class NewConversationActivity extends Activity {
 			String message = newMessageEditText.getText().toString();
 
 			if (ContactsUtil.isAPhoneNumber(number)) {
-				sendSmsMessage(number, message);
+				handleSmsMessageSend(number, message);
 			} else {
 				String phoneNumber = ContactsUtil.getPhoneNumberByContactName(
 						getActivity().getContentResolver(), number);
 				if (phoneNumber != null) {
 					if (!sent) {
-						sendSmsMessage(phoneNumber, message);
+						handleSmsMessageSend(phoneNumber, message);
 					}
 					Log.d("NewConversationActivity", "" + sent);
 				}
@@ -164,8 +162,12 @@ public class NewConversationActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(MessageContainer result) {
+			// Clear input fields
 			newMessageEditText.setText("");
 			newRecipientTextView.setText("");
+
+			// Send SMS Message
+			sendSmsMessage(result);
 
 			Intent coversationIntent = new Intent(getContext(),
 					ConversationActivity.class);
@@ -276,7 +278,8 @@ public class NewConversationActivity extends Activity {
 		newRecipientTextView.setText(name);
 	}
 
-	public void sendSmsMessage(final String phoneNumber, final String message) {
+	public void handleSmsMessageSend(final String phoneNumber,
+			final String message) {
 
 		String strippedNumber = ContactsUtil
 				.getStrippedPhoneNumber(phoneNumber);
@@ -299,66 +302,36 @@ public class NewConversationActivity extends Activity {
 		messageContainer.setContactId(contact.getId());
 		messageContainer.setPhoneNumber(strippedNumber);
 		messageContainer.setBody(message);
+		messageContainer.setDate(Calendar.getInstance().getTimeInMillis());
+		messageContainer.setStatus(SmsMessageHandler.SMS_PENDING);
 
-		final MessageContainer finalMessageContainer = messageContainer;
+		// Save Message in DB then send
+		MessageContainer[] msgArr = { messageContainer };
+		SaveNewMessageToDbStartConversationTask saveThread = new SaveNewMessageToDbStartConversationTask();
+		saveThread.execute(msgArr);
+	}
 
-		PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(
-				SmsMessageHandler.SMS_SENT), 0);
+	public void sendSmsMessage(MessageContainer messageContainer) {
 
-		// PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
-		// new Intent(SmsMessageHandler.SMS_DELIVERED), 0);
+		// Intent for send
+		Intent sentIntent = new Intent("edu.utsa.cs.smsmessenger.SMS_SENT");
+		sentIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer", messageContainer);
+		
+		PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, 0,
+				sentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-		// ---when the SMS has been sent---
-		BroadcastReceiver sendMessageBroadcastReceiver = new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				switch (getResultCode()) {
-				case Activity.RESULT_OK:
-					Toast.makeText(
-							getBaseContext(),
-							context.getResources().getString(
-									R.string.sms_message_sent),
-							Toast.LENGTH_SHORT).show();
-					finalMessageContainer.setDate(Calendar.getInstance()
-							.getTimeInMillis());
-					finalMessageContainer.setStatus(SmsMessageHandler.SMS_SENT);
+		// Intent for delivery
+		Intent deliveredIntent = new Intent(
+				"edu.utsa.cs.smsmessenger.SMS_DELIVERED");
+		deliveredIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer", messageContainer);
+		PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this,
+				0, deliveredIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-					MessageContainer[] msgArr = { finalMessageContainer };
-					SaveNewMessageToDbStartConversationTask saveThread = new SaveNewMessageToDbStartConversationTask();
-					saveThread.execute(msgArr);
-					break;
-				case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-					Toast.makeText(
-							getBaseContext(),
-							context.getResources().getString(
-									R.string.sms_send_failed),
-							Toast.LENGTH_SHORT).show();
-					break;
-				case SmsManager.RESULT_ERROR_NO_SERVICE:
-				case SmsManager.RESULT_ERROR_NULL_PDU:
-					Toast.makeText(
-							getBaseContext(),
-							context.getResources().getString(
-									R.string.sms_no_service),
-							Toast.LENGTH_SHORT).show();
-					break;
-				case SmsManager.RESULT_ERROR_RADIO_OFF:
-					Toast.makeText(
-							getBaseContext(),
-							context.getResources().getString(
-									R.string.sms_no_signal), Toast.LENGTH_SHORT)
-							.show();
-					break;
-				}
-				sendNewMessageButton.setEnabled(true);
-				unregisterReceiver(this);
-			}
-		};
-		registerReceiver(sendMessageBroadcastReceiver, new IntentFilter(
-				SmsMessageHandler.SMS_SENT));
-
+		// Send Message
 		SmsManager sms = SmsManager.getDefault();
-		sms.sendTextMessage(strippedNumber, null, message, sentPI, null);
+		sms.sendTextMessage(messageContainer.getPhoneNumber(), null,
+				messageContainer.getBody(), sentPendingIntent,
+				null);
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {
@@ -403,7 +376,7 @@ public class NewConversationActivity extends Activity {
 		String phoneNumber = newRecipientTextView.getText().toString().trim();
 
 		if (!messageBody.isEmpty() || !phoneNumber.isEmpty()) {
-			if(!messageBody.isEmpty() && !phoneNumber.isEmpty())
+			if (!messageBody.isEmpty() && !phoneNumber.isEmpty())
 				sendNewMessageButton.setEnabled(true);
 			// Save message as new draft
 			MessageContainer message = new MessageContainer();

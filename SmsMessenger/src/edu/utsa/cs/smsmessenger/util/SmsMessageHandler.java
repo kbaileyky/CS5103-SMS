@@ -1,6 +1,7 @@
 package edu.utsa.cs.smsmessenger.util;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -30,8 +31,11 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	public static final int SMS_MESSAGE_LENGTH = 160;
 	public static final int MAX_CONVERSATIONS = 256;
 	public static final int MAX_MSGS_IN_CONVERSATION = 256;
+	public static final int PENDING_MSG_TIMEOUT_SEC = 60;
 
 	// Message status
+	public static final String SMS_SCHEDULED = "SMS_SCHEDULED";
+	public static final String SMS_PENDING = "SMS_PENDING";
 	public static final String SMS_NEW_DRAFT = "SMS_NEW_DRAFT";
 	public static final String SMS_DRAFT = "SMS_DRAFT";
 	public static final String SMS_SENT = "SMS_SENT";
@@ -135,8 +139,9 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	 *         updated.
 	 */
 	public int updateSmsMessage(MessageContainer message) {
+		
 		SQLiteDatabase db = this.getReadableDatabase();
-
+		
 		// New value for one column
 		ContentValues values = new ContentValues();
 		values.put(COL_NAME_PHONE_NUMBER, message.getPhoneNumber());
@@ -207,8 +212,20 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 				msg.setBody(c.getString(c.getColumnIndex(COL_NAME_BODY)));
 				msg.setRead(c.getInt(c.getColumnIndex(COL_NAME_READ)) == 0 ? false
 						: true);
-				msg.setStatus(c.getString(c.getColumnIndex(COL_NAME_STATUS)));
 				msg.setType(table);
+
+				if (SMS_PENDING.equals(c.getString(c
+						.getColumnIndex(COL_NAME_STATUS)))) {
+					if (msg.getDate() + (PENDING_MSG_TIMEOUT_SEC * 1000) < Calendar
+							.getInstance().getTimeInMillis())
+						msg.setStatus(SMS_FAILED);
+					else
+					{
+						msg.setStatus(SMS_PENDING);
+						MessageContainer.groupContainsPendingMessage = true;
+					}
+				} else
+					msg.setStatus(c.getString(c.getColumnIndex(COL_NAME_STATUS)));
 
 				msgList.add(msg);
 			} while (c.moveToNext());
@@ -243,13 +260,12 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 				+ toMsgList.size());
 
 		fromMsgList.addAll(toMsgList);
-		ArrayList<MessageContainer> msgList = fromMsgList; 
+		ArrayList<MessageContainer> msgList = fromMsgList;
 		Collections.sort(msgList);
-		
-		if(msgList.size()>MAX_MSGS_IN_CONVERSATION)
-		{
-			for(int count = 0; count < msgList.size() - MAX_MSGS_IN_CONVERSATION; count++)
-			{
+
+		if (msgList.size() > MAX_MSGS_IN_CONVERSATION) {
+			for (int count = 0; count < msgList.size()
+					- MAX_MSGS_IN_CONVERSATION; count++) {
 				deleteMessage(msgList.get(0));
 				msgList.remove(0);
 			}
@@ -317,37 +333,39 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 		Collections.sort(msgList, Collections.reverseOrder());
 
 		HashMap<String, ConversationPreview> convPrevList = new HashMap<String, ConversationPreview>();
-		
+
 		ArrayList<String> conversationsToDelete = new ArrayList<String>();
 		for (MessageContainer msg : msgList) {
-			Log.d("SmsMessageHandler", "convPrevList.size():" +convPrevList.size() );
+			Log.d("SmsMessageHandler",
+					"convPrevList.size():" + convPrevList.size());
 			// Since they are in order, no need to check if next is more recent
 			if (!convPrevList.containsKey(msg.getPhoneNumber())) {
 				if (convPrevList.size() < MAX_CONVERSATIONS) {
 					ConversationPreview preview = new ConversationPreview(
-							msg.getBody(), 
-							( msg.isRead() || msg.getType() == MSG_TYPE_OUT ? 0 : 1),
+							msg.getBody(), (msg.isRead()
+									|| msg.getType() == MSG_TYPE_OUT ? 0 : 1),
 							msg.getDate(), msg.getPhoneNumber(),
 							msg.getContactId());
 					convPrevList.put(msg.getPhoneNumber(), preview);
-				}
-				else
-				{
-					Log.d("SmsMessageHandler", "convPrevList.size(): " +convPrevList.size() + ", MAX: " + MAX_CONVERSATIONS);
-					if(!conversationsToDelete.contains(msg.getPhoneNumber()))
+				} else {
+					Log.d("SmsMessageHandler", "convPrevList.size(): "
+							+ convPrevList.size() + ", MAX: "
+							+ MAX_CONVERSATIONS);
+					if (!conversationsToDelete.contains(msg.getPhoneNumber()))
 						conversationsToDelete.add(msg.getPhoneNumber());
 				}
 			} else {
 				ConversationPreview existing = convPrevList.get(msg
 						.getPhoneNumber());
-				Log.d("SmsMessageHandler", "Message from " + msg.getPhoneNumber() + " is not read: " + !msg.isRead());
+				Log.d("SmsMessageHandler",
+						"Message from " + msg.getPhoneNumber()
+								+ " is not read: " + !msg.isRead());
 				existing.incremtNotReadCount(!msg.isRead());
 			}
 		}
-		//Delete all conversations that exceed the limit
-		if(conversationsToDelete.size()>0)
-		{
-			for(String phoneNumber : conversationsToDelete)
+		// Delete all conversations that exceed the limit
+		if (conversationsToDelete.size() > 0) {
+			for (String phoneNumber : conversationsToDelete)
 				deleteConversation(phoneNumber);
 		}
 		return convPrevList;
@@ -429,7 +447,8 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * This method uses deletes all outgoing message with a DRAFT status for a phone number
+	 * This method uses deletes all outgoing message with a DRAFT status for a
+	 * phone number
 	 * 
 	 * @return returns true if delete affected more that one row in any table,
 	 *         returns false if no rows were deleted.
