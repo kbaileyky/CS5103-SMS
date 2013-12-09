@@ -42,6 +42,10 @@
             android:name="edu.utsa.cs.smsmessenger.activity.AppSettingsActivity"
             android:label="@string/settings_title" >
         </activity>
+          <activity
+            android:name="edu.utsa.cs.smsmessenger.activity.ScheduledMessageList"
+            android:label="@string/scheduled_message_title" >
+        </activity>
         <activity
             android:name="edu.utsa.cs.smsmessenger.activity.SearchActivity"
             android:label="@string/search_activity_title"

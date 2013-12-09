@@ -108,6 +108,10 @@ public class ConversationsListActivity extends Activity implements
 			Intent settingsIntent = new Intent(this, AppSettingsActivity.class);
 			startActivity(settingsIntent);
 			break;
+		case R.id.action_sched_messages:
+			Intent scheduledIntent = new Intent(this, ScheduledMessageList.class);
+			startActivity(scheduledIntent);
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}

@@ -16,5 +16,10 @@
         android:orderInCategory="300"
         android:showAsAction="never"
         android:title="@string/action_settings" android:icon="@drawable/hg_settings_icon"/>
+    <item
+        android:id="@+id/action_sched_messages"
+        android:orderInCategory="400"
+        android:showAsAction="collapseActionView"
+        android:title="@string/action_sched_messages" android:icon="@drawable/hg_timer_icon"/>
 
 </menu>

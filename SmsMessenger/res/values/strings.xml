@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Mercury Messenger</string>
     <string name="action_new_message">New Message</string>
     <string name="action_settings">Settings</string>
@@ -15,8 +16,8 @@
     <string name="sms_message_settings_title">SMS Message Settings</string>
     <string name="sms_propagation_chk_bx">Allow SMS message propagation</string>
     <string name="settings_title">App Settings</string>
-	<string name="message_search_hint">Search for message</string>
-	<string name="search_activity_title">Message Search Results</string>
+    <string name="message_search_hint">Search for message</string>
+    <string name="search_activity_title">Message Search Results</string>
     <string name="action_reply">Reply</string>
     <string name="action_forward">Forward</string>
     <string name="action_delete">Delete</string>
@@ -37,5 +38,8 @@
     <string name="sms_delivered">Message delivered.</string>
     <string name="sms_not_delivered">Failed to deliver message.</string>
     <string name="date_time_format">MM/dd/yyyy h:mm:ss a</string>
+    <string name="action_sched_messages">Scheduled Messages</string>
+    <string name="action_conversation_list">Conversations</string>
+    <string name="scheduled_message_title">Scheduled Messages</string>
 
 </resources>
