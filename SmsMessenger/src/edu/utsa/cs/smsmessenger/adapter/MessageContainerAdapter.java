@@ -189,38 +189,52 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 			updateThread.execute(msgArr);
 		}
 
+		final View finalConvertView = convertView;
 		final MessageContainer finalMessage = message;
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				try {
-					Intent viewMsgIntent = new Intent(context,
-							ViewMessageActivity.class);
 
-					// store message details in
-					viewMsgIntent.putExtra(
-							SmsMessageHandler.COL_NAME_PHONE_NUMBER,
-							finalMessage.getPhoneNumber());
-					viewMsgIntent.putExtra(
-							SmsMessageHandler.COL_NAME_CONTACT_ID,
-							finalMessage.getContactId());
-					viewMsgIntent.putExtra("contactName",
-							finalMessage.getPhoneNumber());
-					viewMsgIntent.putExtra("timeAndDate",
-							finalMessage.getDate());
-					viewMsgIntent.putExtra("msgBody", finalMessage.getBody());
-					viewMsgIntent.putExtra("msgType", finalMessage.getType());
-					viewMsgIntent.putExtra("msgID", finalMessage.getId());
+				Handler handler = new Handler();
 
-					context.startActivity(viewMsgIntent);
+				finalConvertView.startAnimation(clickAnimation);
+				handler.postDelayed(new Runnable() {
 
-				} catch (Exception x) {
-					finalMessage.setBody(x.getMessage());
-				}
+					@Override
+					public void run() {
+						try {
+							Intent viewMsgIntent = new Intent(context,
+									ViewMessageActivity.class);
+
+							// store message details in
+							viewMsgIntent.putExtra(
+									SmsMessageHandler.COL_NAME_PHONE_NUMBER,
+									finalMessage.getPhoneNumber());
+							viewMsgIntent.putExtra(
+									SmsMessageHandler.COL_NAME_CONTACT_ID,
+									finalMessage.getContactId());
+							viewMsgIntent.putExtra("contactName",
+									finalMessage.getPhoneNumber());
+							viewMsgIntent.putExtra("timeAndDate",
+									finalMessage.getDate());
+							viewMsgIntent.putExtra("msgBody",
+									finalMessage.getBody());
+							viewMsgIntent.putExtra("msgType",
+									finalMessage.getType());
+							viewMsgIntent.putExtra("msgID",
+									finalMessage.getId());
+
+							context.startActivity(viewMsgIntent);
+
+						} catch (Exception x) {
+							finalMessage.setBody(x.getMessage());
+						}
+					}
+
+				}, AppConstants.DELAY_FOR_CLICK_ANIMATION);
 
 			}
 		});
-		final View finalConvertView = convertView;
 		convertView.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
@@ -292,20 +306,23 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 
 												Handler dhandler = new Handler();
 
-												finalConvertView.startAnimation(deleteAnimation);
+												finalConvertView
+														.startAnimation(deleteAnimation);
 												dhandler.postDelayed(
-													new Runnable(){
+														new Runnable() {
 
-														@Override
-														public void run() {	
-															finalConvertView.setVisibility(View.INVISIBLE);
-															MessageContainer[] msgArr = { finalMessage };
-															DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
-															deleteThread.execute(msgArr);
-														}
-														
-													}
-													, AppConstants.DELAY_FOR_DELETE_ANIMATION);
+															@Override
+															public void run() {
+																finalConvertView
+																		.setVisibility(View.INVISIBLE);
+																MessageContainer[] msgArr = { finalMessage };
+																DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
+																deleteThread
+																		.execute(msgArr);
+															}
+
+														},
+														AppConstants.DELAY_FOR_DELETE_ANIMATION);
 											} else {
 												Intent intent = new Intent(
 														Intent.ACTION_INSERT);
@@ -325,20 +342,23 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 											} else {
 
 												Handler dhandler = new Handler();
-												finalConvertView.startAnimation(deleteAnimation);
+												finalConvertView
+														.startAnimation(deleteAnimation);
 												dhandler.postDelayed(
-													new Runnable(){
+														new Runnable() {
 
-														@Override
-														public void run() {	
-															finalConvertView.setVisibility(View.INVISIBLE);
-															MessageContainer[] msgArr = { finalMessage };
-															DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
-															deleteThread.execute(msgArr);
-														}
-														
-													}
-													, AppConstants.DELAY_FOR_DELETE_ANIMATION);
+															@Override
+															public void run() {
+																finalConvertView
+																		.setVisibility(View.INVISIBLE);
+																MessageContainer[] msgArr = { finalMessage };
+																DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
+																deleteThread
+																		.execute(msgArr);
+															}
+
+														},
+														AppConstants.DELAY_FOR_DELETE_ANIMATION);
 											}
 											break;
 										case 3:
