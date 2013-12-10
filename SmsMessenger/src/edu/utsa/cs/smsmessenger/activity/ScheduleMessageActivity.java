@@ -6,12 +6,12 @@ import java.util.Calendar;
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.fragment.DatePickerFragment;
 import edu.utsa.cs.smsmessenger.fragment.TimePickerFragment;
-import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -23,6 +23,14 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+/**
+ * This class is the Activity that shows scheduled message options.
+ * 
+ * @author Michael Madrigal
+ * @version 1.1
+ * @since 1.1
+ * 
+ */
 public class ScheduleMessageActivity extends Activity {
 
 	public static final String SCHEDULE_RESQUEST_DATE_KEY = "edu.utsa.cs.smsmessenger.SCHEDULE_RESQUEST";
@@ -50,6 +58,7 @@ public class ScheduleMessageActivity extends Activity {
 		timeEditText = (EditText)findViewById(R.id.scheduleMsgTimeEditText);
 		dateEditText = (EditText)findViewById(R.id.scheduleMsgDateEditText);
 		
+		final Context context = this;
 		this.dateSdf = new SimpleDateFormat(getResources().getString(
 				R.string.date_format), getResources()
 				.getConfiguration().locale);
@@ -114,7 +123,7 @@ public class ScheduleMessageActivity extends Activity {
 							timeEditText.setText(timeSdf.format(scheduleDate.getTime()));
 						}
 						else
-							ShowToastMessage("Error: Date in the past");
+							ShowToastMessage(context.getResources().getString(R.string.error_date_in_past));
 	                 }
 	              };
 	              newFragment.show(getActivity().getFragmentManager(), "datePicker");
@@ -154,7 +163,7 @@ public class ScheduleMessageActivity extends Activity {
 							dateEditText.setText(dateSdf.format(scheduleDate.getTime()));
 						}
 						else
-							ShowToastMessage("Error: Date in the past");
+							ShowToastMessage(context.getResources().getString(R.string.error_date_in_past));
 	                		 
 	                 }
 	              };

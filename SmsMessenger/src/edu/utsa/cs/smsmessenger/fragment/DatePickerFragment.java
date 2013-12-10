@@ -8,6 +8,14 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.widget.DatePicker;
 
+/**
+ * This class is used to create a date picker dialog
+ * 
+ * @author Michael Madrigal
+ * @version 1.1
+ * @since 1.1
+ * 
+ */
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 	
     @Override

@@ -1,7 +1,5 @@
 package edu.utsa.cs.smsmessenger.receiver;
 
-import java.util.Calendar;
-
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
@@ -13,11 +11,22 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Toast;
 
+/**
+ * This class listens for delivered SMS messages and broadcasts intents to
+ * activities.
+ * 
+ * @author Michael Madrigal
+ * @version 1.1
+ * @since 1.1
+ * 
+ */
 public class DeliveredSmsMessageReceiver extends BroadcastReceiver {
 
 	private SmsMessageHandler smsMessageHandler;
 	private Context context;
-	private class UpdateMessagesInDbTask extends AsyncTask<MessageContainer, Void, Void> {
+
+	private class UpdateMessagesInDbTask extends
+			AsyncTask<MessageContainer, Void, Void> {
 		@Override
 		protected Void doInBackground(MessageContainer... messages) {
 			if (context != null) {
@@ -36,6 +45,7 @@ public class DeliveredSmsMessageReceiver extends BroadcastReceiver {
 			context.sendBroadcast(updateSentMessageIntent);
 		}
 	}
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		this.context = context;
@@ -45,14 +55,17 @@ public class DeliveredSmsMessageReceiver extends BroadcastReceiver {
 
 		switch (getResultCode()) {
 		case Activity.RESULT_OK:
-			//message.setDate(Calendar.getInstance().getTimeInMillis());
+			// message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_DELIVERED);
-			updateDatabase(context, message, context.getResources().getString(R.string.sms_delivered));
+			updateDatabase(context, message,
+					context.getResources().getString(R.string.sms_delivered));
 			break;
 		case Activity.RESULT_CANCELED:
-			//message.setDate(Calendar.getInstance().getTimeInMillis());
+			// message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
-			updateDatabase(context, message, context.getResources().getString(R.string.sms_not_delivered));
+			updateDatabase(context, message,
+					context.getResources()
+							.getString(R.string.sms_not_delivered));
 			break;
 		}
 	}
@@ -62,13 +75,14 @@ public class DeliveredSmsMessageReceiver extends BroadcastReceiver {
 			smsMessageHandler = new SmsMessageHandler(context);
 		return smsMessageHandler;
 	}
+
 	private void updateDatabase(Context context, MessageContainer message,
 			String displayMessage) {
 
 		MessageContainer[] msgArr = { message };
 		UpdateMessagesInDbTask saveThread = new UpdateMessagesInDbTask();
 		saveThread.execute(msgArr);
-		
+
 		Toast.makeText(context, displayMessage, Toast.LENGTH_SHORT).show();
 	}
 }

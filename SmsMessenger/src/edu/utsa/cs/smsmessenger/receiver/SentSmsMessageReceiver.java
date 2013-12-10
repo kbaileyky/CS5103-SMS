@@ -15,12 +15,22 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * This class listens for sent SMS messages and broadcasts intents to
+ * activities.
+ * 
+ * @author Michael Madrigal
+ * @version 1.1
+ * @since 1.1
+ * 
+ */
 public class SentSmsMessageReceiver extends BroadcastReceiver {
 
 	private SmsMessageHandler smsMessageHandler;
 	private Context context;
-	
-	private class UpdateMessagesInDbTask extends AsyncTask<MessageContainer, Void, Void> {
+
+	private class UpdateMessagesInDbTask extends
+			AsyncTask<MessageContainer, Void, Void> {
 		@Override
 		protected Void doInBackground(MessageContainer... messages) {
 			if (context != null) {
@@ -45,7 +55,7 @@ public class SentSmsMessageReceiver extends BroadcastReceiver {
 		Log.d("SentSmsMessageReceiver", "OnReceive getResultCode: "
 				+ getResultCode());
 		this.context = context;
-		
+
 		final Bundle bundle = intent.getExtras();
 		MessageContainer message = (MessageContainer) bundle
 				.getSerializable("edu.utsa.cs.smsmessenger.MessageContainer");
@@ -54,23 +64,27 @@ public class SentSmsMessageReceiver extends BroadcastReceiver {
 		case Activity.RESULT_OK:
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_SENT);
-			updateDatabase(context, message, context.getResources().getString(R.string.sms_message_sent));
+			updateDatabase(context, message,
+					context.getResources().getString(R.string.sms_message_sent));
 			break;
 		case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
-			updateDatabase(context, message, context.getResources().getString(R.string.sms_send_failed));
+			updateDatabase(context, message,
+					context.getResources().getString(R.string.sms_send_failed));
 			break;
 		case SmsManager.RESULT_ERROR_NULL_PDU:
 		case SmsManager.RESULT_ERROR_NO_SERVICE:
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
-			updateDatabase(context, message, context.getResources().getString(R.string.sms_no_service));
+			updateDatabase(context, message,
+					context.getResources().getString(R.string.sms_no_service));
 			break;
 		case SmsManager.RESULT_ERROR_RADIO_OFF:
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
-			updateDatabase(context, message, context.getResources().getString(R.string.sms_no_signal));
+			updateDatabase(context, message,
+					context.getResources().getString(R.string.sms_no_signal));
 			break;
 		}
 	}
@@ -83,11 +97,11 @@ public class SentSmsMessageReceiver extends BroadcastReceiver {
 
 	private void updateDatabase(Context context, MessageContainer message,
 			String displayMessage) {
-		
+
 		MessageContainer[] msgArr = { message };
 		UpdateMessagesInDbTask saveThread = new UpdateMessagesInDbTask();
 		saveThread.execute(msgArr);
-		
+
 		Toast.makeText(context, displayMessage, Toast.LENGTH_SHORT).show();
 	}
 }

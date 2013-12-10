@@ -1,6 +1,7 @@
 package edu.utsa.cs.smsmessenger.adapter;
 
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -27,6 +28,15 @@ import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
+/**
+ * This class is used to adapter and fill a ListView with an ArrayList of
+ * MessageContainer objects representing scheduled messages
+ * 
+ * @author Michael Madrigal
+ * @version 1.1
+ * @since 1.1
+ * 
+ */
 public class ScheduledMessageContainerAdapter extends
 		ArrayAdapter<MessageContainer> {
 
@@ -144,7 +154,9 @@ public class ScheduledMessageContainerAdapter extends
 			public boolean onLongClick(View arg0) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						context);
-				final CharSequence[] items = { "Delete", "Cancel" };
+				final CharSequence[] items = { context.getResources().getString(
+						R.string.action_delete), context.getResources().getString(
+								R.string.decline_desicion) };
 				alertDialogBuilder.setItems(items,
 						new DialogInterface.OnClickListener() {
 							@Override

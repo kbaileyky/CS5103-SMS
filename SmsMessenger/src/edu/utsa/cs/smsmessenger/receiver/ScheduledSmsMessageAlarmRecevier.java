@@ -16,6 +16,15 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * This class listens for Alarms for scheduled SMS messages and broadcasts
+ * intents to activities.
+ * 
+ * @author Michael Madrigal
+ * @version 1.1
+ * @since 1.1
+ * 
+ */
 public class ScheduledSmsMessageAlarmRecevier extends BroadcastReceiver {
 
 	private SmsMessageHandler smsMessageHandler;
@@ -58,8 +67,9 @@ public class ScheduledSmsMessageAlarmRecevier extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		this.context = context;
-		
-		Log.d("ScheduledSmsMessageAlarmRecevier", "onReceive() called at " + Calendar.getInstance().getTime());
+
+		Log.d("ScheduledSmsMessageAlarmRecevier", "onReceive() called at "
+				+ Calendar.getInstance().getTime());
 		String selectString = SmsMessageHandler.COL_NAME_DATE + " < ?";
 		String[] selectArgs = { String.valueOf(Calendar.getInstance()
 				.getTimeInMillis()) };

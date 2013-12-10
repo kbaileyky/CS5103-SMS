@@ -96,10 +96,9 @@ public class ConversationPreviewAdapter extends
 
 		// Get the ConversationPreview object
 		ConversationPreview preview = objects.get(position);
-		ContactContainer contact = ContactsUtil
-		.getContactByPhoneNumber(context.getContentResolver(),
-				preview.getPhoneNumber());
-		
+		ContactContainer contact = ContactsUtil.getContactByPhoneNumber(
+				context.getContentResolver(), preview.getPhoneNumber());
+
 		// Set the view item values
 		previewTextView.setText(preview.getPreviewText());
 		countTextView.setText(String.valueOf(preview.getNotReadCount()));
@@ -109,20 +108,15 @@ public class ConversationPreviewAdapter extends
 		if (preview.getNotReadCount() < 1)
 			countTextView.setVisibility(View.INVISIBLE);
 
-		if(contact.getDisplayName()!=null)
-		{
+		if (contact.getDisplayName() != null) {
 			contactNameTextView.setText(contact.getDisplayName());
-			if (contact.getPhotoUri() != null) 
-			{
+			if (contact.getPhotoUri() != null) {
 				contactImageView.setImageURI(Uri.parse(contact.getPhotoUri()));
-				if(contactImageView.getDrawable()==null)
+				if (contactImageView.getDrawable() == null)
 					contactImageView.setImageResource(R.drawable.hg_contact);
-			} 
-			else
+			} else
 				contactImageView.setImageResource(R.drawable.hg_contact);
-		}
-		else
-		{
+		} else {
 			contactNameTextView.setText(contact.getPhoneNumber());
 			contactImageView.setImageResource(R.drawable.hg_new_contact);
 		}
@@ -153,10 +147,19 @@ public class ConversationPreviewAdapter extends
 				// number
 				final CharSequence[] items;
 				if (finalContact.getDisplayName() != null)
-					items = new CharSequence[] { "Delete", "Cancel" };
+					items = new CharSequence[] {
+							context.getResources().getString(
+									R.string.action_delete),
+							context.getResources().getString(
+									R.string.decline_desicion) };
 				else
-					items = new CharSequence[] { "Add to contacts", "Delete",
-							"Cancel" };
+					items = new CharSequence[] {
+							context.getResources().getString(
+									R.string.action_add_to_contacts),
+							context.getResources().getString(
+									R.string.action_delete),
+							context.getResources().getString(
+									R.string.decline_desicion) };
 
 				// Create alert dialog options to Add phone number to contacts,
 				// Delete conversation, or Cancel

@@ -9,6 +9,14 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.widget.TimePicker;
 
+/**
+ * This class is used to create a time picker dialog
+ * 
+ * @author Michael Madrigal
+ * @version 1.1
+ * @since 1.1
+ * 
+ */
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
 
 	@Override

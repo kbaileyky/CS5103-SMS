@@ -51,11 +51,15 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 			if (context != null) {
 				for (MessageContainer msg : objects) {
 					getSmsMessageHandler().deleteMessage(msg);
-					if(msg.getType().equals(SmsMessageHandler.MSG_TYPE_SCHEDULED))
-					{
-						AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-						Intent intent = new Intent("edu.utsa.cs.smsmessenger.SMS_SCHEDULED");
-						PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)msg.getId(), intent, PendingIntent.FLAG_NO_CREATE);
+					if (msg.getType().equals(
+							SmsMessageHandler.MSG_TYPE_SCHEDULED)) {
+						AlarmManager alarmMgr = (AlarmManager) context
+								.getSystemService(Context.ALARM_SERVICE);
+						Intent intent = new Intent(
+								"edu.utsa.cs.smsmessenger.SMS_SCHEDULED");
+						PendingIntent pendingIntent = PendingIntent
+								.getBroadcast(context, (int) msg.getId(),
+										intent, PendingIntent.FLAG_NO_CREATE);
 						alarmMgr.cancel(pendingIntent);
 						pendingIntent.cancel();
 					}
@@ -130,15 +134,18 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(message.getDate());
-		
-		if(SmsMessageHandler.SMS_PENDING.equals(message.getStatus()))
-			msgDateTextView.setText("Sending...");
-		else if(SmsMessageHandler.SMS_FAILED.equals(message.getStatus()))
-			msgDateTextView.setText("Failed.");
-		else
-		{
-			if(message.getType().equals(SmsMessageHandler.MSG_TYPE_SCHEDULED))
-				msgDateTextView.setText(String.format(context.getResources().getString(R.string.scheduled_label), sdf.format(cal.getTime())));
+
+		if (SmsMessageHandler.SMS_PENDING.equals(message.getStatus()))
+			msgDateTextView.setText(context.getResources().getString(
+					R.string.sending));
+		else if (SmsMessageHandler.SMS_FAILED.equals(message.getStatus()))
+			msgDateTextView.setText(context.getResources().getString(
+					R.string.failed));
+		else {
+			if (message.getType().equals(SmsMessageHandler.MSG_TYPE_SCHEDULED))
+				msgDateTextView.setText(String.format(context.getResources()
+						.getString(R.string.scheduled_label), sdf.format(cal
+						.getTime())));
 			else
 				msgDateTextView.setText(sdf.format(cal.getTime()));
 		}
@@ -213,11 +220,21 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 				// number
 				final CharSequence[] items;
 				if (finalMessage.getContactId() != -1
-						|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_SCHEDULED)
-					items = new CharSequence[] { "Delete", "Cancel" };
+						|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT
+						|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_SCHEDULED)
+					items = new CharSequence[] {
+							context.getResources().getString(
+									R.string.action_delete),
+							context.getResources().getString(
+									R.string.decline_desicion) };
 				else
-					items = new CharSequence[] { "Add to contacts", "Delete",
-							"Cancel" };
+					items = new CharSequence[] {
+							context.getResources().getString(
+									R.string.action_add_to_contacts),
+							context.getResources().getString(
+									R.string.action_delete),
+							context.getResources().getString(
+									R.string.decline_desicion) };
 
 				alertDialogBuilder.setItems(items,
 						new DialogInterface.OnClickListener() {

@@ -53,5 +53,8 @@
     <string name="schedule_date_checkbox_label">Schedule: %s</string>
     <string name="scheduled_label">Scheduled: %s</string>
     <string name="to_label">To: %s</string>
-
+	<string name="error_date_in_past">Error: Date in the past.</string>
+	<string name="sending">Sending&#8230;</string>
+	<string name="failed">Failed.</string>
+	<string name="action_add_to_contacts">Add to contacts</string>
 </resources>

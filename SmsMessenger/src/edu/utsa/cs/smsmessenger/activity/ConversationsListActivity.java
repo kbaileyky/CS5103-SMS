@@ -13,7 +13,6 @@ import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,7 +23,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 /**
  * This class is the Activity that shows a preview list of all conversations

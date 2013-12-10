@@ -1,7 +1,6 @@
 package edu.utsa.cs.smsmessenger.activity;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import android.app.Activity;
 import android.app.SearchManager;
@@ -21,8 +20,17 @@ import edu.utsa.cs.smsmessenger.adapter.ScheduledMessageContainerAdapter;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
+/**
+ * This class is the Activity that shows a preview list of all scheduled
+ * messages
+ * 
+ * @author Kendall Bailey
+ * @version 1.1
+ * @since 1.1
+ * 
+ */
 public class ScheduledMessageList extends Activity implements
-SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+		SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
 	private ListView scheduledMessageListView;
 	private ScheduledMessageContainerAdapter scheduledMessagePreviewAdapter;
@@ -39,7 +47,7 @@ SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 					"New intent received.");
 		}
 	};
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,6 +74,7 @@ SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 		filter.addAction(SmsMessageHandler.UPDATE_MSG_INTENT);
 		registerReceiver(updateMsgReceiver, filter);
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -100,7 +109,8 @@ SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 			startActivity(settingsIntent);
 			break;
 		case R.id.action_conversation_list:
-			Intent conversationIntent = new Intent(this, ConversationsListActivity.class);
+			Intent conversationIntent = new Intent(this,
+					ConversationsListActivity.class);
 			conversationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(conversationIntent);
 			break;
@@ -115,13 +125,16 @@ SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 		ArrayList<MessageContainer> messageList = getSmsMessageHandler()
 				.getSmsMessages(null, null, sortOrder,
 						SmsMessageHandler.MSG_TYPE_SCHEDULED);
-		
-		Log.d("ScheduledMessageList", "Size of scheduled messages: " + messageList.size());
-		
+
+		Log.d("ScheduledMessageList", "Size of scheduled messages: "
+				+ messageList.size());
+
 		if (messageList.size() > 0) {
-			scheduledMessagePreviewAdapter = new ScheduledMessageContainerAdapter(this, R.layout.to_message_search_item, messageList);
-			
-			getScehduledMessageListView().setAdapter(scheduledMessagePreviewAdapter);
+			scheduledMessagePreviewAdapter = new ScheduledMessageContainerAdapter(
+					this, R.layout.to_message_search_item, messageList);
+
+			getScehduledMessageListView().setAdapter(
+					scheduledMessagePreviewAdapter);
 		} else {
 			if (getScehduledMessageListView().getAdapter() != null) {
 				ScheduledMessageContainerAdapter emptyAdapter = new ScheduledMessageContainerAdapter(
@@ -130,7 +143,7 @@ SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 				getScehduledMessageListView().setAdapter(emptyAdapter);
 			}
 		}
-		
+
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {
@@ -138,7 +151,6 @@ SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 			smsMessageHandler = new SmsMessageHandler(this);
 		return smsMessageHandler;
 	}
-
 
 	public ListView getScehduledMessageListView() {
 		if (scheduledMessageListView == null)

@@ -150,7 +150,11 @@ public class MessageSearchContainerAdapter extends
 			public boolean onLongClick(View arg0) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						context);
-				final CharSequence[] items = { "Delete", "Cancel" };
+				final CharSequence[] items = {
+						context.getResources()
+								.getString(R.string.action_delete),
+						context.getResources().getString(
+								R.string.decline_desicion) };
 				alertDialogBuilder.setItems(items,
 						new DialogInterface.OnClickListener() {
 							@Override

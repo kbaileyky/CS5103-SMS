@@ -347,6 +347,11 @@ public class ConversationActivity extends Activity {
 				messageContainer.setType(SmsMessageHandler.MSG_TYPE_SCHEDULED);
 				messageContainer.setStatus(SmsMessageHandler.SMS_SCHEDULED);
 			}
+			else
+			{
+				Toast.makeText(this, getResources().getString(R.string.error_date_in_past), Toast.LENGTH_LONG).show();
+				return;
+			}
 		}
 		MessageContainer[] msgArr = { messageContainer };
 		SaveNewMessageToDbTask saveThread = new SaveNewMessageToDbTask();
