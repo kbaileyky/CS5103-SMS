@@ -223,16 +223,26 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 						|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT
 						|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_SCHEDULED)
 					items = new CharSequence[] {
+							String.format(context.getResources().getString(
+									R.string.action_call,
+									contact.getDisplayName() != null ? contact
+											.getDisplayName() : contact
+											.getPhoneNumber())),
 							context.getResources().getString(
-									R.string.action_delete),
+									R.string.action_delete_message),
 							context.getResources().getString(
 									R.string.decline_desicion) };
 				else
 					items = new CharSequence[] {
+							String.format(context.getResources().getString(
+									R.string.action_call,
+									contact.getDisplayName() != null ? contact
+											.getDisplayName() : contact
+											.getPhoneNumber())),
 							context.getResources().getString(
 									R.string.action_add_to_contacts),
 							context.getResources().getString(
-									R.string.action_delete),
+									R.string.action_delete_message),
 							context.getResources().getString(
 									R.string.decline_desicion) };
 
@@ -243,6 +253,13 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 									int which) {
 								switch (which) {
 								case 0:
+									Intent callIntent = new Intent(
+											Intent.ACTION_DIAL,
+											Uri.parse("tel:"
+													+ contact.getPhoneNumber()));
+									context.startActivity(callIntent);
+									break;
+								case 1:
 									if (finalMessage.getContactId() != -1
 											|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT
 											|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_SCHEDULED) {
@@ -259,7 +276,7 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 										context.startActivity(intent);
 									}
 									break;
-								case 1:
+								case 2:
 									if (finalMessage.getContactId() != -1
 											|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT
 											|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_SCHEDULED) {
@@ -270,7 +287,7 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 										deleteThread.execute(msgArr);
 									}
 									break;
-								case 2:
+								case 3:
 									dialog.cancel();
 									break;
 								}

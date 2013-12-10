@@ -148,16 +148,22 @@ public class ConversationPreviewAdapter extends
 				final CharSequence[] items;
 				if (finalContact.getDisplayName() != null)
 					items = new CharSequence[] {
+							String.format(context.getResources().getString(
+									R.string.action_call,
+									finalContact.getDisplayName())),
 							context.getResources().getString(
-									R.string.action_delete),
+									R.string.action_delete_conversation),
 							context.getResources().getString(
 									R.string.decline_desicion) };
 				else
 					items = new CharSequence[] {
+							String.format(context.getResources().getString(
+									R.string.action_call,
+									finalContact.getPhoneNumber())),
 							context.getResources().getString(
 									R.string.action_add_to_contacts),
 							context.getResources().getString(
-									R.string.action_delete),
+									R.string.action_delete_conversation),
 							context.getResources().getString(
 									R.string.decline_desicion) };
 
@@ -170,6 +176,14 @@ public class ConversationPreviewAdapter extends
 									int which) {
 								switch (which) {
 								case 0:
+									Intent callIntent = new Intent(
+											Intent.ACTION_DIAL,
+											Uri.parse("tel:"
+													+ finalContact
+															.getPhoneNumber()));
+									context.startActivity(callIntent);
+									break;
+								case 1:
 									if (finalContact.getDisplayName() != null) {
 										ConversationPreview[] convArr = { finalPreview };
 										DeleteConversationFromDbTask deleteThread = new DeleteConversationFromDbTask();
@@ -184,7 +198,7 @@ public class ConversationPreviewAdapter extends
 										context.startActivity(intent);
 									}
 									break;
-								case 1:
+								case 2:
 									if (finalContact.getDisplayName() != null) {
 										dialog.cancel();
 									} else {
@@ -193,7 +207,7 @@ public class ConversationPreviewAdapter extends
 										deleteThread.execute(convArr);
 									}
 									break;
-								case 2:
+								case 3:
 									dialog.cancel();
 									break;
 								}

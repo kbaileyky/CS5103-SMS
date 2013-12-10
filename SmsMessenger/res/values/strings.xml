@@ -57,4 +57,7 @@
 	<string name="sending">Sending&#8230;</string>
 	<string name="failed">Failed.</string>
 	<string name="action_add_to_contacts">Add to contacts</string>
+	<string name="action_call">Call: %s</string>
+	<string name="action_delete_conversation">Delete conversation</string>
+	<string name="action_delete_message">Delete message</string>
 </resources>

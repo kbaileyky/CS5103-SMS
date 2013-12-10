@@ -52,9 +52,13 @@ public class ScheduledMessageContainerAdapter extends
 			if (context != null) {
 				for (MessageContainer msg : objects) {
 					getSmsMessageHandler().deleteMessage(msg);
-					AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-					Intent intent = new Intent("edu.utsa.cs.smsmessenger.SMS_SCHEDULED");
-					PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)msg.getId(), intent, PendingIntent.FLAG_NO_CREATE);
+					AlarmManager alarmMgr = (AlarmManager) context
+							.getSystemService(Context.ALARM_SERVICE);
+					Intent intent = new Intent(
+							"edu.utsa.cs.smsmessenger.SMS_SCHEDULED");
+					PendingIntent pendingIntent = PendingIntent.getBroadcast(
+							context, (int) msg.getId(), intent,
+							PendingIntent.FLAG_NO_CREATE);
 					alarmMgr.cancel(pendingIntent);
 					pendingIntent.cancel();
 				}
@@ -72,8 +76,7 @@ public class ScheduledMessageContainerAdapter extends
 	}
 
 	public ScheduledMessageContainerAdapter(Context context,
-			int textViewResourceId,
-			ArrayList<MessageContainer> objects) {
+			int textViewResourceId, ArrayList<MessageContainer> objects) {
 		super(context, textViewResourceId, objects);
 		this.context = context;
 		this.objects = objects;
@@ -149,13 +152,23 @@ public class ScheduledMessageContainerAdapter extends
 				context.startActivity(viewMsgIntent);
 			}
 		});
+		final ContactContainer finalContact = contact;
 		convertView.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						context);
-				final CharSequence[] items = { context.getResources().getString(
-						R.string.action_delete), context.getResources().getString(
+				final CharSequence[] items = {
+						String.format(context
+								.getResources()
+								.getString(
+										R.string.action_call,
+										finalContact.getDisplayName() != null ? finalContact
+												.getDisplayName()
+												: finalContact.getPhoneNumber())),
+						context.getResources()
+								.getString(R.string.action_delete_message),
+						context.getResources().getString(
 								R.string.decline_desicion) };
 				alertDialogBuilder.setItems(items,
 						new DialogInterface.OnClickListener() {
@@ -164,11 +177,19 @@ public class ScheduledMessageContainerAdapter extends
 									int which) {
 								switch (which) {
 								case 0:
+									Intent callIntent = new Intent(
+											Intent.ACTION_DIAL,
+											Uri.parse("tel:"
+													+ finalContact
+															.getPhoneNumber()));
+									context.startActivity(callIntent);
+									break;
+								case 1:
 									MessageContainer[] msgArr = { finalMessage };
 									DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
 									deleteThread.execute(msgArr);
 									break;
-								case 1:
+								case 2:
 									dialog.cancel();
 									break;
 								}
