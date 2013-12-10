@@ -50,6 +50,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	public static final String MSG_TYPE_OUT = "outgoing";
 	public static final String MSG_TYPE_IN = "incoming";
 	public static final String MSG_TYPE_DRAFT = "draft";
+	public static final String MSG_TYPE_SCHEDULED = "scheduled";
 
 	// Table columns for both tables
 	public static final String COL_NAME_ID = "id";
@@ -60,6 +61,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	public static final String COL_NAME_BODY = "body";
 	public static final String COL_NAME_READ = "read";
 	public static final String COL_NAME_STATUS = "status";
+	public static final String COL_SCHEDULED = "scheduled";
 
 	public static final String CREATE_SMS_MSG_TABLE = "CREATE TABLE %s ("
 			+ COL_NAME_ID + " INTEGER PRIMARY KEY, " + COL_NAME_PHONE_NUMBER
@@ -82,6 +84,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 		db.execSQL(String.format(CREATE_SMS_MSG_TABLE, MSG_TYPE_OUT));
 		db.execSQL(String.format(CREATE_SMS_MSG_TABLE, MSG_TYPE_IN));
 		db.execSQL(String.format(CREATE_SMS_MSG_TABLE, MSG_TYPE_DRAFT));
+		db.execSQL(String.format(CREATE_SMS_MSG_TABLE, MSG_TYPE_SCHEDULED));
 	}
 
 	@Override
@@ -90,9 +93,11 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 		db.execSQL(String.format(DELETE_TABLE, MSG_TYPE_OUT));
 		db.execSQL(String.format(DELETE_TABLE, MSG_TYPE_IN));
 		db.execSQL(String.format(DELETE_TABLE, MSG_TYPE_DRAFT));
+		db.execSQL(String.format(DELETE_TABLE, MSG_TYPE_SCHEDULED));
 		db.execSQL(String.format(CREATE_SMS_MSG_TABLE, MSG_TYPE_OUT));
 		db.execSQL(String.format(CREATE_SMS_MSG_TABLE, MSG_TYPE_IN));
 		db.execSQL(String.format(CREATE_SMS_MSG_TABLE, MSG_TYPE_DRAFT));
+		db.execSQL(String.format(CREATE_SMS_MSG_TABLE, MSG_TYPE_SCHEDULED));
 	}
 
 	/**
@@ -142,6 +147,9 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 		
 		SQLiteDatabase db = this.getReadableDatabase();
 		
+		//this line doesn't make sense
+		if(SMS_PENDING.equals(message.getStatus()))
+			message.setStatus(SMS_SENT);
 		// New value for one column
 		ContentValues values = new ContentValues();
 		values.put(COL_NAME_PHONE_NUMBER, message.getPhoneNumber());
@@ -259,7 +267,11 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 		Log.d("SmsMessageHandler", "getConversationWithUser() toMsgList: "
 				+ toMsgList.size());
 
+		ArrayList<MessageContainer> scheduledMsgList = getSmsMessages(selectString,
+				selectArgs, sortOrder, MSG_TYPE_SCHEDULED);
+
 		fromMsgList.addAll(toMsgList);
+		fromMsgList.addAll(scheduledMsgList);
 		ArrayList<MessageContainer> msgList = fromMsgList;
 		Collections.sort(msgList);
 

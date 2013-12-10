@@ -1,51 +1,71 @@
 package edu.utsa.cs.smsmessenger.activity;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Calendar;
 
 import android.app.Activity;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SearchView;
 import edu.utsa.cs.smsmessenger.R;
-import edu.utsa.cs.smsmessenger.adapter.ConversationPreviewAdapter;
-import edu.utsa.cs.smsmessenger.adapter.MessageContainerAdapter;
 import edu.utsa.cs.smsmessenger.adapter.MessageSearchContainerAdapter;
-import edu.utsa.cs.smsmessenger.model.ContactContainer;
-import edu.utsa.cs.smsmessenger.model.ConversationPreview;
+import edu.utsa.cs.smsmessenger.adapter.ScheduledMessageContainerAdapter;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
-import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
 public class ScheduledMessageList extends Activity implements
 SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
 	private ListView scheduledMessageListView;
-	private ConversationPreviewAdapter scheduledMessagePreviewAdapter;
+	private ScheduledMessageContainerAdapter scheduledMessagePreviewAdapter;
 	private SmsMessageHandler smsMessageHandler;
 
-
+	private BroadcastReceiver updateMsgReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equalsIgnoreCase(SmsMessageHandler.UPDATE_MSG_INTENT)) {
+				fillScheduledMessageList();
+			}
+			Log.d("ConversationsListActivity - BroadcastReceiver",
+					"New intent received.");
+		}
+	};
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.scheduled_message_list);
+		registerUpdateMsgReceiver();
 		fillScheduledMessageList();
 	}
 
+	@Override
+	protected void onPause() {
+		unregisterReceiver(updateMsgReceiver);
+		super.onPause();
+	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		registerUpdateMsgReceiver();
 		fillScheduledMessageList();
 	}
 
+	public void registerUpdateMsgReceiver() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(SmsMessageHandler.UPDATE_MSG_INTENT);
+		registerReceiver(updateMsgReceiver, filter);
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -68,7 +88,6 @@ SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-
 		switch (item.getItemId()) {
 		case R.id.action_new_message:
 			Intent newConversationintent = new Intent(this,
@@ -89,42 +108,25 @@ SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 		return super.onOptionsItemSelected(item);
 	}
 
-	//
-	// This method fetches closes all notifications for this app
-	//
-//	private void closeExistingNotifications() {
-//		NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-//		notificationmanager.cancelAll();
-//	}
-	
-	//
-	// This method fetches the latest conversation preview lists from the app
-	// message database.
-	//
 	private void fillScheduledMessageList() {
 
+		String sortOrder = SmsMessageHandler.COL_NAME_DATE + " ASC";
+
+		ArrayList<MessageContainer> messageList = getSmsMessageHandler()
+				.getSmsMessages(null, null, sortOrder,
+						SmsMessageHandler.MSG_TYPE_SCHEDULED);
 		
-		HashMap<String, ConversationPreview> convPrevMap = getSmsMessageHandler()
-				.getConversationPreviewItmes(this);
-
-		ArrayList<ConversationPreview> convPrevArrayList = new ArrayList<ConversationPreview>();
-
-		for (Map.Entry<String, ConversationPreview> entry : convPrevMap
-				.entrySet()) 
-			convPrevArrayList.add(entry.getValue());
-
-		//Sort array list
-		Collections.sort(convPrevArrayList, Collections.reverseOrder());
+		Log.d("ScheduledMessageList", "Size of scheduled messages: " + messageList.size());
 		
-		if (convPrevArrayList.size() > 0) {
-			scheduledMessagePreviewAdapter = new ConversationPreviewAdapter(this,
-					R.layout.conversations_list_item, convPrevArrayList);
+		if (messageList.size() > 0) {
+			scheduledMessagePreviewAdapter = new ScheduledMessageContainerAdapter(this, R.layout.to_message_search_item, messageList);
+			
 			getScehduledMessageListView().setAdapter(scheduledMessagePreviewAdapter);
 		} else {
 			if (getScehduledMessageListView().getAdapter() != null) {
-				ConversationPreviewAdapter emptyAdapter = new ConversationPreviewAdapter(
-						this, R.layout.conversations_list_item,
-						new ArrayList<ConversationPreview>());
+				ScheduledMessageContainerAdapter emptyAdapter = new ScheduledMessageContainerAdapter(
+						this, R.layout.to_message_search_item,
+						new ArrayList<MessageContainer>());
 				getScehduledMessageListView().setAdapter(emptyAdapter);
 			}
 		}

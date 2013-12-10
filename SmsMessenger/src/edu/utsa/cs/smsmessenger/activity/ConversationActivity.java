@@ -1,5 +1,6 @@
 package edu.utsa.cs.smsmessenger.activity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -10,6 +11,7 @@ import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -24,11 +26,14 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 /**
  * This class is the Activity that shows all messages in a single conversation
@@ -40,6 +45,7 @@ import android.widget.Toast;
  */
 public class ConversationActivity extends Activity {
 
+	public static final int SCHEDULE_REQUEST_CODE = 102;
 	private String contactPhoneNumber;
 	private long contactId;
 	private ListView conversationListView;
@@ -49,6 +55,10 @@ public class ConversationActivity extends Activity {
 	private TextView messageCharCountTextView;
 	private ImageButton sendMessageImageButton;
 	private ContactContainer contact;
+	private CheckBox scheduleMessageCheckBox;
+	private TextView scheduleMessageTextView;
+	private Calendar scheduleMessageDate;
+	private SimpleDateFormat dateTimeSdf;
 
 	private BroadcastReceiver newMsgReceiver = new BroadcastReceiver() {
 		@Override
@@ -100,8 +110,15 @@ public class ConversationActivity extends Activity {
 		@Override
 		protected MessageContainer doInBackground(MessageContainer... objects) {
 			MessageContainer message = null;
+			String selectString = SmsMessageHandler.COL_NAME_PHONE_NUMBER
+					+ " = ? AND " + SmsMessageHandler.COL_NAME_STATUS + " = ? ";
+			String[] selectArgs = {
+					ContactsUtil.getStrippedPhoneNumber(contact
+							.getPhoneNumber()), SmsMessageHandler.SMS_DRAFT };
 			for (MessageContainer msg : objects) {
 				message = msg;
+				getSmsMessageHandler().deleteDraftMessage(selectString,
+						selectArgs);
 				getSmsMessageHandler().saveSmsToDB(msg);
 			}
 			getSmsMessageHandler().close();
@@ -112,7 +129,10 @@ public class ConversationActivity extends Activity {
 		protected void onPostExecute(MessageContainer result) {
 
 			// Send SMS Message
-			sendSmsMessage(result);
+			if (result.getType().equals(SmsMessageHandler.MSG_TYPE_OUT))
+				sendSmsMessage(result);
+			else if(result.getType().equals(SmsMessageHandler.MSG_TYPE_SCHEDULED))
+				scheduleMessage(result);
 
 			Intent newMsgIntent = new Intent(
 					SmsMessageHandler.UPDATE_MSG_INTENT);
@@ -129,6 +149,14 @@ public class ConversationActivity extends Activity {
 		setContentView(R.layout.conversation);
 
 		Bundle extras = getIntent().getExtras();
+
+		dateTimeSdf = new SimpleDateFormat(getResources().getString(
+				R.string.date_time_format2),
+				getResources().getConfiguration().locale);
+
+		scheduleMessageTextView = (TextView) findViewById(R.id.msgScheduleTextView);
+		scheduleMessageCheckBox = (CheckBox) findViewById(R.id.msgSchedulecheckBox);
+		
 		contactPhoneNumber = extras
 				.getString(SmsMessageHandler.COL_NAME_PHONE_NUMBER);
 		contactId = extras.getLong(SmsMessageHandler.COL_NAME_CONTACT_ID);
@@ -169,11 +197,47 @@ public class ConversationActivity extends Activity {
 
 			}
 		});
+
+		scheduleMessageCheckBox
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton arg0,
+							boolean arg1) {
+						if (arg1) {
+							startSheduleMessageActivity();
+						} else
+							sendMessageImageButton
+									.setImageResource(R.drawable.send_msg_icon);
+
+					}
+				});
 		sendMessageImageButton = (ImageButton) findViewById(R.id.sendMsgImageButton);
 		sendMessageImageButton.setOnClickListener(sendMessageOnClickListener);
 
 		registerNewMsgReceiver();
 		fillConversationListView();
+	}
+
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d("NewConversationActivity", "onActivityResult");
+		Log.d("NewConversationActivity", "Result Code: " + requestCode);
+		if (requestCode == SCHEDULE_REQUEST_CODE) {
+			if (resultCode == RESULT_OK) {
+				sendMessageImageButton.setImageResource(R.drawable.send_timed_msg_icon);
+				scheduleMessageDate = (Calendar) data
+						.getSerializableExtra(ScheduleMessageActivity.SCHEDULE_RESQUEST_DATE_KEY);
+				scheduleMessageTextView.setText(String.format(
+						this.getResources().getString(
+								R.string.schedule_date_checkbox_label),
+						dateTimeSdf.format(scheduleMessageDate.getTime())));
+			} else {
+				sendMessageImageButton.setImageResource(R.drawable.send_msg_icon);
+				scheduleMessageCheckBox.setChecked(false);
+			}
+		} 
 	}
 
 	@Override
@@ -275,6 +339,15 @@ public class ConversationActivity extends Activity {
 		messageContainer.setDate(Calendar.getInstance().getTimeInMillis());
 		messageContainer.setStatus(SmsMessageHandler.SMS_PENDING);
 
+		if (scheduleMessageCheckBox.isChecked()) {
+			if (scheduleMessageDate != null
+					&& scheduleMessageDate.after(Calendar.getInstance())) {
+				// Save Message in DB then send
+				messageContainer.setDate(scheduleMessageDate.getTimeInMillis());
+				messageContainer.setType(SmsMessageHandler.MSG_TYPE_SCHEDULED);
+				messageContainer.setStatus(SmsMessageHandler.SMS_SCHEDULED);
+			}
+		}
 		MessageContainer[] msgArr = { messageContainer };
 		SaveNewMessageToDbTask saveThread = new SaveNewMessageToDbTask();
 		saveThread.execute(msgArr);
@@ -283,20 +356,22 @@ public class ConversationActivity extends Activity {
 
 	public void sendSmsMessage(MessageContainer messageContainer) {
 		
+		Log.d("ConversationActvity", "sendSmsMessage("+messageContainer+")");
+		
 		// Intent for send
 		Intent sentIntent = new Intent("edu.utsa.cs.smsmessenger.SMS_SENT");
 		sentIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer", messageContainer);
 		
-		PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, 0,
+		PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, (int)messageContainer.getId(),
 				sentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Intent for delivery
-		Intent deliveredIntent = new Intent(
-				"edu.utsa.cs.smsmessenger.SMS_DELIVERED");
-		deliveredIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer", messageContainer);
-		
-		PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this,
-				0, deliveredIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//		Intent deliveredIntent = new Intent(
+//				"edu.utsa.cs.smsmessenger.SMS_DELIVERED");
+//		deliveredIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer", messageContainer);
+//		
+//		PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this,
+//				0, deliveredIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Send Message
 		SmsManager sms = SmsManager.getDefault();
@@ -329,6 +404,16 @@ public class ConversationActivity extends Activity {
 			SaveNewDraftoDbTask saveThread = new SaveNewDraftoDbTask();
 			saveThread.execute(msgArr);
 		}
+		else
+		{
+			String selectString = SmsMessageHandler.COL_NAME_PHONE_NUMBER
+					+ " = ? AND " + SmsMessageHandler.COL_NAME_STATUS + " = ? ";
+			String[] selectArgs = {
+					ContactsUtil.getStrippedPhoneNumber(contact
+							.getPhoneNumber()), SmsMessageHandler.SMS_DRAFT };
+			getSmsMessageHandler().deleteDraftMessage(selectString,
+						selectArgs);
+		}
 	}
 
 	private MessageContainer GetDraft() {
@@ -354,6 +439,27 @@ public class ConversationActivity extends Activity {
 			return newDraftList.get(0);
 		}
 		return null;
+	}
+
+	public void startSheduleMessageActivity() {
+		Intent intent = new Intent(getContext(), ScheduleMessageActivity.class);
+		if(scheduleMessageDate!=null)
+			intent.putExtra(ScheduleMessageActivity.PASSED_SCHEDULE_DATE_KEY, scheduleMessageDate.getTimeInMillis());
+		else
+			intent.putExtra(ScheduleMessageActivity.PASSED_SCHEDULE_DATE_KEY, -1L);
+		startActivityForResult(intent, SCHEDULE_REQUEST_CODE);
+	}
+	
+	public void scheduleMessage(MessageContainer message)
+	{
+		if(message.getType().equals(SmsMessageHandler.MSG_TYPE_SCHEDULED))
+		{
+			AlarmManager alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+			Intent intent = new Intent("edu.utsa.cs.smsmessenger.SMS_SCHEDULED");
+			PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int)message.getId(), intent, 0);
+			
+			alarmMgr.set(AlarmManager.RTC_WAKEUP, message.getDate(), pendingIntent);
+		}
 	}
 
 }

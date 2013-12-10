@@ -81,7 +81,6 @@ public class ViewMessageActivity extends Activity {
 
 		currentContact = ContactsUtil.getContactByPhoneNumber(
 				this.getContentResolver(), currentMessage.getPhoneNumber());
-		
 
 		context = this;
 
@@ -94,7 +93,6 @@ public class ViewMessageActivity extends Activity {
 
 		touchState = IDLE;
 
-
 		Log.d("ViewMessageActivity",
 				"view Message Activity: " + currentMessage.getBody() + " from "
 						+ currentMessage.getContactId());
@@ -105,7 +103,9 @@ public class ViewMessageActivity extends Activity {
 	private void updateUI() {
 
 		setTitle(currentMessage.getType()
-				.equals(SmsMessageHandler.MSG_TYPE_OUT) ? getResources()
+				.equals(SmsMessageHandler.MSG_TYPE_OUT)
+				|| currentMessage.getType().equals(
+						SmsMessageHandler.MSG_TYPE_SCHEDULED) ? getResources()
 				.getString(R.string.self_reference) : (currentContact
 				.getDisplayName() != null ? currentContact.getDisplayName()
 				: currentMessage.getPhoneNumber()));
@@ -117,7 +117,14 @@ public class ViewMessageActivity extends Activity {
 				.getString(R.string.date_time_format), this.getResources()
 				.getConfiguration().locale);
 		TextView txtTimeAndDate = (TextView) findViewById(R.id.msgDateTextView);
-		txtTimeAndDate.setText(sdf.format(currentMessage.getDate()));
+
+		if (currentMessage.getType().equals(
+				SmsMessageHandler.MSG_TYPE_SCHEDULED))
+			txtTimeAndDate.setText(String.format(context.getResources()
+					.getString(R.string.scheduled_label), sdf
+					.format(currentMessage.getDate())));
+		else
+			txtTimeAndDate.setText(sdf.format(currentMessage.getDate()));
 
 		ImageView contactImageView = (ImageView) findViewById(R.id.msgImageView);
 
@@ -142,7 +149,9 @@ public class ViewMessageActivity extends Activity {
 		// Find the root view
 		View root = rootTable.getRootView();
 
-		if (currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN)) {
+		if (currentMessage.getType().equals(SmsMessageHandler.MSG_TYPE_IN)
+				|| currentMessage.getType().equals(
+						SmsMessageHandler.MSG_TYPE_SCHEDULED)) {
 			root.setBackgroundColor(getResources().getColor(
 					R.color.backroundColor));
 		} else {

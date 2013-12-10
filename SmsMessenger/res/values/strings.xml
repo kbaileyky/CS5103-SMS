@@ -31,6 +31,7 @@
     <string name="message_length_error">Message length is limited to %s characters.</string>
     <string name="text_ratio">%1$d/%2$d</string>
     <string name="message_recevied_notification">New message from: %s</string>
+    <string name="sms_sending_scheduled_message">Sending scheduled message&#8230;</string>
     <string name="sms_message_sent">Message sent.</string>
     <string name="sms_send_failed">Failed to send message.</string>
     <string name="sms_no_service">Failed to send message because no service.</string>
@@ -50,5 +51,7 @@
     <string name="date_time_format2">MM/dd/yyyy h:mm a</string>
     <string name="schedule_checkbox_label">Schedule:</string>
     <string name="schedule_date_checkbox_label">Schedule: %s</string>
+    <string name="scheduled_label">Scheduled: %s</string>
+    <string name="to_label">To: %s</string>
 
 </resources>

@@ -6,6 +6,7 @@ import java.util.Calendar;
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.fragment.DatePickerFragment;
 import edu.utsa.cs.smsmessenger.fragment.TimePickerFragment;
+import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 public class ScheduleMessageActivity extends Activity {
 
 	public static final String SCHEDULE_RESQUEST_DATE_KEY = "edu.utsa.cs.smsmessenger.SCHEDULE_RESQUEST";
+	public static final String PASSED_SCHEDULE_DATE_KEY = "edu.utsa.cs.smsmessenger.PASSED_SCHEDULE_DATE";
 	private Button cancelButton;
 	private Button setButton;
 	private EditText timeEditText;
@@ -38,6 +40,9 @@ public class ScheduleMessageActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.schedule_message);
+		
+		Bundle extras = getIntent().getExtras();
+		long dateMilliSeconds = extras.getLong(PASSED_SCHEDULE_DATE_KEY);
 		
 		cancelButton = (Button)findViewById(R.id.scheduleMsgCancelButton);
 		setButton = (Button)findViewById(R.id.scheduleMsgSetButton);
@@ -54,7 +59,11 @@ public class ScheduleMessageActivity extends Activity {
 				.getConfiguration().locale);
 		
 		scheduleDate = Calendar.getInstance();
-		scheduleDate.setTimeInMillis( ((scheduleDate.getTimeInMillis()+(5*60*1000))/1000)*1000 );
+		if(dateMilliSeconds==-1)
+			scheduleDate.add(Calendar.MINUTE, 5);
+		else
+			scheduleDate.setTimeInMillis(dateMilliSeconds);
+		scheduleDate.set(Calendar.SECOND, 0);
 
 		timeEditText.setText(timeSdf.format(scheduleDate.getTime()));
 		dateEditText.setText(dateSdf.format(scheduleDate.getTime()));

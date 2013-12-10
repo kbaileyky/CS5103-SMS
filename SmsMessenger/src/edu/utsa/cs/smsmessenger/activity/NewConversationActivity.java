@@ -11,6 +11,7 @@ import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -152,7 +153,7 @@ public class NewConversationActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(MessageContainer result) {
-			//getActivity().finish();
+			// getActivity().finish();
 		}
 	}
 
@@ -177,7 +178,10 @@ public class NewConversationActivity extends Activity {
 			newRecipientTextView.setText("");
 
 			// Send SMS Message
-			sendSmsMessage(result);
+			if (result.getType().equals(SmsMessageHandler.MSG_TYPE_OUT))
+				sendSmsMessage(result);
+			else if(result.getType().equals(SmsMessageHandler.MSG_TYPE_SCHEDULED))
+				scheduleMessage(result);
 
 			Intent coversationIntent = new Intent(getContext(),
 					ConversationActivity.class);
@@ -243,13 +247,11 @@ public class NewConversationActivity extends Activity {
 					@Override
 					public void onCheckedChanged(CompoundButton arg0,
 							boolean arg1) {
-						// TODO Auto-generated method stub
-						if (arg1)
-						{
+						if (arg1) {
 							startSheduleMessageActivity();
-						}
-						else
-							sendNewMessageButton.setImageResource(R.drawable.send_msg_icon);
+						} else
+							sendNewMessageButton
+									.setImageResource(R.drawable.send_msg_icon);
 
 					}
 				});
@@ -284,16 +286,14 @@ public class NewConversationActivity extends Activity {
 		Log.d("NewConversationActivity", "Result Code: " + requestCode);
 		if (requestCode == SCHEDULE_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
-				sendNewMessageButton.setImageResource(R.drawable.hg_timer_icon);
+				sendNewMessageButton.setImageResource(R.drawable.send_timed_msg_icon);
 				scheduleMessageDate = (Calendar) data
 						.getSerializableExtra(ScheduleMessageActivity.SCHEDULE_RESQUEST_DATE_KEY);
 				scheduleMessageTextView.setText(String.format(
 						this.getResources().getString(
 								R.string.schedule_date_checkbox_label),
 						dateTimeSdf.format(scheduleMessageDate.getTime())));
-			}
-			else
-			{
+			} else {
 				sendNewMessageButton.setImageResource(R.drawable.send_msg_icon);
 				scheduleMessageCheckBox.setChecked(false);
 			}
@@ -356,6 +356,15 @@ public class NewConversationActivity extends Activity {
 		messageContainer.setDate(Calendar.getInstance().getTimeInMillis());
 		messageContainer.setStatus(SmsMessageHandler.SMS_PENDING);
 
+		if (scheduleMessageCheckBox.isChecked()) {
+			if (scheduleMessageDate != null
+					&& scheduleMessageDate.after(Calendar.getInstance())) {
+				// Save Message in DB then send
+				messageContainer.setDate(scheduleMessageDate.getTimeInMillis());
+				messageContainer.setType(SmsMessageHandler.MSG_TYPE_SCHEDULED);
+				messageContainer.setStatus(SmsMessageHandler.SMS_SCHEDULED);
+			}
+		}
 		// Save Message in DB then send
 		MessageContainer[] msgArr = { messageContainer };
 		SaveNewMessageToDbStartConversationTask saveThread = new SaveNewMessageToDbStartConversationTask();
@@ -369,16 +378,16 @@ public class NewConversationActivity extends Activity {
 		sentIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer",
 				messageContainer);
 
-		PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, 0,
+		PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, (int)messageContainer.getId(),
 				sentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Intent for delivery
-		Intent deliveredIntent = new Intent(
-				"edu.utsa.cs.smsmessenger.SMS_DELIVERED");
-		deliveredIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer",
-				messageContainer);
-		PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this,
-				0, deliveredIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//		Intent deliveredIntent = new Intent(
+//				"edu.utsa.cs.smsmessenger.SMS_DELIVERED");
+//		deliveredIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer",
+//				messageContainer);
+//		PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this,
+//				0, deliveredIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Send Message
 		SmsManager sms = SmsManager.getDefault();
@@ -443,10 +452,16 @@ public class NewConversationActivity extends Activity {
 			SaveNewDraftoDbTask saveThread = new SaveNewDraftoDbTask();
 			saveThread.execute(msgArr);
 		}
+		else
+			getSmsMessageHandler().deleteNewDraftMessage();
 	}
 
 	public void startSheduleMessageActivity() {
 		Intent intent = new Intent(getContext(), ScheduleMessageActivity.class);
+		if(scheduleMessageDate!=null)
+			intent.putExtra(ScheduleMessageActivity.PASSED_SCHEDULE_DATE_KEY, scheduleMessageDate.getTimeInMillis());
+		else
+			intent.putExtra(ScheduleMessageActivity.PASSED_SCHEDULE_DATE_KEY, -1L);
 		startActivityForResult(intent, SCHEDULE_REQUEST_CODE);
 	}
 
@@ -464,7 +479,17 @@ public class NewConversationActivity extends Activity {
 		finish();
 		super.onBackPressed();
 	}
-	
+
+	public void scheduleMessage(MessageContainer message)
+	{
+		if(message.getType().equals(SmsMessageHandler.MSG_TYPE_SCHEDULED))
+		{
+			AlarmManager alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+			Intent intent = new Intent("edu.utsa.cs.smsmessenger.SMS_SCHEDULED");
+			PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int)message.getId(), intent, 0);
+			alarmMgr.set(AlarmManager.RTC_WAKEUP, message.getDate(), pendingIntent);
+		}
+	}
 	
 
 }

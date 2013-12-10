@@ -81,6 +81,12 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </receiver>
+        <receiver android:name="edu.utsa.cs.smsmessenger.receiver.ScheduledSmsMessageAlarmRecevier" android:enabled="true" android:exported="false">
+            <intent-filter android:priority="9999" >
+                <action android:name="edu.utsa.cs.smsmessenger.SMS_SCHEDULED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
 
         
     </application>
