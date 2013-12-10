@@ -49,7 +49,6 @@ public class ConversationActivity extends Activity {
 	private String contactPhoneNumber;
 	private long contactId;
 	private ListView conversationListView;
-	private SmsMessageHandler smsMessageHandler;
 	private MessageContainerAdapter messageContainerAdapter;
 	private EditText messageEditText;
 	private TextView messageCharCountTextView;
@@ -304,10 +303,9 @@ public class ConversationActivity extends Activity {
 		return conversationListView;
 	}
 
-	public SmsMessageHandler getSmsMessageHandler() {
-		if (smsMessageHandler == null)
-			smsMessageHandler = new SmsMessageHandler(this);
-		return smsMessageHandler;
+
+	private SmsMessageHandler getSmsMessageHandler() {
+		return SmsMessageHandler.getInstance(this);
 	}
 
 	public void registerNewMsgReceiver() {

@@ -37,7 +37,6 @@ public class ConversationsListActivity extends Activity implements
 
 	private ListView conversationsListView;
 	private ConversationPreviewAdapter conversationPreviewAdapter;
-	private SmsMessageHandler smsMessageHandler;
 
 	private BroadcastReceiver newMsgReceiver = new BroadcastReceiver() {
 		@Override
@@ -155,9 +154,7 @@ public class ConversationsListActivity extends Activity implements
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {
-		if (smsMessageHandler == null)
-			smsMessageHandler = new SmsMessageHandler(this);
-		return smsMessageHandler;
+		return SmsMessageHandler.getInstance(this);
 	}
 
 	public void registerNewMsgReceiver() {

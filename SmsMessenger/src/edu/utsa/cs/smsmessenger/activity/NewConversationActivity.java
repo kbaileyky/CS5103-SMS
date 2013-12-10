@@ -51,7 +51,6 @@ public class NewConversationActivity extends Activity {
 	private AutoCompleteTextView newRecipientTextView;
 	private EditText newMessageEditText;
 	private TextView newMessageCharCountTextView;
-	private SmsMessageHandler smsMessageHandler;
 	private ImageButton sendNewMessageButton;
 	private CheckBox scheduleMessageCheckBox;
 	private TextView scheduleMessageTextView;
@@ -400,10 +399,9 @@ public class NewConversationActivity extends Activity {
 				messageContainer.getBody(), sentPendingIntent, null);
 	}
 
+
 	private SmsMessageHandler getSmsMessageHandler() {
-		if (smsMessageHandler == null)
-			smsMessageHandler = new SmsMessageHandler(this);
-		return smsMessageHandler;
+		return SmsMessageHandler.getInstance(this);
 	}
 
 	private Context getContext() {

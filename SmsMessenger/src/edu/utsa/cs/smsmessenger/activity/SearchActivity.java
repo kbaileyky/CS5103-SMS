@@ -21,7 +21,6 @@ import android.util.Log;
  */
 public class SearchActivity extends ListActivity {
 
-	private SmsMessageHandler smsMessageHandler;
 	private MessageSearchContainerAdapter messageSearchContainerAdapter;
 
 	@Override
@@ -62,8 +61,6 @@ public class SearchActivity extends ListActivity {
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {
-		if (smsMessageHandler == null)
-			smsMessageHandler = new SmsMessageHandler(this);
-		return smsMessageHandler;
+		return SmsMessageHandler.getInstance(this);
 	}
 }

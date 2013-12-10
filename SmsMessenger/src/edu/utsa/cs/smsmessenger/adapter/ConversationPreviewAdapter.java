@@ -45,7 +45,6 @@ public class ConversationPreviewAdapter extends
 	private Context context;
 	private int layoutResourceId;
 	private ArrayList<ConversationPreview> objects;
-	private SmsMessageHandler smsMessageHandler;
 	private Animation clickAnimation;
 	private Animation deleteAnimation;
 
@@ -317,8 +316,6 @@ public class ConversationPreviewAdapter extends
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {
-		if (smsMessageHandler == null)
-			smsMessageHandler = new SmsMessageHandler(context);
-		return smsMessageHandler;
+		return SmsMessageHandler.getInstance(context);
 	}
 }

@@ -35,7 +35,6 @@ import android.widget.Toast;
  */
 public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 
-	private SmsMessageHandler smsMessageHandler;
 	private Context context;
 
 	private class SaveNewMessagesToDbTask extends AsyncTask<Object, Void, Void> {
@@ -132,9 +131,7 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 	}
 
 	private SmsMessageHandler getSmsMessageHandler(Context context) {
-		if (smsMessageHandler == null)
-			smsMessageHandler = new SmsMessageHandler(context);
-		return smsMessageHandler;
+		return SmsMessageHandler.getInstance(context);
 	}
 
 	private void sendNotification(Context context, MessageContainer msg, ContactContainer contact) {

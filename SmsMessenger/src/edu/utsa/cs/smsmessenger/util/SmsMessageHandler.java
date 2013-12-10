@@ -69,14 +69,33 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 			+ " INTEGER, " + COL_NAME_SUBJECT + " TEXT, " + COL_NAME_BODY
 			+ " TEXT, " + COL_NAME_READ + " INTEGER, " + COL_NAME_STATUS
 			+ " TEXT)";
+	
+	public static final String CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE = "CREATE TABLE IF NOT EXISTS %s ("
+			+ COL_NAME_ID + " INTEGER PRIMARY KEY, " + COL_NAME_PHONE_NUMBER
+			+ " TEXT, " + COL_NAME_CONTACT_ID + " INTEGER, " + COL_NAME_DATE
+			+ " INTEGER, " + COL_NAME_SUBJECT + " TEXT, " + COL_NAME_BODY
+			+ " TEXT, " + COL_NAME_READ + " INTEGER, " + COL_NAME_STATUS
+			+ " TEXT)";
 
 	public static final String DELETE_TABLE = "DROP TABLE IF EXISTS %s";
 
-	private Context context;
+	private static SmsMessageHandler smsMessageHandler = null;
 
-	public SmsMessageHandler(Context context) {
+	private SmsMessageHandler(Context context) {
+		
 		super(context, DB_NAME, null, DB_VERSION);
-		this.context = context;
+
+		this.getWritableDatabase().execSQL(String.format(CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE, MSG_TYPE_OUT));
+		this.getWritableDatabase().execSQL(String.format(CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE, MSG_TYPE_IN));
+		this.getWritableDatabase().execSQL(String.format(CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE, MSG_TYPE_DRAFT));
+		this.getWritableDatabase().execSQL(String.format(CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE, MSG_TYPE_SCHEDULED));
+	}
+	
+	public static synchronized SmsMessageHandler getInstance(Context context)
+	{
+		if(smsMessageHandler==null)
+			smsMessageHandler = new SmsMessageHandler(context);
+		return smsMessageHandler;
 	}
 
 	@Override

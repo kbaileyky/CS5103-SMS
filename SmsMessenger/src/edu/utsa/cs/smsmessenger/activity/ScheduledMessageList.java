@@ -34,7 +34,6 @@ public class ScheduledMessageList extends Activity implements
 
 	private ListView scheduledMessageListView;
 	private ScheduledMessageContainerAdapter scheduledMessagePreviewAdapter;
-	private SmsMessageHandler smsMessageHandler;
 
 	private BroadcastReceiver updateMsgReceiver = new BroadcastReceiver() {
 		@Override
@@ -147,9 +146,7 @@ public class ScheduledMessageList extends Activity implements
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {
-		if (smsMessageHandler == null)
-			smsMessageHandler = new SmsMessageHandler(this);
-		return smsMessageHandler;
+		return SmsMessageHandler.getInstance(this);
 	}
 
 	public ListView getScehduledMessageListView() {

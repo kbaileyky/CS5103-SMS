@@ -45,7 +45,6 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 	private Context context;
 	private ArrayList<MessageContainer> objects;
 	private SimpleDateFormat sdf;
-	private SmsMessageHandler smsMessageHandler;
 	private ContactContainer contact;
 	private Animation clickAnimation;
 	private Animation deleteAnimation;
@@ -383,8 +382,6 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {
-		if (smsMessageHandler == null)
-			smsMessageHandler = new SmsMessageHandler(context);
-		return smsMessageHandler;
+		return SmsMessageHandler.getInstance(context);
 	}
 }

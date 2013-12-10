@@ -45,8 +45,6 @@ public class ViewMessageActivity extends Activity {
 												// activity
 	private ContactContainer currentContact; // The contact associated with the
 												// current message being viewed
-	private SmsMessageHandler smsMessageHandler; // /handler used to the delete
-													// the message if chosen
 	private Context context; // Context - this - used for deleting messages
 
 	private String contactURI; // string used to get the contact image from the
@@ -367,9 +365,7 @@ public class ViewMessageActivity extends Activity {
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {
-		if (smsMessageHandler == null)
-			smsMessageHandler = new SmsMessageHandler(context);
-		return smsMessageHandler;
+		return SmsMessageHandler.getInstance(context);
 	}
 
 }

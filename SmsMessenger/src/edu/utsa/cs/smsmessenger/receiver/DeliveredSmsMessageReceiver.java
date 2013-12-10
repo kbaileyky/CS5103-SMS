@@ -22,7 +22,6 @@ import android.widget.Toast;
  */
 public class DeliveredSmsMessageReceiver extends BroadcastReceiver {
 
-	private SmsMessageHandler smsMessageHandler;
 	private Context context;
 
 	private class UpdateMessagesInDbTask extends
@@ -71,9 +70,7 @@ public class DeliveredSmsMessageReceiver extends BroadcastReceiver {
 	}
 
 	private SmsMessageHandler getSmsMessageHandler(Context context) {
-		if (smsMessageHandler == null)
-			smsMessageHandler = new SmsMessageHandler(context);
-		return smsMessageHandler;
+		return SmsMessageHandler.getInstance(context);
 	}
 
 	private void updateDatabase(Context context, MessageContainer message,

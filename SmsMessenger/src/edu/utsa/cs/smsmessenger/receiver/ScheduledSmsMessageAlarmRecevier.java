@@ -27,7 +27,6 @@ import android.widget.Toast;
  */
 public class ScheduledSmsMessageAlarmRecevier extends BroadcastReceiver {
 
-	private SmsMessageHandler smsMessageHandler;
 	private Context context;
 
 	private class SaveNewMessageToDbTask extends
@@ -92,9 +91,7 @@ public class ScheduledSmsMessageAlarmRecevier extends BroadcastReceiver {
 	}
 
 	private SmsMessageHandler getSmsMessageHandler(Context context) {
-		if (smsMessageHandler == null)
-			smsMessageHandler = new SmsMessageHandler(context);
-		return smsMessageHandler;
+		return SmsMessageHandler.getInstance(context);
 	}
 
 }

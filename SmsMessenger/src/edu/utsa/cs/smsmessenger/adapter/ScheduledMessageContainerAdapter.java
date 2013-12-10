@@ -47,7 +47,6 @@ public class ScheduledMessageContainerAdapter extends
 	private Context context;
 	private ArrayList<MessageContainer> objects;
 	private SimpleDateFormat sdf;
-	private SmsMessageHandler smsMessageHandler;
 	private Animation clickAnimation;
 	private Animation deleteAnimation;
 
@@ -254,8 +253,6 @@ public class ScheduledMessageContainerAdapter extends
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {
-		if (smsMessageHandler == null)
-			smsMessageHandler = new SmsMessageHandler(context);
-		return smsMessageHandler;
+		return SmsMessageHandler.getInstance(context);
 	}
 }
