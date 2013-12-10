@@ -7,6 +7,7 @@ import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.activity.ConversationActivity;
 import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.ConversationPreview;
+import edu.utsa.cs.smsmessenger.util.AppConstants;
 import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
@@ -16,12 +17,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,6 +46,8 @@ public class ConversationPreviewAdapter extends
 	private int layoutResourceId;
 	private ArrayList<ConversationPreview> objects;
 	private SmsMessageHandler smsMessageHandler;
+	private Animation clickAnimation;
+	private Animation deleteAnimation;
 
 	public ConversationPreviewAdapter(Context context, int layoutResourceId,
 			List<ConversationPreview> objects) {
@@ -51,6 +57,11 @@ public class ConversationPreviewAdapter extends
 		this.layoutResourceId = layoutResourceId;
 		this.objects = new ArrayList<ConversationPreview>();
 		this.objects.addAll(objects);
+
+		clickAnimation = AnimationUtils.loadAnimation(context,
+				R.anim.click_animation);
+		deleteAnimation = AnimationUtils.loadAnimation(context,
+				R.anim.delete_animation);
 	}
 
 	private class DeleteConversationFromDbTask extends
@@ -124,97 +135,159 @@ public class ConversationPreviewAdapter extends
 		final ConversationPreview finalPreview = preview;
 		final ContactContainer finalContact = contact;
 		final TextView finalCountTextView = countTextView;
+		final View finalConvertView = convertView;
 
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				finalCountTextView.setVisibility(View.INVISIBLE);
-				Intent intent = new Intent(context, ConversationActivity.class);
-				intent.putExtra(SmsMessageHandler.COL_NAME_PHONE_NUMBER,
-						finalPreview.getPhoneNumber());
-				intent.putExtra(SmsMessageHandler.COL_NAME_CONTACT_ID,
-						finalPreview.getContactId());
-				context.startActivity(intent);
+
+				Handler handler = new Handler();
+
+				finalConvertView.startAnimation(clickAnimation);
+				handler.postDelayed(
+					new Runnable(){
+
+						@Override
+						public void run() {		
+
+							finalCountTextView.setVisibility(View.INVISIBLE);
+							Intent intent = new Intent(context, ConversationActivity.class);
+							intent.putExtra(SmsMessageHandler.COL_NAME_PHONE_NUMBER,
+									finalPreview.getPhoneNumber());
+							intent.putExtra(SmsMessageHandler.COL_NAME_CONTACT_ID,
+									finalPreview.getContactId());
+							context.startActivity(intent);
+						}
+						
+					}
+					, AppConstants.DELAY_FOR_CLICK_ANIMATION);
 			}
 		});
 		convertView.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
-				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-						context);
+				Handler handler = new Handler();
 
-				// If contact is invalid, add option to create contact for phone
-				// number
-				final CharSequence[] items;
-				if (finalContact.getDisplayName() != null)
-					items = new CharSequence[] {
-							String.format(context.getResources().getString(
-									R.string.action_call,
-									finalContact.getDisplayName())),
-							context.getResources().getString(
-									R.string.action_delete_conversation),
-							context.getResources().getString(
-									R.string.decline_desicion) };
-				else
-					items = new CharSequence[] {
-							String.format(context.getResources().getString(
-									R.string.action_call,
-									finalContact.getPhoneNumber())),
-							context.getResources().getString(
-									R.string.action_add_to_contacts),
-							context.getResources().getString(
-									R.string.action_delete_conversation),
-							context.getResources().getString(
-									R.string.decline_desicion) };
+				finalConvertView.startAnimation(clickAnimation);
+				handler.postDelayed(new Runnable() {
 
-				// Create alert dialog options to Add phone number to contacts,
-				// Delete conversation, or Cancel
-				alertDialogBuilder.setItems(items,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								switch (which) {
-								case 0:
-									Intent callIntent = new Intent(
-											Intent.ACTION_DIAL,
-											Uri.parse("tel:"
-													+ finalContact
-															.getPhoneNumber()));
-									context.startActivity(callIntent);
-									break;
-								case 1:
-									if (finalContact.getDisplayName() != null) {
-										ConversationPreview[] convArr = { finalPreview };
-										DeleteConversationFromDbTask deleteThread = new DeleteConversationFromDbTask();
-										deleteThread.execute(convArr);
-									} else {
-										Intent intent = new Intent(
-												Intent.ACTION_INSERT);
-										intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
-										intent.putExtra(
-												ContactsContract.Intents.Insert.PHONE,
-												finalPreview.getPhoneNumber());
-										context.startActivity(intent);
+					@Override
+					public void run() {
+						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+								context);
+
+						// If contact is invalid, add option to create contact
+						// for phone
+						// number
+						final CharSequence[] items;
+						if (finalContact.getDisplayName() != null)
+							items = new CharSequence[] {
+									String.format(context.getResources()
+											.getString(
+													R.string.action_call,
+													finalContact
+															.getDisplayName())),
+									context.getResources()
+											.getString(
+													R.string.action_delete_conversation),
+									context.getResources().getString(
+											R.string.decline_desicion) };
+						else
+							items = new CharSequence[] {
+									String.format(context.getResources()
+											.getString(
+													R.string.action_call,
+													finalContact
+															.getPhoneNumber())),
+									context.getResources().getString(
+											R.string.action_add_to_contacts),
+									context.getResources()
+											.getString(
+													R.string.action_delete_conversation),
+									context.getResources().getString(
+											R.string.decline_desicion) };
+
+						// Create alert dialog options to Add phone number to
+						// contacts,
+						// Delete conversation, or Cancel
+						alertDialogBuilder.setItems(items,
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										switch (which) {
+										case 0:
+											Intent callIntent = new Intent(
+													Intent.ACTION_DIAL,
+													Uri.parse("tel:"
+															+ finalContact
+																	.getPhoneNumber()));
+											context.startActivity(callIntent);
+											break;
+										case 1:
+											if (finalContact.getDisplayName() != null) {
+
+												Handler dHandler = new Handler();
+
+												finalConvertView.startAnimation(deleteAnimation);
+												dHandler.postDelayed(
+													new Runnable(){
+
+														@Override
+														public void run() {	
+															finalConvertView.setVisibility(View.INVISIBLE);
+															ConversationPreview[] convArr = { finalPreview };
+															DeleteConversationFromDbTask deleteThread = new DeleteConversationFromDbTask();
+															deleteThread.execute(convArr);				
+														}
+														
+													}
+													, AppConstants.DELAY_FOR_DELETE_ANIMATION);
+											} else {
+												Intent intent = new Intent(
+														Intent.ACTION_INSERT);
+												intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+												intent.putExtra(
+														ContactsContract.Intents.Insert.PHONE,
+														finalPreview
+																.getPhoneNumber());
+												context.startActivity(intent);
+											}
+											break;
+										case 2:
+											if (finalContact.getDisplayName() != null) {
+												dialog.cancel();
+											} else {
+
+												Handler dHandler = new Handler();
+
+												finalConvertView.startAnimation(deleteAnimation);
+												dHandler.postDelayed(
+													new Runnable(){
+
+														@Override
+														public void run() {	
+															finalConvertView.setVisibility(View.INVISIBLE);
+															ConversationPreview[] convArr = { finalPreview };
+															DeleteConversationFromDbTask deleteThread = new DeleteConversationFromDbTask();
+															deleteThread.execute(convArr);				
+														}
+														
+													}
+													, AppConstants.DELAY_FOR_DELETE_ANIMATION);
+											}
+											break;
+										case 3:
+											dialog.cancel();
+											break;
+										}
 									}
-									break;
-								case 2:
-									if (finalContact.getDisplayName() != null) {
-										dialog.cancel();
-									} else {
-										ConversationPreview[] convArr = { finalPreview };
-										DeleteConversationFromDbTask deleteThread = new DeleteConversationFromDbTask();
-										deleteThread.execute(convArr);
-									}
-									break;
-								case 3:
-									dialog.cancel();
-									break;
-								}
-							}
-						});
-				AlertDialog alertDialog = alertDialogBuilder.create();
-				alertDialog.show();
+								});
+						AlertDialog alertDialog = alertDialogBuilder.create();
+						alertDialog.show();
+					}
+
+				}, AppConstants.DELAY_FOR_CLICK_ANIMATION);
 				return true;
 			}
 		});

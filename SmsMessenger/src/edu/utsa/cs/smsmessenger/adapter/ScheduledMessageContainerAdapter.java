@@ -13,11 +13,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +28,7 @@ import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.activity.ViewMessageActivity;
 import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
+import edu.utsa.cs.smsmessenger.util.AppConstants;
 import edu.utsa.cs.smsmessenger.util.ContactsUtil;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
@@ -44,6 +48,8 @@ public class ScheduledMessageContainerAdapter extends
 	private ArrayList<MessageContainer> objects;
 	private SimpleDateFormat sdf;
 	private SmsMessageHandler smsMessageHandler;
+	private Animation clickAnimation;
+	private Animation deleteAnimation;
 
 	private class DeleteMessageFromDbTask extends
 			AsyncTask<MessageContainer, Void, Void> {
@@ -83,6 +89,11 @@ public class ScheduledMessageContainerAdapter extends
 		this.sdf = new SimpleDateFormat(context.getResources().getString(
 				R.string.date_time_format), context.getResources()
 				.getConfiguration().locale);
+
+		clickAnimation = AnimationUtils.loadAnimation(context,
+				R.anim.click_animation);
+		deleteAnimation = AnimationUtils.loadAnimation(context,
+				R.anim.delete_animation);
 	}
 
 	@Override
@@ -131,72 +142,111 @@ public class ScheduledMessageContainerAdapter extends
 			msgImageView.setImageResource(R.drawable.hg_new_contact);
 
 		final MessageContainer finalMessage = message;
+		final View finalConvertView = convertView;
+		
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent viewMsgIntent = new Intent(context,
-						ViewMessageActivity.class);
+				Handler handler = new Handler();
+				finalConvertView.startAnimation(clickAnimation);
+				handler.postDelayed(
+					new Runnable(){
 
-				// store message details in
-				viewMsgIntent.putExtra(SmsMessageHandler.COL_NAME_PHONE_NUMBER,
-						finalMessage.getPhoneNumber());
-				viewMsgIntent.putExtra(SmsMessageHandler.COL_NAME_CONTACT_ID,
-						finalMessage.getContactId());
-				viewMsgIntent.putExtra("contactName",
-						finalMessage.getPhoneNumber());
-				viewMsgIntent.putExtra("timeAndDate", finalMessage.getDate());
-				viewMsgIntent.putExtra("msgBody", finalMessage.getBody());
-				viewMsgIntent.putExtra("msgType", finalMessage.getType());
-				viewMsgIntent.putExtra("msgID", finalMessage.getId());
+						@Override
+						public void run() {		
+							Intent viewMsgIntent = new Intent(context,
+									ViewMessageActivity.class);
 
-				context.startActivity(viewMsgIntent);
+							// store message details in
+							viewMsgIntent.putExtra(SmsMessageHandler.COL_NAME_PHONE_NUMBER,
+									finalMessage.getPhoneNumber());
+							viewMsgIntent.putExtra(SmsMessageHandler.COL_NAME_CONTACT_ID,
+									finalMessage.getContactId());
+							viewMsgIntent.putExtra("contactName",
+									finalMessage.getPhoneNumber());
+							viewMsgIntent.putExtra("timeAndDate", finalMessage.getDate());
+							viewMsgIntent.putExtra("msgBody", finalMessage.getBody());
+							viewMsgIntent.putExtra("msgType", finalMessage.getType());
+							viewMsgIntent.putExtra("msgID", finalMessage.getId());
+
+							context.startActivity(viewMsgIntent);					
+						}
+						
+					}
+					, AppConstants.DELAY_FOR_CLICK_ANIMATION);
 			}
 		});
 		final ContactContainer finalContact = contact;
 		convertView.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
-				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-						context);
-				final CharSequence[] items = {
-						String.format(context
-								.getResources()
-								.getString(
-										R.string.action_call,
-										finalContact.getDisplayName() != null ? finalContact
-												.getDisplayName()
-												: finalContact.getPhoneNumber())),
-						context.getResources()
-								.getString(R.string.action_delete_message),
-						context.getResources().getString(
-								R.string.decline_desicion) };
-				alertDialogBuilder.setItems(items,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								switch (which) {
-								case 0:
-									Intent callIntent = new Intent(
-											Intent.ACTION_DIAL,
-											Uri.parse("tel:"
-													+ finalContact
-															.getPhoneNumber()));
-									context.startActivity(callIntent);
-									break;
-								case 1:
-									MessageContainer[] msgArr = { finalMessage };
-									DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
-									deleteThread.execute(msgArr);
-									break;
-								case 2:
-									dialog.cancel();
-									break;
-								}
-							}
-						});
-				AlertDialog alertDialog = alertDialogBuilder.create();
-				alertDialog.show();
+				Handler handler = new Handler();
+
+				finalConvertView.startAnimation(clickAnimation);
+				handler.postDelayed(
+					new Runnable(){
+
+						@Override
+						public void run() {		
+							AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+									context);
+							final CharSequence[] items = {
+									String.format(context
+											.getResources()
+											.getString(
+													R.string.action_call,
+													finalContact.getDisplayName() != null ? finalContact
+															.getDisplayName()
+															: finalContact.getPhoneNumber())),
+									context.getResources()
+											.getString(R.string.action_delete_message),
+									context.getResources().getString(
+											R.string.decline_desicion) };
+							alertDialogBuilder.setItems(items,
+									new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(DialogInterface dialog,
+												int which) {
+											switch (which) {
+											case 0:
+												Intent callIntent = new Intent(
+														Intent.ACTION_DIAL,
+														Uri.parse("tel:"
+																+ finalContact
+																		.getPhoneNumber()));
+												context.startActivity(callIntent);
+												break;
+											case 1:
+												finalConvertView.startAnimation(deleteAnimation);
+												Handler dhandler = new Handler();
+												
+												dhandler.postDelayed(
+													new Runnable(){
+
+														@Override
+														public void run() {
+															finalConvertView.setVisibility(View.INVISIBLE);
+															MessageContainer[] msgArr = { finalMessage };
+															DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
+															deleteThread.execute(msgArr);						
+														}
+														
+													}
+													, AppConstants.DELAY_FOR_DELETE_ANIMATION);
+												break;
+											case 2:
+												dialog.cancel();
+												break;
+											}
+										}
+									});
+							AlertDialog alertDialog = alertDialogBuilder.create();
+							alertDialog.show();
+						}
+						
+					}
+					, AppConstants.DELAY_FOR_CLICK_ANIMATION);
+				
 				return true;
 			}
 		});

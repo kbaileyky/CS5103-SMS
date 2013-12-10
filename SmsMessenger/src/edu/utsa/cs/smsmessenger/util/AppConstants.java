@@ -13,4 +13,6 @@ public class AppConstants {
 	public static final String APP_PREF_KEY = "edu.util.cs.smsmessenger.SHARED_PREFERENCES";
 	public static final String APP_PREF_SMS_PROPAGATION_KEY = "edu.util.cs.smsmessenger.SHARED_PREFERENCES";
 
+	public static final int DELAY_FOR_CLICK_ANIMATION = 150;
+	public static final int DELAY_FOR_DELETE_ANIMATION = 500;
 }

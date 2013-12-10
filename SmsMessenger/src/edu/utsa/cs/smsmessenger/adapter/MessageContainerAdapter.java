@@ -12,12 +12,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +28,7 @@ import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.activity.ViewMessageActivity;
 import edu.utsa.cs.smsmessenger.model.ContactContainer;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
+import edu.utsa.cs.smsmessenger.util.AppConstants;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
 
 /**
@@ -43,6 +47,8 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 	private SimpleDateFormat sdf;
 	private SmsMessageHandler smsMessageHandler;
 	private ContactContainer contact;
+	private Animation clickAnimation;
+	private Animation deleteAnimation;
 
 	private class DeleteMessageFromDbTask extends
 			AsyncTask<MessageContainer, Void, Void> {
@@ -107,6 +113,11 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 		this.sdf = new SimpleDateFormat(context.getResources().getString(
 				R.string.date_time_format), context.getResources()
 				.getConfiguration().locale);
+
+		clickAnimation = AnimationUtils.loadAnimation(context,
+				R.anim.click_animation);
+		deleteAnimation = AnimationUtils.loadAnimation(context,
+				R.anim.delete_animation);
 	}
 
 	@Override
@@ -210,91 +221,139 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 
 			}
 		});
+		final View finalConvertView = convertView;
 		convertView.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
-				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-						context);
 
-				// If contact is invalid, add option to create contact for phone
-				// number
-				final CharSequence[] items;
-				if (finalMessage.getContactId() != -1
-						|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT
-						|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_SCHEDULED)
-					items = new CharSequence[] {
-							String.format(context.getResources().getString(
-									R.string.action_call,
-									contact.getDisplayName() != null ? contact
-											.getDisplayName() : contact
-											.getPhoneNumber())),
-							context.getResources().getString(
-									R.string.action_delete_message),
-							context.getResources().getString(
-									R.string.decline_desicion) };
-				else
-					items = new CharSequence[] {
-							String.format(context.getResources().getString(
-									R.string.action_call,
-									contact.getDisplayName() != null ? contact
-											.getDisplayName() : contact
-											.getPhoneNumber())),
-							context.getResources().getString(
-									R.string.action_add_to_contacts),
-							context.getResources().getString(
-									R.string.action_delete_message),
-							context.getResources().getString(
-									R.string.decline_desicion) };
+				Handler handler = new Handler();
+				finalConvertView.startAnimation(clickAnimation);
+				handler.postDelayed(new Runnable() {
 
-				alertDialogBuilder.setItems(items,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								switch (which) {
-								case 0:
-									Intent callIntent = new Intent(
-											Intent.ACTION_DIAL,
-											Uri.parse("tel:"
-													+ contact.getPhoneNumber()));
-									context.startActivity(callIntent);
-									break;
-								case 1:
-									if (finalMessage.getContactId() != -1
-											|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT
-											|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_SCHEDULED) {
-										MessageContainer[] msgArr = { finalMessage };
-										DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
-										deleteThread.execute(msgArr);
-									} else {
-										Intent intent = new Intent(
-												Intent.ACTION_INSERT);
-										intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
-										intent.putExtra(
-												ContactsContract.Intents.Insert.PHONE,
-												finalMessage.getPhoneNumber());
-										context.startActivity(intent);
+					@Override
+					public void run() {
+						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+								context);
+
+						// If contact is invalid, add option to create contact
+						// for phone
+						// number
+						final CharSequence[] items;
+						if (finalMessage.getContactId() != -1
+								|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT
+								|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_SCHEDULED)
+							items = new CharSequence[] {
+									String.format(context
+											.getResources()
+											.getString(
+													R.string.action_call,
+													contact.getDisplayName() != null ? contact
+															.getDisplayName()
+															: contact
+																	.getPhoneNumber())),
+									context.getResources().getString(
+											R.string.action_delete_message),
+									context.getResources().getString(
+											R.string.decline_desicion) };
+						else
+							items = new CharSequence[] {
+									String.format(context
+											.getResources()
+											.getString(
+													R.string.action_call,
+													contact.getDisplayName() != null ? contact
+															.getDisplayName()
+															: contact
+																	.getPhoneNumber())),
+									context.getResources().getString(
+											R.string.action_add_to_contacts),
+									context.getResources().getString(
+											R.string.action_delete_message),
+									context.getResources().getString(
+											R.string.decline_desicion) };
+
+						alertDialogBuilder.setItems(items,
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										switch (which) {
+										case 0:
+											Intent callIntent = new Intent(
+													Intent.ACTION_DIAL,
+													Uri.parse("tel:"
+															+ contact
+																	.getPhoneNumber()));
+											context.startActivity(callIntent);
+											break;
+										case 1:
+											if (finalMessage.getContactId() != -1
+													|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT
+													|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_SCHEDULED) {
+
+												Handler dhandler = new Handler();
+
+												finalConvertView.startAnimation(deleteAnimation);
+												dhandler.postDelayed(
+													new Runnable(){
+
+														@Override
+														public void run() {	
+															finalConvertView.setVisibility(View.INVISIBLE);
+															MessageContainer[] msgArr = { finalMessage };
+															DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
+															deleteThread.execute(msgArr);
+														}
+														
+													}
+													, AppConstants.DELAY_FOR_DELETE_ANIMATION);
+											} else {
+												Intent intent = new Intent(
+														Intent.ACTION_INSERT);
+												intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+												intent.putExtra(
+														ContactsContract.Intents.Insert.PHONE,
+														finalMessage
+																.getPhoneNumber());
+												context.startActivity(intent);
+											}
+											break;
+										case 2:
+											if (finalMessage.getContactId() != -1
+													|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT
+													|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_SCHEDULED) {
+												dialog.cancel();
+											} else {
+
+												Handler dhandler = new Handler();
+												finalConvertView.startAnimation(deleteAnimation);
+												dhandler.postDelayed(
+													new Runnable(){
+
+														@Override
+														public void run() {	
+															finalConvertView.setVisibility(View.INVISIBLE);
+															MessageContainer[] msgArr = { finalMessage };
+															DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
+															deleteThread.execute(msgArr);
+														}
+														
+													}
+													, AppConstants.DELAY_FOR_DELETE_ANIMATION);
+											}
+											break;
+										case 3:
+											dialog.cancel();
+											break;
+										}
 									}
-									break;
-								case 2:
-									if (finalMessage.getContactId() != -1
-											|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_OUT
-											|| finalMessage.getType() == SmsMessageHandler.MSG_TYPE_SCHEDULED) {
-										dialog.cancel();
-									} else {
-										MessageContainer[] msgArr = { finalMessage };
-										DeleteMessageFromDbTask deleteThread = new DeleteMessageFromDbTask();
-										deleteThread.execute(msgArr);
-									}
-									break;
-								case 3:
-									dialog.cancel();
-									break;
-								}
-							}
-						});
-				AlertDialog alertDialog = alertDialogBuilder.create();
-				alertDialog.show();
+								});
+						AlertDialog alertDialog = alertDialogBuilder.create();
+						alertDialog.show();
+					}
+
+				}, AppConstants.DELAY_FOR_CLICK_ANIMATION);
+
 				return true;
 			}
 		});
