@@ -1,5 +1,6 @@
 package edu.utsa.cs.smsmessenger.activity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -26,6 +27,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -41,11 +45,17 @@ import android.widget.Toast;
  */
 public class NewConversationActivity extends Activity {
 
+	public static final int CONTACT_REQUEST_CODE = 101;
+	public static final int SCHEDULE_REQUEST_CODE = 102;
 	private AutoCompleteTextView newRecipientTextView;
 	private EditText newMessageEditText;
 	private TextView newMessageCharCountTextView;
 	private SmsMessageHandler smsMessageHandler;
 	private ImageButton sendNewMessageButton;
+	private CheckBox scheduleMessageCheckBox;
+	private TextView scheduleMessageTextView;
+	private Calendar scheduleMessageDate;
+	private SimpleDateFormat dateTimeSdf;
 
 	private OnClickListener addNewRecipientOnClickListener = new OnClickListener() {
 		@Override
@@ -53,7 +63,7 @@ public class NewConversationActivity extends Activity {
 
 			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 			intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
-			startActivityForResult(intent, 1);
+			startActivityForResult(intent, CONTACT_REQUEST_CODE);
 		}
 	};
 
@@ -142,7 +152,7 @@ public class NewConversationActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(MessageContainer result) {
-			getActivity().finish();
+			//getActivity().finish();
 		}
 	}
 
@@ -185,6 +195,12 @@ public class NewConversationActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.new_conversation);
 
+		dateTimeSdf = new SimpleDateFormat(getResources().getString(
+				R.string.date_time_format2),
+				getResources().getConfiguration().locale);
+
+		scheduleMessageTextView = (TextView) findViewById(R.id.msgScheduleTextView);
+		scheduleMessageCheckBox = (CheckBox) findViewById(R.id.msgSchedulecheckBox);
 		newRecipientTextView = (AutoCompleteTextView) findViewById(R.id.newMsgRecipientAutoCompleteTextView);
 		newRecipientTextView.setAdapter(new AutoContactFillAdapter(this));
 		newRecipientTextView
@@ -221,6 +237,23 @@ public class NewConversationActivity extends Activity {
 
 			}
 		});
+		scheduleMessageCheckBox
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton arg0,
+							boolean arg1) {
+						// TODO Auto-generated method stub
+						if (arg1)
+						{
+							startSheduleMessageActivity();
+						}
+						else
+							sendNewMessageButton.setImageResource(R.drawable.send_msg_icon);
+
+					}
+				});
+
 		ImageButton newRecipientButton = (ImageButton) findViewById(R.id.newMsgAddRecipientImageButton);
 		sendNewMessageButton = (ImageButton) findViewById(R.id.newMsgSendImageButton);
 
@@ -247,27 +280,46 @@ public class NewConversationActivity extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (data != null) {
-			Uri uri = data.getData();
+		Log.d("NewConversationActivity", "onActivityResult");
+		Log.d("NewConversationActivity", "Result Code: " + requestCode);
+		if (requestCode == SCHEDULE_REQUEST_CODE) {
+			if (resultCode == RESULT_OK) {
+				sendNewMessageButton.setImageResource(R.drawable.hg_timer_icon);
+				scheduleMessageDate = (Calendar) data
+						.getSerializableExtra(ScheduleMessageActivity.SCHEDULE_RESQUEST_DATE_KEY);
+				scheduleMessageTextView.setText(String.format(
+						this.getResources().getString(
+								R.string.schedule_date_checkbox_label),
+						dateTimeSdf.format(scheduleMessageDate.getTime())));
+			}
+			else
+			{
+				sendNewMessageButton.setImageResource(R.drawable.send_msg_icon);
+				scheduleMessageCheckBox.setChecked(false);
+			}
+		} else if (requestCode == CONTACT_REQUEST_CODE) {
+			if (data != null) {
+				Uri uri = data.getData();
 
-			if (uri != null) {
-				Cursor c = null;
-				try {
-					c = getContentResolver()
-							.query(uri,
-									new String[] {
-											ContactsContract.CommonDataKinds.Phone.NUMBER,
-											ContactsContract.Contacts.DISPLAY_NAME },
-									null, null, null);
+				if (uri != null) {
+					Cursor c = null;
+					try {
+						c = getContentResolver()
+								.query(uri,
+										new String[] {
+												ContactsContract.CommonDataKinds.Phone.NUMBER,
+												ContactsContract.Contacts.DISPLAY_NAME },
+										null, null, null);
 
-					if (c != null && c.moveToFirst()) {
-						String number = c.getString(0);
-						String type = c.getString(1);
-						SetContact(type, number);
-					}
-				} finally {
-					if (c != null) {
-						c.close();
+						if (c != null && c.moveToFirst()) {
+							String number = c.getString(0);
+							String type = c.getString(1);
+							SetContact(type, number);
+						}
+					} finally {
+						if (c != null) {
+							c.close();
+						}
 					}
 				}
 			}
@@ -280,7 +332,6 @@ public class NewConversationActivity extends Activity {
 
 	public void handleSmsMessageSend(final String phoneNumber,
 			final String message) {
-
 		String strippedNumber = ContactsUtil
 				.getStrippedPhoneNumber(phoneNumber);
 		sendNewMessageButton.setEnabled(false);
@@ -315,23 +366,24 @@ public class NewConversationActivity extends Activity {
 
 		// Intent for send
 		Intent sentIntent = new Intent("edu.utsa.cs.smsmessenger.SMS_SENT");
-		sentIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer", messageContainer);
-		
+		sentIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer",
+				messageContainer);
+
 		PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, 0,
 				sentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Intent for delivery
 		Intent deliveredIntent = new Intent(
 				"edu.utsa.cs.smsmessenger.SMS_DELIVERED");
-		deliveredIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer", messageContainer);
+		deliveredIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer",
+				messageContainer);
 		PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this,
 				0, deliveredIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Send Message
 		SmsManager sms = SmsManager.getDefault();
 		sms.sendTextMessage(messageContainer.getPhoneNumber(), null,
-				messageContainer.getBody(), sentPendingIntent,
-				null);
+				messageContainer.getBody(), sentPendingIntent, null);
 	}
 
 	private SmsMessageHandler getSmsMessageHandler() {
@@ -372,6 +424,7 @@ public class NewConversationActivity extends Activity {
 
 	private void OnUserLeavesActivity() {
 
+		Log.d("NewConversationActivity", "OnUserLeavesActivity");
 		String messageBody = newMessageEditText.getText().toString().trim();
 		String phoneNumber = newRecipientTextView.getText().toString().trim();
 
@@ -392,11 +445,26 @@ public class NewConversationActivity extends Activity {
 		}
 	}
 
+	public void startSheduleMessageActivity() {
+		Intent intent = new Intent(getContext(), ScheduleMessageActivity.class);
+		startActivityForResult(intent, SCHEDULE_REQUEST_CODE);
+	}
+
 	@Override
 	protected void onPause() {
 		Log.d("NewConversationActivity", "onPause");
 		OnUserLeavesActivity();
 		super.onPause();
 	}
+
+	@Override
+	public void onBackPressed() {
+		Log.d("NewConversationActivity", "onBackPressed");
+		OnUserLeavesActivity();
+		finish();
+		super.onBackPressed();
+	}
+	
+	
 
 }

@@ -42,7 +42,7 @@
             android:name="edu.utsa.cs.smsmessenger.activity.AppSettingsActivity"
             android:label="@string/settings_title" >
         </activity>
-          <activity
+         <activity
             android:name="edu.utsa.cs.smsmessenger.activity.ScheduledMessageList"
             android:label="@string/scheduled_message_title" >
         </activity>
@@ -59,7 +59,10 @@
         <activity 
             android:name="edu.utsa.cs.smsmessenger.activity.ViewMessageActivity"
             android:label="@string/view_message_title" >
-            
+        </activity>
+        <activity 
+            android:name="edu.utsa.cs.smsmessenger.activity.ScheduleMessageActivity"
+            android:label="@string/schedule_message_title" >
         </activity>
         <receiver android:name="edu.utsa.cs.smsmessenger.receiver.IncomingSmsMessageReceiver">
             <intent-filter android:priority="9999" >
