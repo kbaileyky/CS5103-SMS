@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/backroundColor" >
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_margin="10sp">
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_marginLeft="50sp"
+                android:text="@string/date_label" />
+
+            <EditText
+                android:id="@+id/scheduleMsgDateEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="50sp"
+                android:inputType="date"
+                android:focusable="false"
+                android:clickable="true"
+                android:ems="4" >
+
+                <requestFocus />
+            </EditText>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_marginLeft="50sp"
+                android:text="@string/time_label" />
+
+            <EditText
+                android:id="@+id/scheduleMsgTimeEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="50sp"
+                android:inputType="time"
+                android:focusable="false"
+                android:clickable="true"
+                android:ems="4" />
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:layout_marginTop="15sp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backroundColor"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/scheduleMsgSetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/set_decision"
+            android:layout_margin="10sp"
+            style="@style/ButtonStyle" />
+
+        <Button
+            android:id="@+id/scheduleMsgCancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10sp"
+            android:text="@string/decline_desicion"
+            style="@style/ButtonStyle" />
+    </LinearLayout>
+
+</LinearLayout>
