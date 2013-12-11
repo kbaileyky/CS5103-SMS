@@ -246,9 +246,10 @@ public class ContactsUtil {
 	 */
 	public static String removeSpecialPhoneChars(String number)
 	{
-		return number.replace("(", "")
+		/*return number.replace("(", "")
 				.replace(")", "").replace(".", "")
 				.replace("+", "").replace("-", "")
-				.replace("#", "").replace(" ", "");
+				.replace("#", "").replace(" ", "");*/
+		return number.replaceAll("[\\)\\(\\+-\\.\\s]", "");
 	}
 }
