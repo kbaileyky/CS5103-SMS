@@ -6,7 +6,7 @@ Made changes to some of the adapters to allow them to show when a scheduled mess
 Added animations to the adapters to show when they are clicked.
 Added vibrations to the adpaters to feel when they are clicked.
 Added distinct vibration pattern to when the messages sent do not succeed.
-Updated the Uesr Manual.
+Updated the User Manual.
 
 
 
