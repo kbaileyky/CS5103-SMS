@@ -1,0 +1,22 @@
+Change Report
+
+Added a new activity to show scheduled messages. 
+Changed the create new message screen to allow for scheduled input.
+Made changes to some of the adapters to allow them to show when a scheduled message will be sent.
+Added animations to the adapters to show when they are clicked.
+Added vibrations to the adpaters to feel when they are clicked.
+Added distinct vibration pattern to when the messages sent do not succeed.
+Updated the Uesr Manual.
+
+
+
+
+Division of Work:
+
+
+Kendall Bailey:
+I prepared the nature language specifications and the sequence diagrams.
+During the coding phase I was in charge of look and feel (color scheme and icons), as well as the View Message screen and its menus.
+I wrote the User Manual for the application.
+During the second phase of the project, I did the initial set up for the view scheduled messages app,
+created the new icons, and added vibrations.
