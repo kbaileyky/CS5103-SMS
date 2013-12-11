@@ -18,5 +18,6 @@ Kendall Bailey:
 I prepared the nature language specifications and the sequence diagrams.
 During the coding phase I was in charge of look and feel (color scheme and icons), as well as the View Message screen and its menus.
 I wrote the User Manual for the application.
-During the second phase of the project, I did the initial set up for the view scheduled messages app,
-created the new icons, and added vibrations.
+
+During the second phase of the project, I did the initial set up for the view scheduled messages activity,
+created the new icon, and added vibrations.
