@@ -21,3 +21,10 @@ During the second phase of the project, She did the initial set up for the view 
 
 Michael Madrigal:
 For both phases, developed the App architecture, developed many features of the App, Organized and assigned cases.
+
+Emilio Mercado:
+Generated class diagrams and assisted with Sequence Diagram and Natural Langauge specification Review.
+Added Extra Features to application.
+Wrote Utility Functions for Querying Contacts as well as Validity checks for numbers,contacts.
+Unit Testing
+Presentation
