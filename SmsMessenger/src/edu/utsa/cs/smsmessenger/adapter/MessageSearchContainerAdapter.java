@@ -47,7 +47,7 @@ public class MessageSearchContainerAdapter extends
 	private SimpleDateFormat sdf;
 	private Animation clickAnimation;
 	private Animation deleteAnimation;
-	private static int short_vibration_pulse = 250; //250 ms for vibration
+
 
 	private class DeleteMessageFromDbTask extends
 			AsyncTask<MessageContainer, Void, Void> {
@@ -141,7 +141,7 @@ public class MessageSearchContainerAdapter extends
 			public void onClick(View arg0) {
 
 				Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-				v.vibrate(short_vibration_pulse);
+				v.vibrate(AppConstants.VIBRATION_SHORT_PULSE);
 				
 				Handler handler = new Handler();
 				finalConvertView.startAnimation(clickAnimation);
@@ -181,7 +181,7 @@ public class MessageSearchContainerAdapter extends
 			public boolean onLongClick(View arg0) {
 
 				Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-				v.vibrate(short_vibration_pulse);
+				v.vibrate(AppConstants.VIBRATION_SHORT_PULSE);
 				
 				Handler handler = new Handler();
 				finalConvertView.startAnimation(clickAnimation);

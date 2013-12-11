@@ -5,6 +5,7 @@ import java.util.Calendar;
 import edu.utsa.cs.smsmessenger.R;
 import edu.utsa.cs.smsmessenger.model.MessageContainer;
 import edu.utsa.cs.smsmessenger.util.SmsMessageHandler;
+import edu.utsa.cs.smsmessenger.util.AppConstants;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -28,7 +29,6 @@ import android.widget.Toast;
 public class SentSmsMessageReceiver extends BroadcastReceiver {
 
 	private Context context;
-	private long[] vibratePattern = {150, 100, 150};
 	
 
 	private class UpdateMessagesInDbTask extends
@@ -71,7 +71,7 @@ public class SentSmsMessageReceiver extends BroadcastReceiver {
 					context.getResources().getString(R.string.sms_message_sent));
 			break;
 		case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-			v.vibrate(vibratePattern, -1); //-1 means only repeat once
+			v.vibrate(AppConstants.VIBRATION_ERROR_PULSE, -1); //-1 means only repeat once
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
 			updateDatabase(context, message,
@@ -79,14 +79,14 @@ public class SentSmsMessageReceiver extends BroadcastReceiver {
 			break;
 		case SmsManager.RESULT_ERROR_NULL_PDU:
 		case SmsManager.RESULT_ERROR_NO_SERVICE:
-			v.vibrate(vibratePattern, -1); //-1 means only repeat once
+			v.vibrate(AppConstants.VIBRATION_ERROR_PULSE, -1); //-1 means only repeat once
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
 			updateDatabase(context, message,
 					context.getResources().getString(R.string.sms_no_service));
 			break;
 		case SmsManager.RESULT_ERROR_RADIO_OFF:
-			v.vibrate(vibratePattern, -1); //-1 means only repeat once
+			v.vibrate(AppConstants.VIBRATION_ERROR_PULSE, -1); //-1 means only repeat once
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
 			updateDatabase(context, message,

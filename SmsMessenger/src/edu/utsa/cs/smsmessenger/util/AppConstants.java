@@ -15,4 +15,7 @@ public class AppConstants {
 
 	public static final int DELAY_FOR_CLICK_ANIMATION = 150;
 	public static final int DELAY_FOR_DELETE_ANIMATION = 500;
+	
+	public static final int VIBRATION_SHORT_PULSE = 25;
+	public static final long[] VIBRATION_ERROR_PULSE = {50, 100, 50};
 }
