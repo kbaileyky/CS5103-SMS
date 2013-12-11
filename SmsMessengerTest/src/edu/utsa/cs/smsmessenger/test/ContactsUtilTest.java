@@ -43,16 +43,18 @@ public class ContactsUtilTest extends AndroidTestCase {
 	public static final String TEST_PHONE_NUM_B = "09876543210";
 	
 	// new phase 2. International Numbers
+	public static final String TEST_NAME_INTL_A = "INTL PERSON A";
+	public static final String TEST_NAME_INTL_B = "INTL PERSON B";
+	
 	public static final String TEST_INTL_PHONE_NUM_A = "123";
-	public static final String TEST_INTL_PHONE_NUM_B = "1234";
+	public static final String TEST_INTL_PHONE_NUM_B = "1234567890123";
 	public static final String TEST_INTL_PHONE_NUM_C = "12345678901";
 	public static final String TEST_INTL_PHONE_NUM_D = "123456789012";
-	public static final String TEST_INTL_PHONE_NUM_E = "1234567890123";
-	public static final String TEST_INTL_PHONE_NUM_A_W_PERIODS = "123.4567.890.123";
-	public static final String TEST_INTL_PHONE_NUM_A_W_PERIODS_A_HYPHEN = "12-3456.78901-23";
-	public static final String TEST_INTL_PHONE_NUM_A_W_PARENTHESES_W_PERIODS_A_HYPHEN = "(12)-3456.78901-23";
-	public static final String INVALID_TEST_INTL_PHONE_NUM_A_W_SLASH = "12/345678/90123";
-	public static final String INVALID_TEST_INTL_PHONE_NUM_A_W_ALPHA = "12A345678X90123S";
+	public static final String TEST_INTL_PHONE_NUM_B_W_PERIODS = "123.4567.890.123";
+	public static final String TEST_INTL_PHONE_NUM_B_W_PERIODS_A_HYPHEN = "12-3456.78901-23";
+	public static final String TEST_INTL_PHONE_NUM_B_W_PARENTHESES_W_PERIODS_A_HYPHEN = "(12)-3456.78901-23";
+	public static final String INVALID_TEST_INTL_PHONE_NUM_B_W_SLASH = "12/345678/90123";
+	public static final String INVALID_TEST_INTL_PHONE_NUM_B_W_ALPHA = "12A345678X90123S";
 	
 
 	@Override
@@ -61,6 +63,8 @@ public class ContactsUtilTest extends AndroidTestCase {
 		clearContacts();
 		addContact(TEST_NAME_A, TEST_PHONE_NUM_A);
 		addContact(TEST_NAME_B, TEST_PHONE_NUM_B);
+		addContact(TEST_NAME_INTL_A, TEST_INTL_PHONE_NUM_A);
+		addContact(TEST_NAME_INTL_B, TEST_INTL_PHONE_NUM_B);
 	}
 
 	public void testGetAllContactNames() {
@@ -137,6 +141,35 @@ public class ContactsUtilTest extends AndroidTestCase {
 		contactContainer = ContactsUtil.getContactByPhoneNumber(
 				contentResolver, TEST_PHONE_NUM_B);
 		assertEquals(TEST_NAME_B, contactContainer.getDisplayName());
+		
+		// PHASE 2 TEST CASES
+		contactContainer = ContactsUtil
+				.getContactByPhoneNumber(contentResolver, TEST_INTL_PHONE_NUM_A);
+		assertEquals(TEST_NAME_INTL_A, contactContainer.getDisplayName());
+
+		contactContainer = ContactsUtil.getContactByPhoneNumber(
+				contentResolver, TEST_INTL_PHONE_NUM_B);
+		assertEquals(TEST_NAME_INTL_B, contactContainer.getDisplayName());
+		
+		contactContainer = ContactsUtil
+				.getContactByPhoneNumber(contentResolver, TEST_INTL_PHONE_NUM_B_W_PERIODS);
+		assertEquals(TEST_NAME_INTL_B, contactContainer.getDisplayName());
+
+		contactContainer = ContactsUtil.getContactByPhoneNumber(
+				contentResolver, TEST_INTL_PHONE_NUM_B_W_PERIODS_A_HYPHEN);
+		assertEquals(TEST_NAME_INTL_B, contactContainer.getDisplayName());
+		
+		contactContainer = ContactsUtil.getContactByPhoneNumber(
+				contentResolver, TEST_INTL_PHONE_NUM_B_W_PARENTHESES_W_PERIODS_A_HYPHEN);
+		assertEquals(TEST_NAME_INTL_B, contactContainer.getDisplayName());
+		
+		contactContainer = ContactsUtil.getContactByPhoneNumber(
+				contentResolver, INVALID_TEST_INTL_PHONE_NUM_B_W_SLASH);
+		assertNotSame(TEST_NAME_INTL_B, contactContainer.getDisplayName());
+		
+		contactContainer = ContactsUtil.getContactByPhoneNumber(
+				contentResolver, INVALID_TEST_INTL_PHONE_NUM_B_W_ALPHA);
+		assertNotSame(TEST_NAME_INTL_B, contactContainer.getDisplayName());
 
 	}
 
