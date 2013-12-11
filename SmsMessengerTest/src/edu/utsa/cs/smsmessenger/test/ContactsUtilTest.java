@@ -71,9 +71,7 @@ public class ContactsUtilTest extends AndroidTestCase {
 
 	public void testGetContactByPhoneNumber() {
 		ContentResolver contentResolver = getContext().getContentResolver();
-		/*
-		 * 
-		 */
+
 		ContactContainer contactContainer = ContactsUtil
 				.getContactByPhoneNumber(contentResolver, TEST_PHONE_NUM_A);
 		assertEquals(TEST_NAME_A, contactContainer.getDisplayName());
