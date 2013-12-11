@@ -16,7 +16,7 @@
 \par The Mercury Messenger is intended to manage the transmission and reception of SMS messages by organizing messages and allowing users to send, receive, and delete messages. Messages are organized into conversations by contact name/ contact number, so that all messages from a contact can be viewed from a single location.
 \par With limited usage the Mercury Messenger will access the stock contacts application with the purpose of obtaining information that may be convenient to the user. For example, retrieving the names of contacts associated with number or being able to select a number from contacts when writing a message.
 \par Mercury Messenger has a distinct user interface which will be discussed more in-depth during the system summary (Section~\ref{sec:UsingMercMess}). The Mercury Messenger is accessible from the application view on the Android operating system 4.0.
-\par Mercury Messenger has two tiers of operations. The first consists of operations with which the user is able to interact, such as view messages or creating messages. The second tier is background operations which update the application when messages are deleted, send, and received. The Mercury Messenger also constructs a database upon installation where all of the SMS messages that are transmitted or received while the Mercury Messenger is active are stored.
+\par Mercury Messenger has two tiers of operations. The first consists of operations with which the user is able to interact, such as view messages or creating messages. The second tier is background operations which update the application when messages are deleted, send, and received. The Mercury Messenger also constructs a database upon installation where all of the SMS messages that are transmitted or received while the Mercury Messenger is active are stored. Mercury Messenger will also send messages scheduled ahead of time.
 \par The software delivered in this iteration is fully functional.
 
 
@@ -28,7 +28,7 @@ For additional information, Team Mercury can be contacted through liaison Kendal
 \label{sec:SysSummary}
 
 \subsection{System Configuration}
-The Mercury Messenger is contained entirely within a single system and operates on mobile devices with an Android operating system. The operating system on the Android device on which the Mercury Messenger is being installed must be version 4.0 or higher. The device must be able to send and receive SMS Messenger to function properly. No Internet connection is required. There must be enough space on the SD card of the phone to hold and maintain the Mercury Messenger message database.
+The Mercury Messenger is contained entirely within a single system and operates on mobile devices with an Android operating system. The operating system on the Android device on which the Mercury Messenger is being installed must be version 4.0 or higher. The device must be able to send and receive SMS Messenger to function properly. No Internet connection is required. There must be enough space on the SD card of the phone to hold and maintain the Mercury Messenger message database. This application will use vibrate permissions.
 
 \subsection{User Access Levels}
 Everyone can use this application.
@@ -68,20 +68,26 @@ Extracting, Installing, and Running Mercury Messenger.
 
 \begin{figure}[h!]
 \centering
-	\begin{subfigure}[b]{0.3\textwidth}
+	\begin{subfigure}[b]{0.25\textwidth}
 		\includegraphics[width=1cm]{"./Screen_shots/New_Message_Button"}{}
 		\caption{New Message Button}
 	\end{subfigure} %
-	\begin{subfigure}[b]{0.3\textwidth}
+	\begin{subfigure}[b]{0.25\textwidth}
 \includegraphics[width=1cm]{"./Screen_shots/Get_Contact_Button"}{}
 \caption{Get Contact Button}
 \label{fig:GetContactButton}
 	\end{subfigure}
-	\begin{subfigure}[b]{0.3\textwidth}
+	\begin{subfigure}[b]{0.25\textwidth}
 \includegraphics[width=1cm]{"./Screen_shots/Send_Message_Button"}{}
 \caption{Send Message Button}
 \label{fig:sendMessage}
 	\end{subfigure}
+\begin{subfigure}[b]{0.25\textwidth}
+	\includegraphics[width=1cm]{"./Screen_shots/Send_Sched_Message_Button"}{}
+	\caption{Send Scheduled Message Button}
+	\label{fig:sendSchedMessage}
+\end{subfigure}
+	
 	\caption{Mercury Messenger Buttons}
 
 \end{figure}
@@ -93,7 +99,7 @@ Extracting, Installing, and Running Mercury Messenger.
 
 \par When the Send Message Button is pressed, the Mercury Messenger application will send a valid (has both a recipient and a body) message.
 
-
+\par When the Send Scheduled Message Button is pressed, the Mercury Messenger application will send a valid (has both a recipient and a body) message that has been scheduled to be sent in the future.
 
 
 \subsection{Start Up Screen: Conversation Lists}
@@ -118,12 +124,12 @@ If information cannot be found in the contacts applications, the most recent mes
 \begin{figure}[h!]
 \centering
 	\begin{subfigure}[b]{0.49\textwidth}
-		\includegraphics[width=.49\textwidth]{"./Screen_shots/Conversation_screen_Menu"}{}
+		\includegraphics[width=.49\textwidth]{"./Screen_shots/Main_Screen_menu"}{}
 		\caption{Menu}
 		\label{fig:MainScreenMenu}
 	\end{subfigure} %
 	\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=.49\textwidth]{"./Screen_shots/Main_Screen_Long_Press"}{}
+\includegraphics[width=.49\textwidth]{"./Screen_shots/Main_Screen_Long_Press2"}{}
 \caption{Long Press Menu}
 \label{fig:MainScreenLong}
 	\end{subfigure}
@@ -133,11 +139,49 @@ If information cannot be found in the contacts applications, the most recent mes
 
 
 
-\par If the user presses the menu button on the phone (Figure \ref{fig:MainScreenMenu}), he or she is presented with the option to view the applications settings (~\autoref{sec:Settings}) or search the messages(~\autoref{sec:Search}).
-\par If the user presses the screen for approximately three seconds while clicking on a conversation he will be presented with two or three options (Figure \ref{fig:MainScreenLong}).
+
+\par If the user presses the menu button on the phone (Figure \ref{fig:MainScreenMenu}), he or she is presented with the option to view the applications settings (~\autoref{sec:Settings}), search the messages(~\autoref{sec:Search}), or switch into the scheduled message view (~\autoref{sec:SchedMess}).
+\par If the user presses the screen for approximately three seconds while clicking on a conversation he will be presented with three or four options (Figure \ref{fig:MainScreenLong}).
 If the user does not have the selected conversation's other party added to the contacts application, Mercury Messenger will display the option to "Add to Contacts". Selecting this option will launch the contact application on the phone.
-If the user selects the "Delete" option the entire conversation that was selected will be deleted.
+If the user selects the "Delete" option the entire conversation that was selected will be deleted. Selecting the "Call" option will call the number that was pressed. 
+
+
+
+\subsection{Scheduled Message Screen}
+\label{sec:SchedMess}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.25\textwidth]{"./Screen_shots/Scheduled_MessagE_Screen"}{}
+\caption{Conversation List Screen}
+
+\end{figure}
+
+This is accessed from the main Conversation List screen using the menu. Here the list of messages waiting to be sent will be stored. It operates much like the Conversation List screen, allowing the users access to searching features and setting through the menu and sending messages (both immediate and unscheduled) through the New Message Button \ref{fig:NewMessage}. 
+
+\begin{figure}[h!]
+\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\includegraphics[width=.49\textwidth]{"./Screen_shots/Scheduled_MessagE_Screen_Menu"}{}
+		\caption{Menu}
+		\label{fig:SchedScreenMenu}
+	\end{subfigure} %
+	\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=.49\textwidth]{"./Screen_shots/Scheduled_MessagE_Screen_Long_Press"}{}
+\caption{Long Press Menu}
+\label{fig:SchedScreenLong}
+	\end{subfigure}
+	\caption{Scheduled Messages Screen: Sub-Screens}
+
+\end{figure}
+
+\par To return to the Conversation List screen, use the menu option "Conversations".
+
+
 \pagebreak
+
+
+
 \subsection{Settings Screen}
 \label{sec:Settings}
 
@@ -174,7 +218,7 @@ If a message with the entered criteria is not found then no messages will be lis
 \label{sec:NewMessage}
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=.25\textwidth]{"./Screen_shots/Send_Message_Screen"}{}
+\includegraphics[width=.25\textwidth]{"./Screen_shots/Send_Message_Screen2"}{}
 \caption{Send New Message Screen}
 \label{fig:NewMessage}
 \end{figure}
@@ -193,8 +237,22 @@ As the user is typing a recipients name if the recipient is a member of the user
 \par The user is able to type in the body of his or her message into the message field. The user can type as many characters as he or she wishes, but the text messages will be split along a 256 character boundary.
 This means that the sending a single message may result in the recipient receiving multiple SMS messages and users thus be wary of texting limits.
 
+\par If the user wishes to send a scheduled message, click on the "Schedule" check box. A pop-up will appear to set the date of the transmission. This is not a time machine, it will only accept dates in the future.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.25\textwidth]{"./Screen_shots/Schedule_Message_Popup"}{}
+\caption{Setting the time and date}
+\label{fig:SchedPopUp}
+\end{figure}
+
+
+
 \par After the user has completed both their message and the recipients list, the user can press the Send Message Button to send his or her message(Figure~\ref{fig:sendMessage}).
 If the message is unable to be sent, the user will be notified with a pop-up.
+
+
+
 \pagebreak
 
 \subsection{Conversation Screen}
@@ -228,6 +286,14 @@ If the message is unable to be sent, the user will be notified with a pop-up.
 
 \par If the user wishes to delete a message, he or she can press on the message's speech bubble or icon for approximately three seconds and a menu will appear with the option to delete that message.
 
+\par If the message is scheduled to be sent in the future it will appear along with the time and date that the future message will be sent.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.25\textwidth]{"./Screen_shots/Conversation_scheduled_message"}{}
+\caption{Conversation Screen: A Scheduled Message}
+\label{fig:ConversationScheduled}
+\end{figure}
 
 \pagebreak
 \subsection{View Message Screen}

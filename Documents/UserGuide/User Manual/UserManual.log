@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2013.9.1)  19 NOV 2013 22:06
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2013.9.1)  10 DEC 2013 20:29
 entering extended mode
 **UserManual.tex
 
@@ -279,7 +279,7 @@ Overfull \hbox (8.7207pt too wide) in paragraph at lines 41--42
 om / kbaileyky / CS5103-[]SMS$[] \OT1/cmr/m/n/10 and down-
  []
 
-[2] <"./Screen_shots/New_Message_Button".png, id=108, 43.66313pt x 45.16875pt>
+[2] <"./Screen_shots/New_Message_Button".png, id=113, 43.66313pt x 45.16875pt>
 File: "./Screen_shots/New_Message_Button".png Graphic file (type png)
 
 <use "./Screen_shots/New_Message_Button".png>
@@ -287,7 +287,11 @@ Package pdftex.def Info: "./Screen_shots/New_Message_Button".png used on input
 line 72.
 (pdftex.def)             Requested size: 28.45274pt x 29.43445pt.
 
-<"./Screen_shots/Get_Contact_Button".png, id=110, 78.2925pt x 76.78688pt>
+Underfull \hbox (badness 10000) in paragraph at lines 73--73
+[]\OT1/cmr/m/n/9 (a) |New Mes-sage
+ []
+
+<"./Screen_shots/Get_Contact_Button".png, id=115, 78.2925pt x 76.78688pt>
 File: "./Screen_shots/Get_Contact_Button".png Graphic file (type png)
 
 <use "./Screen_shots/Get_Contact_Button".png>
@@ -295,7 +299,7 @@ Package pdftex.def Info: "./Screen_shots/Get_Contact_Button".png used on input
 line 76.
 (pdftex.def)             Requested size: 28.45274pt x 27.9057pt.
 
-<"./Screen_shots/Send_Message_Button".png, id=111, 76.03406pt x 77.53969pt>
+<"./Screen_shots/Send_Message_Button".png, id=116, 76.03406pt x 77.53969pt>
 File: "./Screen_shots/Send_Message_Button".png Graphic file (type png)
 
 <use "./Screen_shots/Send_Message_Button".png>
@@ -303,153 +307,223 @@ Package pdftex.def Info: "./Screen_shots/Send_Message_Button".png used on input
  line 81.
 (pdftex.def)             Requested size: 28.45274pt x 29.01578pt.
 
-<"./Screen_shots/Main_Screen".png, id=113, 362.85562pt x 605.26125pt>
-File: "./Screen_shots/Main_Screen".png Graphic file (type png)
-
-<use "./Screen_shots/Main_Screen".png>
-Package pdftex.def Info: "./Screen_shots/Main_Screen".png used on input line 10
-3.
-(pdftex.def)             Requested size: 86.25pt x 143.86186pt.
+Underfull \hbox (badness 10000) in paragraph at lines 82--82
+[]\OT1/cmr/m/n/9 (c) |Send Mes-sage
+ []
 
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
+<"./Screen_shots/Send_Sched_Message_Button".png, id=117, 76.78688pt x 79.04532p
+t>
+File: "./Screen_shots/Send_Sched_Message_Button".png Graphic file (type png)
+ <use "./Screen_shots/Send_Sched_Message_Button".png>
+Package pdftex.def Info: "./Screen_shots/Send_Sched_Message_Button".png used on
+ input line 86.
+(pdftex.def)             Requested size: 28.45274pt x 29.28972pt.
+
+Underfull \hbox (badness 1661) in paragraph at lines 87--87
+[]\OT1/cmr/m/n/9 (d) |Send Sched-uled
+ []
 
 [3 <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Manua
 l/Screen_shots/New_Message_Button.png> <C:/Users/Kitsune/Documents/GitHub/CS510
 3-SMS/Documents/UserGuide/User Manual/Screen_shots/Get_Contact_Button.png> <C:/
 Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Manual/Scree
-n_shots/Send_Message_Button.png>]
-<"./Screen_shots/Conversation_screen_Menu".png, id=131, 362.85562pt x 603.75563
-pt>
-File: "./Screen_shots/Conversation_screen_Menu".png Graphic file (type png)
- <use "./Screen_shots/Conversation_screen_Menu".png>
-Package pdftex.def Info: "./Screen_shots/Conversation_screen_Menu".png used on 
-input line 121.
-(pdftex.def)             Requested size: 82.83635pt x 137.82906pt.
+n_shots/Send_Message_Button.png> <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/
+Documents/UserGuide/User Manual/Screen_shots/Send_Sched_Message_Button.png>]
+<"./Screen_shots/Main_Screen".png, id=137, 362.85562pt x 605.26125pt>
+File: "./Screen_shots/Main_Screen".png Graphic file (type png)
 
-<"./Screen_shots/Main_Screen_Long_Press".png, id=132, 363.60844pt x 604.50844pt
->
-File: "./Screen_shots/Main_Screen_Long_Press".png Graphic file (type png)
- <use "./Screen_shots/Main_Screen_Long_Press".png>
-Package pdftex.def Info: "./Screen_shots/Main_Screen_Long_Press".png used on in
-put line 126.
-(pdftex.def)             Requested size: 82.83635pt x 137.71497pt.
+<use "./Screen_shots/Main_Screen".png>
+Package pdftex.def Info: "./Screen_shots/Main_Screen".png used on input line 10
+9.
+(pdftex.def)             Requested size: 86.25pt x 143.86186pt.
+
+<"./Screen_shots/Main_Screen_menu".png, id=138, 366.61969pt x 574.39594pt>
+File: "./Screen_shots/Main_Screen_menu".png Graphic file (type png)
+
+<use "./Screen_shots/Main_Screen_menu".png>
+Package pdftex.def Info: "./Screen_shots/Main_Screen_menu".png used on input li
+ne 127.
+(pdftex.def)             Requested size: 82.83635pt x 129.7769pt.
+
+<"./Screen_shots/Main_Screen_Long_Press2".png, id=139, 362.85562pt x 575.90157p
+t>
+File: "./Screen_shots/Main_Screen_Long_Press2".png Graphic file (type png)
+ <use "./Screen_shots/Main_Screen_Long_Press2".png>
+Package pdftex.def Info: "./Screen_shots/Main_Screen_Long_Press2".png used on i
+nput line 132.
+(pdftex.def)             Requested size: 82.83635pt x 131.47037pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [4 <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Manua
 l/Screen_shots/Main_Screen.png>]
-<"./Screen_shots/Settings_Screen".png, id=144, 359.84438pt x 603.0028pt>
-File: "./Screen_shots/Settings_Screen".png Graphic file (type png)
+<"./Screen_shots/Scheduled_MessagE_Screen".png, id=152, 359.84438pt x 576.65437
+pt>
+File: "./Screen_shots/Scheduled_MessagE_Screen".png Graphic file (type png)
+ <use "./Screen_shots/Scheduled_MessagE_Screen".png>
+Package pdftex.def Info: "./Screen_shots/Scheduled_MessagE_Screen".png used on 
+input line 155.
+(pdftex.def)             Requested size: 86.25pt x 138.21509pt.
 
-<use "./Screen_shots/Settings_Screen".png>
-Package pdftex.def Info: "./Screen_shots/Settings_Screen".png used on input lin
-e 146.
-(pdftex.def)             Requested size: 86.25pt x 144.5304pt.
+<"./Screen_shots/Scheduled_MessagE_Screen_Menu".png, id=154, 364.36125pt x 572.
+1375pt>
+File: "./Screen_shots/Scheduled_MessagE_Screen_Menu".png Graphic file (type png
+)
+ <use "./Screen_shots/Scheduled_MessagE_Screen_Menu".png>
+Package pdftex.def Info: "./Screen_shots/Scheduled_MessagE_Screen_Menu".png use
+d on input line 165.
+(pdftex.def)             Requested size: 82.83635pt x 130.06981pt.
 
-<"./Screen_shots/Search_Screen".png, id=145, 364.36125pt x 603.75563pt>
-File: "./Screen_shots/Search_Screen".png Graphic file (type png)
-
-<use "./Screen_shots/Search_Screen".png>
-Package pdftex.def Info: "./Screen_shots/Search_Screen".png used on input line 
-160.
-(pdftex.def)             Requested size: 86.25pt x 142.9144pt.
+<"./Screen_shots/Scheduled_MessagE_Screen_Long_Press".png, id=155, 365.11406pt 
+x 605.26125pt>
+File: "./Screen_shots/Scheduled_MessagE_Screen_Long_Press".png Graphic file (ty
+pe png)
+ <use "./Screen_shots/Scheduled_MessagE_Screen_Long_Press".png>
+Package pdftex.def Info: "./Screen_shots/Scheduled_MessagE_Screen_Long_Press".p
+ng used on input line 170.
+(pdftex.def)             Requested size: 82.83635pt x 137.31386pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [5 <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Manua
-l/Screen_shots/Conversation_screen_Menu.png> <C:/Users/Kitsune/Documents/GitHub
-/CS5103-SMS/Documents/UserGuide/User Manual/Screen_shots/Main_Screen_Long_Press
-.png> <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Ma
-nual/Screen_shots/Settings_Screen.png>]
-<"./Screen_shots/Send_Message_Screen".png, id=155, 362.85562pt x 603.0028pt>
-File: "./Screen_shots/Send_Message_Screen".png Graphic file (type png)
+l/Screen_shots/Main_Screen_menu.png> <C:/Users/Kitsune/Documents/GitHub/CS5103-
+SMS/Documents/UserGuide/User Manual/Screen_shots/Main_Screen_Long_Press2.png> <
+C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Manual/Sc
+reen_shots/Scheduled_MessagE_Screen.png>]
+<"./Screen_shots/Settings_Screen".png, id=165, 359.84438pt x 603.0028pt>
+File: "./Screen_shots/Settings_Screen".png Graphic file (type png)
 
-<use "./Screen_shots/Send_Message_Screen".png>
-Package pdftex.def Info: "./Screen_shots/Send_Message_Screen".png used on input
- line 177.
-(pdftex.def)             Requested size: 86.25pt x 143.32506pt.
+<use "./Screen_shots/Settings_Screen".png>
+Package pdftex.def Info: "./Screen_shots/Settings_Screen".png used on input lin
+e 190.
+(pdftex.def)             Requested size: 86.25pt x 144.5304pt.
 
-<"./Screen_shots/Auto_Fill_Send_Msg".png, id=158, 362.85562pt x 222.07968pt>
-File: "./Screen_shots/Auto_Fill_Send_Msg".png Graphic file (type png)
+<"./Screen_shots/Search_Screen".png, id=166, 364.36125pt x 603.75563pt>
+File: "./Screen_shots/Search_Screen".png Graphic file (type png)
 
-<use "./Screen_shots/Auto_Fill_Send_Msg".png>
-Package pdftex.def Info: "./Screen_shots/Auto_Fill_Send_Msg".png used on input 
-line 187.
-(pdftex.def)             Requested size: 86.25pt x 52.78513pt.
+<use "./Screen_shots/Search_Screen".png>
+Package pdftex.def Info: "./Screen_shots/Search_Screen".png used on input line 
+204.
+(pdftex.def)             Requested size: 86.25pt x 142.9144pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [6 <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Manua
-l/Screen_shots/Search_Screen.png> <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS
-/Documents/UserGuide/User Manual/Screen_shots/Send_Message_Screen.png>]
+l/Screen_shots/Scheduled_MessagE_Screen_Menu.png> <C:/Users/Kitsune/Documents/G
+itHub/CS5103-SMS/Documents/UserGuide/User Manual/Screen_shots/Scheduled_MessagE
+_Screen_Long_Press.png> <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents
+/UserGuide/User Manual/Screen_shots/Settings_Screen.png>]
+<"./Screen_shots/Send_Message_Screen2".png, id=177, 361.35pt x 573.64313pt>
+File: "./Screen_shots/Send_Message_Screen2".png Graphic file (type png)
+
+<use "./Screen_shots/Send_Message_Screen2".png>
+Package pdftex.def Info: "./Screen_shots/Send_Message_Screen2".png used on inpu
+t line 221.
+(pdftex.def)             Requested size: 86.25pt x 136.91563pt.
+
+<"./Screen_shots/Auto_Fill_Send_Msg".png, id=180, 362.85562pt x 222.07968pt>
+File: "./Screen_shots/Auto_Fill_Send_Msg".png Graphic file (type png)
+
+<use "./Screen_shots/Auto_Fill_Send_Msg".png>
+Package pdftex.def Info: "./Screen_shots/Auto_Fill_Send_Msg".png used on input 
+line 231.
+(pdftex.def)             Requested size: 86.25pt x 52.78513pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
 [7 <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Manua
-l/Screen_shots/Auto_Fill_Send_Msg.png>]
-<"./Screen_shots/Conversation_Screen".png, id=175, 363.60844pt x 605.26125pt>
+l/Screen_shots/Search_Screen.png> <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS
+/Documents/UserGuide/User Manual/Screen_shots/Send_Message_Screen2.png>]
+<"./Screen_shots/Schedule_Message_Popup".png, id=190, 359.09157pt x 300.3722pt>
+File: "./Screen_shots/Schedule_Message_Popup".png Graphic file (type png)
+<use "./Screen_shots/Schedule_Message_Popup".png>
+Package pdftex.def Info: "./Screen_shots/Schedule_Message_Popup".png used on in
+put line 244.
+(pdftex.def)             Requested size: 86.25pt x 72.14578pt.
+ [8 <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Manu
+al/Screen_shots/Auto_Fill_Send_Msg.png> <C:/Users/Kitsune/Documents/GitHub/CS51
+03-SMS/Documents/UserGuide/User Manual/Screen_shots/Schedule_Message_Popup.png>
+]
+<"./Screen_shots/Conversation_Screen".png, id=199, 363.60844pt x 605.26125pt>
 File: "./Screen_shots/Conversation_Screen".png Graphic file (type png)
 
 <use "./Screen_shots/Conversation_Screen".png>
 Package pdftex.def Info: "./Screen_shots/Conversation_Screen".png used on input
- line 205.
+ line 263.
 (pdftex.def)             Requested size: 86.25pt x 143.56631pt.
 
-<"./Screen_shots/Conversation_Long_Press".png, id=177, 362.10281pt x 603.0028pt
+<"./Screen_shots/Conversation_Long_Press".png, id=201, 362.10281pt x 603.0028pt
 >
 File: "./Screen_shots/Conversation_Long_Press".png Graphic file (type png)
  <use "./Screen_shots/Conversation_Long_Press".png>
 Package pdftex.def Info: "./Screen_shots/Conversation_Long_Press".png used on i
-nput line 224.
+nput line 282.
 (pdftex.def)             Requested size: 86.25pt x 143.6287pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[8 <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Manua
+
+<"./Screen_shots/Conversation_scheduled_message".png, id=202, 353.82187pt x 314
+.67563pt>
+File: "./Screen_shots/Conversation_scheduled_message".png Graphic file (type pn
+g)
+ <use "./Screen_shots/Conversation_scheduled_message".png>
+Package pdftex.def Info: "./Screen_shots/Conversation_scheduled_message".png us
+ed on input line 293.
+(pdftex.def)             Requested size: 86.25pt x 76.70486pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[9 <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Manua
 l/Screen_shots/Conversation_Screen.png>]
-<"./Screen_shots/View_Individual_message".png, id=184, 363.60844pt x 603.75563p
+<"./Screen_shots/View_Individual_message".png, id=209, 363.60844pt x 603.75563p
 t>
 File: "./Screen_shots/View_Individual_message".png Graphic file (type png)
  <use "./Screen_shots/View_Individual_message".png>
 Package pdftex.def Info: "./Screen_shots/View_Individual_message".png used on i
-nput line 239.
+nput line 305.
 (pdftex.def)             Requested size: 86.25pt x 143.2092pt.
-
-<"./Screen_shots/View_Individual_message_Menu".png, id=186, 360.59718pt x 598.4
+ [10 <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Man
+ual/Screen_shots/Conversation_Long_Press.png> <C:/Users/Kitsune/Documents/GitHu
+b/CS5103-SMS/Documents/UserGuide/User Manual/Screen_shots/Conversation_schedule
+d_message.png> <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuid
+e/User Manual/Screen_shots/View_Individual_message.png>]
+<"./Screen_shots/View_Individual_message_Menu".png, id=221, 360.59718pt x 598.4
 8593pt>
 File: "./Screen_shots/View_Individual_message_Menu".png Graphic file (type png)
 
  <use "./Screen_shots/View_Individual_message_Menu".png>
 Package pdftex.def Info: "./Screen_shots/View_Individual_message_Menu".png used
- on input line 254.
+ on input line 320.
 (pdftex.def)             Requested size: 86.25pt x 143.14642pt.
- [9 <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Manu
-al/Screen_shots/Conversation_Long_Press.png> <C:/Users/Kitsune/Documents/GitHub
-/CS5103-SMS/Documents/UserGuide/User Manual/Screen_shots/View_Individual_messag
-e.png>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 268.
- [10 <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Man
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 334.
+ [11 <C:/Users/Kitsune/Documents/GitHub/CS5103-SMS/Documents/UserGuide/User Man
 ual/Screen_shots/View_Individual_message_Menu.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 268.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 334.
 
 ("C:\Users\Kitsune\Documents\GitHub\CS5103-SMS\Documents\UserGuide\User Manual\
 UserManual.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 268.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 268.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 334.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 334.
 Package rerunfilecheck Info: File `UserManual.out' has not changed.
-(rerunfilecheck)             Checksum: 85900E3681A3B0025F4B28FC8C63A263;1133.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 268.
+(rerunfilecheck)             Checksum: E01CB9C5A822D448DCF2D32241386F2A;1208.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 334.
  ) 
 Here is how much of TeX's memory you used:
- 6175 strings out of 493921
- 97432 string characters out of 3147277
- 173335 words of memory out of 3000000
- 9387 multiletter control sequences out of 15000+200000
+ 6221 strings out of 493921
+ 99172 string characters out of 3147277
+ 173813 words of memory out of 3000000
+ 9421 multiletter control sequences out of 15000+200000
  8362 words of font info for 30 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 36i,7n,38p,505b,452s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,7n,38p,552b,452s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Fi
 les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTe
@@ -457,9 +531,9 @@ X 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fon
 ts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
 public/amsfonts/cm/cmr9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/ams
 fonts/cm/cmtt10.pfb>
-Output written on UserManual.pdf (10 pages, 372944 bytes).
+Output written on UserManual.pdf (11 pages, 472380 bytes).
 PDF statistics:
- 240 PDF objects out of 1000 (max. 8388607)
- 50 named destinations out of 1000 (max. 500000)
- 207 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 268 PDF objects out of 1000 (max. 8388607)
+ 56 named destinations out of 1000 (max. 500000)
+ 245 words of extra memory for PDF output out of 10000 (max. 10000000)
 

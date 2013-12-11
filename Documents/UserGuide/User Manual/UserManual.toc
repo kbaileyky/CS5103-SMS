@@ -10,8 +10,9 @@
 \contentsline {section}{\numberline {4}Using Mercury Messenger}{3}{section.4}
 \contentsline {subsection}{\numberline {4.1}Button Basics}{3}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Start Up Screen: Conversation Lists}{4}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Settings Screen}{5}{subsection.4.3}
-\contentsline {subsection}{\numberline {4.4}Search Screen}{5}{subsection.4.4}
-\contentsline {subsection}{\numberline {4.5}Send New Message Screen}{6}{subsection.4.5}
-\contentsline {subsection}{\numberline {4.6}Conversation Screen}{8}{subsection.4.6}
-\contentsline {subsection}{\numberline {4.7}View Message Screen}{9}{subsection.4.7}
+\contentsline {subsection}{\numberline {4.3}Scheduled Message Screen}{5}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Settings Screen}{6}{subsection.4.4}
+\contentsline {subsection}{\numberline {4.5}Search Screen}{6}{subsection.4.5}
+\contentsline {subsection}{\numberline {4.6}Send New Message Screen}{7}{subsection.4.6}
+\contentsline {subsection}{\numberline {4.7}Conversation Screen}{9}{subsection.4.7}
+\contentsline {subsection}{\numberline {4.8}View Message Screen}{10}{subsection.4.8}
