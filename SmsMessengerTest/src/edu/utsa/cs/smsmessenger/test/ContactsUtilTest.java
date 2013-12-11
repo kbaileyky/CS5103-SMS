@@ -34,7 +34,6 @@ public class ContactsUtilTest extends AndroidTestCase {
 	public static final String TEST_PHONE_NUM_A_W_PARENTHESES_A_HYPHEN = "(555)521-5556";
 	public static final String TEST_PHONE_NUM_A_W_PARENTHESES_W_SPACE_A_HYPHEN = "(555) 521-5556";
 	public static final String TEST_PHONE_NUM_A_W_PARENTHESES_W_SPACE_A_HYPHEN2 = "1(555) 521-5556";
-	public static final String INVALID_TEST_PHONE_NUM_A_W_HYPHENS = "555-21-5556";
 	public static final String INVALID_TEST_PHONE_NUM_A_W_HYPHENS_A_COLON = "555:5215556";
 	public static final String INVALID_TEST_PHONE_NUM_A_W_HYPHENS_A_SLASH = "555/5215556";
 	public static final String INVALID_TEST_PHONE_ALHPA = "THIS IS NOT A PHONE NUMBER";
@@ -42,6 +41,33 @@ public class ContactsUtilTest extends AndroidTestCase {
 	public static final String INVALID_TEST_PHONE_ALHPA_NUM_SLASH1 = "ABC/5215556";
 	public static final String INVALID_TEST_PHONE_ALHPA_NUM_SLASH2 = "521/ABC5556";
 	public static final String TEST_PHONE_NUM_B = "09876543210";
+	
+	// new phase 2. International Numbers
+	public static final String TEST_INTL_PHONE_NUM_A = "123";
+	public static final String TEST_INTL_PHONE_NUM_B = "1234";
+	public static final String TEST_INTL_PHONE_NUM_C = "12345678901";
+	public static final String TEST_INTL_PHONE_NUM_D = "123456789012";
+	public static final String TEST_INTL_PHONE_NUM_E = "1234567890123";
+	public static final String TEST_INTL_PHONE_NUM_A_W_PERIODS = "123.4567.890.123";
+	public static final String TEST_INTL_PHONE_NUM_A_W_PERIODS_A_HYPHEN = "12-3456.78901-23";
+	public static final String TEST_INTL_PHONE_NUM_A_W_PARENTHESES_W_PERIODS_A_HYPHEN = "(12)-3456.78901-23";
+	public static final String INVALID_TEST_INTL_PHONE_NUM_A_W_SLASH = "12/345678/90123";
+	public static final String INVALID_TEST_INTL_PHONE_NUM_A_W_ALPHA = "12A345678X90123S";
+	
+	/*public static final String TEST_INTL_PHONE_NUM_A = "(123)";
+	public static final String TEST_INTL_PHONE_NUM_B = "1-234";
+	public static final String TEST_INTL_PHONE_NUM_C = "1-234-5";
+	public static final String TEST_INTL_PHONE_NUM_D = "1-234-56";
+	public static final String TEST_INTL_PHONE_NUM_E = "123456";
+	public static final String TEST_INTL_PHONE_NUM_F = "1234567";
+	public static final String TEST_INTL_PHONE_NUM_G = "12345678";
+	public static final String TEST_INTL_PHONE_NUM_H = "123456789";
+	public static final String TEST_INTL_PHONE_NUM_I = "123456789";
+	public static final String TEST_INTL_PHONE_NUM_J = "123456789";
+	public static final String TEST_INTL_PHONE_NUM_K = "1234567890";
+	public static final String TEST_INTL_PHONE_NUM_L = "12345678901";
+	public static final String TEST_INTL_PHONE_NUM_M = "123456789012";
+	public static final String TEST_INTL_PHONE_NUM_N = "1234567890123";*/
 
 	@Override
 	protected void setUp() throws Exception {
@@ -99,10 +125,6 @@ public class ContactsUtilTest extends AndroidTestCase {
 		assertNotSame(TEST_NAME_A, contactContainer.getDisplayName());
 
 		contactContainer = ContactsUtil.getContactByPhoneNumber(
-				contentResolver, INVALID_TEST_PHONE_NUM_A_W_HYPHENS);
-		assertNotSame(TEST_NAME_A, contactContainer.getDisplayName());
-
-		contactContainer = ContactsUtil.getContactByPhoneNumber(
 				contentResolver, INVALID_TEST_PHONE_NUM_A_W_HYPHENS_A_COLON);
 		assertNotSame(TEST_NAME_A, contactContainer.getDisplayName());
 
@@ -155,8 +177,6 @@ public class ContactsUtilTest extends AndroidTestCase {
 		assertTrue(ContactsUtil
 				.isAPhoneNumber(TEST_PHONE_NUM_A_W_PARENTHESES_W_SPACE_A_HYPHEN2));
 		assertFalse(ContactsUtil
-				.isAPhoneNumber(INVALID_TEST_PHONE_NUM_A_W_HYPHENS));
-		assertFalse(ContactsUtil
 				.isAPhoneNumber(INVALID_TEST_PHONE_NUM_A_W_HYPHENS_A_COLON));
 		assertFalse(ContactsUtil
 				.isAPhoneNumber(INVALID_TEST_PHONE_NUM_A_W_HYPHENS_A_SLASH));
@@ -186,8 +206,6 @@ public class ContactsUtilTest extends AndroidTestCase {
 				TEST_PHONE_NUM_A_W_PARENTHESES_W_SPACE_A_HYPHEN));
 		assertTrue(ContactsUtil.isAValidPhoneNumber(contentResolver,
 				TEST_PHONE_NUM_A_W_PARENTHESES_W_SPACE_A_HYPHEN2));
-		assertFalse(ContactsUtil.isAValidPhoneNumber(contentResolver,
-				INVALID_TEST_PHONE_NUM_A_W_HYPHENS));
 		assertFalse(ContactsUtil.isAValidPhoneNumber(contentResolver,
 				INVALID_TEST_PHONE_NUM_A_W_HYPHENS_A_COLON));
 		assertFalse(ContactsUtil.isAValidPhoneNumber(contentResolver,
