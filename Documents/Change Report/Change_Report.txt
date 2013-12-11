@@ -15,9 +15,9 @@ Division of Work:
 
 
 Kendall Bailey:
-I prepared the nature language specifications and the sequence diagrams.
-During the coding phase I was in charge of look and feel (color scheme and icons), as well as the View Message screen and its menus.
-I wrote the User Manual for the application.
+Prepared the nature language specifications and the sequence diagrams. During the coding phase she was in charge of look and feel (color scheme and icons), as well as the View Message screen and its menus.  She wrote the User Manual for the application.
 
-During the second phase of the project, I did the initial set up for the view scheduled messages activity,
-created the new icon, and added vibrations.
+During the second phase of the project, She did the initial set up for the view scheduled messages activity,created the new icon, and added vibrations.
+
+Michael Madrigal:
+For both phases, developed the App architecture, developed many features of the App, Organized and assigned cases.
