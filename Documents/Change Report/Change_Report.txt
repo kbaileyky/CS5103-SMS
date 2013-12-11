@@ -28,3 +28,15 @@ Added Extra Features to application.
 Wrote Utility Functions for Querying Contacts as well as Validity checks for numbers,contacts.
 Unit Testing
 Presentation
+
+Nesthor-Omar Perez-Cruz:
+Phase I:
+Execution of each Test Case based on the original system requirement formulation.
+Documentation step by step of each Test Case and description of final results.
+Test Cases slides presentation.
+
+Phase II:
+Execution and testing of the new feauture Schedule Messages.
+Documentation step by step of the new Scheduled Message feature and description of final results.
+
+
