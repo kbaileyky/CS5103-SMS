@@ -29,6 +29,10 @@ Wrote Utility Functions for Querying Contacts as well as Validity checks for num
 Unit Testing
 Presentation
 
+Phase II:
+updated Unit Testing
+Small optimization to ContactsUtil
+
 Nesthor-Omar Perez-Cruz:
 Phase I:
 Execution of each Test Case based on the original system requirement formulation.
