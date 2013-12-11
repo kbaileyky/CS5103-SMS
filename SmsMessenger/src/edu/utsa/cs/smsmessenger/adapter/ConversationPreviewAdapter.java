@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,7 @@ public class ConversationPreviewAdapter extends
 	private ArrayList<ConversationPreview> objects;
 	private Animation clickAnimation;
 	private Animation deleteAnimation;
+	private static int short_vibration_pulse = 250; //250 ms for vibration
 
 	public ConversationPreviewAdapter(Context context, int layoutResourceId,
 			List<ConversationPreview> objects) {
@@ -140,6 +142,9 @@ public class ConversationPreviewAdapter extends
 			@Override
 			public void onClick(View arg0) {
 
+				Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+				v.vibrate(short_vibration_pulse);
+				
 				Handler handler = new Handler();
 
 				finalConvertView.startAnimation(clickAnimation);
@@ -165,6 +170,9 @@ public class ConversationPreviewAdapter extends
 		convertView.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
+				Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+				v.vibrate(short_vibration_pulse);
+				
 				Handler handler = new Handler();
 
 				finalConvertView.startAnimation(clickAnimation);

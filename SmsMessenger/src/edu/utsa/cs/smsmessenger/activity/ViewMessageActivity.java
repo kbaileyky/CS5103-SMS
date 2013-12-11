@@ -271,12 +271,12 @@ public class ViewMessageActivity extends Activity {
 		float newsize;
 		float curScale = distCurrent / dist0;
 		if (curScale < 0.1) {
-			curScale = 0.1f;
+			curScale = 1;
 		}
 
-		newsize = (12 * curScale); // 12 is the baseline font size - all
+		newsize = (18 * curScale); // 12 is the baseline font size - all
 									// alterations will be relative to this
-
+		
 		if (newsize < 9) {
 			newsize = 9;
 		}

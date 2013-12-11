@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,7 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 	private ContactContainer contact;
 	private Animation clickAnimation;
 	private Animation deleteAnimation;
+	private static int short_vibration_pulse = 250; //250 ms for vibration
 
 	private class DeleteMessageFromDbTask extends
 			AsyncTask<MessageContainer, Void, Void> {
@@ -195,6 +197,9 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 			@Override
 			public void onClick(View arg0) {
 
+				Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+				v.vibrate(short_vibration_pulse);
+				
 				Handler handler = new Handler();
 
 				finalConvertView.startAnimation(clickAnimation);
@@ -238,7 +243,10 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 		convertView.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
-
+			
+				Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+				v.vibrate(short_vibration_pulse);
+				
 				Handler handler = new Handler();
 				finalConvertView.startAnimation(clickAnimation);
 				handler.postDelayed(new Runnable() {

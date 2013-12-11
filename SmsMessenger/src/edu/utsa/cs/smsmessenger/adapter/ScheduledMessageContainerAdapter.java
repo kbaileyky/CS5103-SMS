@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,9 @@ public class ScheduledMessageContainerAdapter extends
 	private SimpleDateFormat sdf;
 	private Animation clickAnimation;
 	private Animation deleteAnimation;
-
+	private static int short_vibration_pulse = 250; //250 ms for vibration
+	
+	
 	private class DeleteMessageFromDbTask extends
 			AsyncTask<MessageContainer, Void, Void> {
 		@Override
@@ -146,6 +149,9 @@ public class ScheduledMessageContainerAdapter extends
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+				v.vibrate(short_vibration_pulse);
+				
 				Handler handler = new Handler();
 				finalConvertView.startAnimation(clickAnimation);
 				handler.postDelayed(
@@ -179,6 +185,10 @@ public class ScheduledMessageContainerAdapter extends
 		convertView.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
+				
+				Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+				v.vibrate(short_vibration_pulse);
+				
 				Handler handler = new Handler();
 
 				finalConvertView.startAnimation(clickAnimation);

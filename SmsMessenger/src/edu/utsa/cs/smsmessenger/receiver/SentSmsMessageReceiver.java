@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -27,6 +28,8 @@ import android.widget.Toast;
 public class SentSmsMessageReceiver extends BroadcastReceiver {
 
 	private Context context;
+	private long[] vibratePattern = {150, 100, 150};
+	
 
 	private class UpdateMessagesInDbTask extends
 			AsyncTask<MessageContainer, Void, Void> {
@@ -54,6 +57,8 @@ public class SentSmsMessageReceiver extends BroadcastReceiver {
 		Log.d("SentSmsMessageReceiver", "OnReceive getResultCode: "
 				+ getResultCode());
 		this.context = context;
+		Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+
 
 		final Bundle bundle = intent.getExtras();
 		MessageContainer message = (MessageContainer) bundle
@@ -67,6 +72,7 @@ public class SentSmsMessageReceiver extends BroadcastReceiver {
 					context.getResources().getString(R.string.sms_message_sent));
 			break;
 		case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+			v.vibrate(vibratePattern, -1); //-1 means only repeat once
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
 			updateDatabase(context, message,
@@ -74,12 +80,14 @@ public class SentSmsMessageReceiver extends BroadcastReceiver {
 			break;
 		case SmsManager.RESULT_ERROR_NULL_PDU:
 		case SmsManager.RESULT_ERROR_NO_SERVICE:
+			v.vibrate(vibratePattern, -1); //-1 means only repeat once
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
 			updateDatabase(context, message,
 					context.getResources().getString(R.string.sms_no_service));
 			break;
 		case SmsManager.RESULT_ERROR_RADIO_OFF:
+			v.vibrate(vibratePattern, -1); //-1 means only repeat once
 			message.setDate(Calendar.getInstance().getTimeInMillis());
 			message.setStatus(SmsMessageHandler.SMS_FAILED);
 			updateDatabase(context, message,
