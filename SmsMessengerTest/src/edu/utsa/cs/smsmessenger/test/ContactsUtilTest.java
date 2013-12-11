@@ -274,6 +274,26 @@ public class ContactsUtilTest extends AndroidTestCase {
 				INVALID_TEST_PHONE_ALHPA_NUM_SLASH1));
 		assertFalse(ContactsUtil.isAValidPhoneNumber(contentResolver,
 				INVALID_TEST_PHONE_ALHPA_NUM_SLASH2));
+		
+		/*
+		 * Phase 2 Test Cases for International Phone Numbers
+		 */
+		assertTrue(ContactsUtil.isAValidPhoneNumber(contentResolver,
+				TEST_INTL_PHONE_NUM_A));
+		assertTrue(ContactsUtil.isAValidPhoneNumber(contentResolver,
+				TEST_INTL_PHONE_NUM_B));
+		assertTrue(ContactsUtil.isAValidPhoneNumber(contentResolver,
+				TEST_INTL_PHONE_NUM_B_W_PERIODS));
+		assertTrue(ContactsUtil.isAValidPhoneNumber(contentResolver,
+				TEST_INTL_PHONE_NUM_B_W_PERIODS_A_HYPHEN));
+		assertTrue(ContactsUtil.isAValidPhoneNumber(contentResolver,
+				TEST_INTL_PHONE_NUM_B_W_PERIODS));
+		assertTrue(ContactsUtil.isAValidPhoneNumber(contentResolver,
+				TEST_INTL_PHONE_NUM_B_W_PARENTHESES_W_PERIODS_A_HYPHEN));
+		assertFalse(ContactsUtil.isAValidPhoneNumber(contentResolver,
+				INVALID_TEST_INTL_PHONE_NUM_B_W_SLASH));
+		assertFalse(ContactsUtil.isAValidPhoneNumber(contentResolver,
+				INVALID_TEST_INTL_PHONE_NUM_B_W_ALPHA));
 	}
 
 	/*
