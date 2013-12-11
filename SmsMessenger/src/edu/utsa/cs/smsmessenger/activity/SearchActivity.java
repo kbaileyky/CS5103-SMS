@@ -50,7 +50,6 @@ public class SearchActivity extends ListActivity {
 	private void searchForMessage(String query) {
 		ArrayList<MessageContainer> msgList = getSmsMessageHandler()
 				.queryMessages(query);
-		getSmsMessageHandler().close();
 
 		messageSearchContainerAdapter = new MessageSearchContainerAdapter(this,
 				R.layout.conversation_from_message_item, msgList);

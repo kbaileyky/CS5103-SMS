@@ -71,7 +71,6 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 						pendingIntent.cancel();
 					}
 				}
-				getSmsMessageHandler().close();
 			}
 			return null;
 		}
@@ -92,7 +91,6 @@ public class MessageContainerAdapter extends ArrayAdapter<MessageContainer> {
 				for (MessageContainer msg : objects) {
 					getSmsMessageHandler().updateSmsMessage(msg);
 				}
-				getSmsMessageHandler().close();
 			}
 			return null;
 		}

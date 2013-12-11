@@ -146,7 +146,6 @@ public class NewConversationActivity extends Activity {
 				getSmsMessageHandler().deleteNewDraftMessage();
 				getSmsMessageHandler().saveSmsToDB(msg);
 			}
-			getSmsMessageHandler().close();
 			return message;
 		}
 
@@ -166,7 +165,6 @@ public class NewConversationActivity extends Activity {
 				getSmsMessageHandler().deleteNewDraftMessage();
 				getSmsMessageHandler().saveSmsToDB(msg);
 			}
-			getSmsMessageHandler().close();
 			return message;
 		}
 

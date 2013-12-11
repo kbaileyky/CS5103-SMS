@@ -99,7 +99,6 @@ public class ConversationActivity extends Activity {
 						selectArgs);
 				getSmsMessageHandler().saveSmsToDB(msg);
 			}
-			getSmsMessageHandler().close();
 			return message;
 		}
 	}
@@ -120,7 +119,6 @@ public class ConversationActivity extends Activity {
 						selectArgs);
 				getSmsMessageHandler().saveSmsToDB(msg);
 			}
-			getSmsMessageHandler().close();
 			return message;
 		}
 
@@ -267,7 +265,6 @@ public class ConversationActivity extends Activity {
 		MessageContainer.groupContainsPendingMessage = false;
 		ArrayList<MessageContainer> msgList = getSmsMessageHandler()
 				.getConversationWithUser(contactPhoneNumber);
-		getSmsMessageHandler().close();
 
 		messageContainerAdapter = new MessageContainerAdapter(this,
 				R.layout.conversation_from_message_item, contact, msgList);

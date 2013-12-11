@@ -172,7 +172,6 @@ public class ConversationsListActivity extends Activity implements
 	private void searchForMessage(String query) {
 		ArrayList<MessageContainer> msgList = getSmsMessageHandler()
 				.queryMessages(query);
-		getSmsMessageHandler().close();
 
 		MessageSearchContainerAdapter messageSearchContainerAdapter = new MessageSearchContainerAdapter(
 				this, R.layout.conversation_from_message_item, msgList);

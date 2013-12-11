@@ -41,7 +41,6 @@ public class ScheduledSmsMessageAlarmRecevier extends BroadcastReceiver {
 				msg.setStatus(SmsMessageHandler.SMS_PENDING);
 				getSmsMessageHandler(context).saveSmsToDB(msg);
 			}
-			getSmsMessageHandler(context).close();
 			return message;
 		}
 

@@ -350,7 +350,6 @@ public class ViewMessageActivity extends Activity {
 				for (MessageContainer msg : objects) {
 					getSmsMessageHandler().deleteMessage(msg);
 				}
-				getSmsMessageHandler().close();
 			}
 			return null;
 		}

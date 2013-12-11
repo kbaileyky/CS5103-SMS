@@ -69,12 +69,23 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 			+ " INTEGER, " + COL_NAME_SUBJECT + " TEXT, " + COL_NAME_BODY
 			+ " TEXT, " + COL_NAME_READ + " INTEGER, " + COL_NAME_STATUS
 			+ " TEXT)";
-	
+
 	public static final String CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE = "CREATE TABLE IF NOT EXISTS %s ("
-			+ COL_NAME_ID + " INTEGER PRIMARY KEY, " + COL_NAME_PHONE_NUMBER
-			+ " TEXT, " + COL_NAME_CONTACT_ID + " INTEGER, " + COL_NAME_DATE
-			+ " INTEGER, " + COL_NAME_SUBJECT + " TEXT, " + COL_NAME_BODY
-			+ " TEXT, " + COL_NAME_READ + " INTEGER, " + COL_NAME_STATUS
+			+ COL_NAME_ID
+			+ " INTEGER PRIMARY KEY, "
+			+ COL_NAME_PHONE_NUMBER
+			+ " TEXT, "
+			+ COL_NAME_CONTACT_ID
+			+ " INTEGER, "
+			+ COL_NAME_DATE
+			+ " INTEGER, "
+			+ COL_NAME_SUBJECT
+			+ " TEXT, "
+			+ COL_NAME_BODY
+			+ " TEXT, "
+			+ COL_NAME_READ
+			+ " INTEGER, "
+			+ COL_NAME_STATUS
 			+ " TEXT)";
 
 	public static final String DELETE_TABLE = "DROP TABLE IF EXISTS %s";
@@ -82,18 +93,25 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	private static SmsMessageHandler smsMessageHandler = null;
 
 	private SmsMessageHandler(Context context) {
-		
+
 		super(context, DB_NAME, null, DB_VERSION);
 
-		this.getWritableDatabase().execSQL(String.format(CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE, MSG_TYPE_OUT));
-		this.getWritableDatabase().execSQL(String.format(CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE, MSG_TYPE_IN));
-		this.getWritableDatabase().execSQL(String.format(CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE, MSG_TYPE_DRAFT));
-		this.getWritableDatabase().execSQL(String.format(CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE, MSG_TYPE_SCHEDULED));
+		this.getWritableDatabase()
+				.execSQL(
+						String.format(CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE,
+								MSG_TYPE_OUT));
+		this.getWritableDatabase().execSQL(
+				String.format(CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE, MSG_TYPE_IN));
+		this.getWritableDatabase().execSQL(
+				String.format(CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE,
+						MSG_TYPE_DRAFT));
+		this.getWritableDatabase().execSQL(
+				String.format(CREATE_IF_NOT_EXISTS_SMS_MSG_TABLE,
+						MSG_TYPE_SCHEDULED));
 	}
-	
-	public static synchronized SmsMessageHandler getInstance(Context context)
-	{
-		if(smsMessageHandler==null)
+
+	public static synchronized SmsMessageHandler getInstance(Context context) {
+		if (smsMessageHandler == null)
 			smsMessageHandler = new SmsMessageHandler(context);
 		return smsMessageHandler;
 	}
@@ -163,11 +181,11 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 	 *         updated.
 	 */
 	public int updateSmsMessage(MessageContainer message) {
-		
+
 		SQLiteDatabase db = this.getReadableDatabase();
-		
-		//this line doesn't make sense
-		if(SMS_PENDING.equals(message.getStatus()))
+
+		// this line doesn't make sense
+		if (SMS_PENDING.equals(message.getStatus()))
 			message.setStatus(SMS_SENT);
 		// New value for one column
 		ContentValues values = new ContentValues();
@@ -246,8 +264,7 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 					if (msg.getDate() + (PENDING_MSG_TIMEOUT_SEC * 1000) < Calendar
 							.getInstance().getTimeInMillis())
 						msg.setStatus(SMS_FAILED);
-					else
-					{
+					else {
 						msg.setStatus(SMS_PENDING);
 						MessageContainer.groupContainsPendingMessage = true;
 					}
@@ -257,6 +274,8 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 				msgList.add(msg);
 			} while (c.moveToNext());
 		}
+
+		c.close();
 		return msgList;
 	}
 
@@ -286,8 +305,8 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 		Log.d("SmsMessageHandler", "getConversationWithUser() toMsgList: "
 				+ toMsgList.size());
 
-		ArrayList<MessageContainer> scheduledMsgList = getSmsMessages(selectString,
-				selectArgs, sortOrder, MSG_TYPE_SCHEDULED);
+		ArrayList<MessageContainer> scheduledMsgList = getSmsMessages(
+				selectString, selectArgs, sortOrder, MSG_TYPE_SCHEDULED);
 
 		fromMsgList.addAll(toMsgList);
 		fromMsgList.addAll(scheduledMsgList);
@@ -471,9 +490,12 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 								+ c.getLong(c.getColumnIndex(COL_NAME_ID)),
 						null);
 			} while (c.moveToNext());
-		} else
+		} else {
+			c.close();
 			return false;
+		}
 
+		c.close();
 		return true;
 	}
 
@@ -509,9 +531,12 @@ public class SmsMessageHandler extends SQLiteOpenHelper {
 								+ c.getLong(c.getColumnIndex(COL_NAME_ID)),
 						null);
 			} while (c.moveToNext());
-		} else
+		} else {
+			c.close();
 			return false;
+		}
 
+		c.close();
 		return true;
 	}
 }

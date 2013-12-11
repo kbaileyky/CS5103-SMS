@@ -57,7 +57,6 @@ public class MessageSearchContainerAdapter extends
 				for (MessageContainer msg : objects) {
 					getSmsMessageHandler().deleteMessage(msg);
 				}
-				getSmsMessageHandler().close();
 			}
 			return null;
 		}

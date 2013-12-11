@@ -45,7 +45,6 @@ public class IncomingSmsMessageReceiver extends BroadcastReceiver {
 					getSmsMessageHandler(context).saveSmsToDB(
 							(MessageContainer) msg);
 				}
-				getSmsMessageHandler(context).close();
 			}
 			return null;
 		}

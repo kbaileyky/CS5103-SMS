@@ -74,7 +74,6 @@ public class ConversationPreviewAdapter extends
 					getSmsMessageHandler().deleteConversation(
 							conv.getPhoneNumber());
 				}
-				getSmsMessageHandler().close();
 			}
 			return null;
 		}

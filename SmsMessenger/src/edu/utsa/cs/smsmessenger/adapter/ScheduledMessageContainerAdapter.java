@@ -70,7 +70,6 @@ public class ScheduledMessageContainerAdapter extends
 					alarmMgr.cancel(pendingIntent);
 					pendingIntent.cancel();
 				}
-				getSmsMessageHandler().close();
 			}
 			return null;
 		}

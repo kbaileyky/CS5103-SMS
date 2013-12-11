@@ -32,7 +32,6 @@ public class DeliveredSmsMessageReceiver extends BroadcastReceiver {
 				for (MessageContainer msg : messages) {
 					getSmsMessageHandler(context).updateSmsMessage(msg);
 				}
-				getSmsMessageHandler(context).close();
 			}
 			return null;
 		}
