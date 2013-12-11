@@ -192,6 +192,16 @@ public class ContactsUtilTest extends AndroidTestCase {
 		assertEquals(TEST_PHONE_NUM_B,
 				ContactsUtil.getPhoneNumberByContactName(contentResolver,
 						TEST_NAME_B));
+		
+		/*
+		 * Phase 2 Test Cases for International Phone Numbers
+		 */
+		assertEquals(TEST_INTL_PHONE_NUM_A,
+				ContactsUtil.getPhoneNumberByContactName(contentResolver,
+						TEST_NAME_INTL_A));
+		assertEquals(TEST_INTL_PHONE_NUM_B,
+				ContactsUtil.getPhoneNumberByContactName(contentResolver,
+						TEST_NAME_INTL_B));
 
 	}
 
