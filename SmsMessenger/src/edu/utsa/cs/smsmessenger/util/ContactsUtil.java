@@ -189,8 +189,10 @@ public class ContactsUtil {
 	 * @return returns true if it is a phone number.
 	 */
 	public static boolean isAPhoneNumber(String contact) {
-		if (contact
-				.matches("^\\d{10}|^\\d{11}|^[1]?(\\(\\d{3}\\)\\s?)?\\d{3}-\\d{4}$|^\\d{3}([.-])\\d{3}\\2\\d{4}$")) {
+		
+		if ( getStrippedPhoneNumber( contact)
+				.matches("^\\d{3,15}$")) {
+				//.matches("^\\d{10}|^\\d{11}|^[1]?(\\(\\d{3}\\)\\s?)?\\d{3}-\\d{4}$|^\\d{3}([.-])\\d{3}\\2\\d{4}$")) {
 			return true;
 		}
 		return false;

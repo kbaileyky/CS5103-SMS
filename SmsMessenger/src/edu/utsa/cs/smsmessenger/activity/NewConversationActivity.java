@@ -98,39 +98,7 @@ public class NewConversationActivity extends Activity {
 		@Override
 		public void onFocusChange(View arg0, boolean arg1) {
 			if (!newRecipientTextView.isFocused()) {
-				if (newRecipientTextView.getText().length() == 0) {
-					sendNewMessageButton.setEnabled(false);
-				} else {
-					if (ContactsUtil.isAValidPhoneNumber(actvty
-							.getContentResolver(), newRecipientTextView
-							.getText().toString())) {
-						if (ContactsUtil.isAPhoneNumber(newRecipientTextView
-								.getText().toString())) {
-							ContactContainer contact = ContactsUtil
-									.getContactByPhoneNumber(actvty
-											.getContentResolver(),
-											newRecipientTextView.getText()
-													.toString());
-
-							newRecipientTextView.setText(contact
-									.getDisplayName() != null ? contact
-									.getDisplayName() : contact
-									.getPhoneNumber());
-						}
-						sendNewMessageButton.setEnabled(true);
-					} else {
-						sendNewMessageButton.setEnabled(false);
-						newRecipientTextView.setText("");
-						newRecipientTextView.post(new Runnable() {
-							@Override
-							public void run() {
-								newRecipientTextView.requestFocus();
-							}
-
-						});
-
-					}
-				}
+				validToContact();
 			}
 		}
 
@@ -177,7 +145,8 @@ public class NewConversationActivity extends Activity {
 			// Send SMS Message
 			if (result.getType().equals(SmsMessageHandler.MSG_TYPE_OUT))
 				sendSmsMessage(result);
-			else if(result.getType().equals(SmsMessageHandler.MSG_TYPE_SCHEDULED))
+			else if (result.getType().equals(
+					SmsMessageHandler.MSG_TYPE_SCHEDULED))
 				scheduleMessage(result);
 
 			Intent coversationIntent = new Intent(getContext(),
@@ -258,7 +227,6 @@ public class NewConversationActivity extends Activity {
 
 		newRecipientButton.setOnClickListener(addNewRecipientOnClickListener);
 		sendNewMessageButton.setOnClickListener(sendNewMessageOnClickListener);
-		sendNewMessageButton.setEnabled(false);
 
 		// If the message is being forwarded
 		if (getIntent().hasExtra("fwdBody")) {
@@ -283,7 +251,8 @@ public class NewConversationActivity extends Activity {
 		Log.d("NewConversationActivity", "Result Code: " + requestCode);
 		if (requestCode == SCHEDULE_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
-				sendNewMessageButton.setImageResource(R.drawable.send_timed_msg_icon);
+				sendNewMessageButton
+						.setImageResource(R.drawable.send_timed_msg_icon);
 				scheduleMessageDate = (Calendar) data
 						.getSerializableExtra(ScheduleMessageActivity.SCHEDULE_RESQUEST_DATE_KEY);
 				scheduleMessageTextView.setText(String.format(
@@ -329,6 +298,14 @@ public class NewConversationActivity extends Activity {
 
 	public void handleSmsMessageSend(final String phoneNumber,
 			final String message) {
+		if (!validToContact())
+		{
+			Toast.makeText(this,
+					getResources().getString(R.string.invalid_recipient_error),
+					Toast.LENGTH_LONG).show();
+			newRecipientTextView.requestFocus();
+			return;
+		}
 		String strippedNumber = ContactsUtil
 				.getStrippedPhoneNumber(phoneNumber);
 		sendNewMessageButton.setEnabled(false);
@@ -340,7 +317,6 @@ public class NewConversationActivity extends Activity {
 									R.string.message_length_error),
 							SmsMessageHandler.SMS_MESSAGE_LENGTH),
 					Toast.LENGTH_LONG).show();
-			sendNewMessageButton.setEnabled(true);
 			return;
 		}
 		MessageContainer messageContainer = new MessageContainer(
@@ -360,10 +336,10 @@ public class NewConversationActivity extends Activity {
 				messageContainer.setDate(scheduleMessageDate.getTimeInMillis());
 				messageContainer.setType(SmsMessageHandler.MSG_TYPE_SCHEDULED);
 				messageContainer.setStatus(SmsMessageHandler.SMS_SCHEDULED);
-			}
-			else
-			{
-				Toast.makeText(this, getResources().getString(R.string.error_date_in_past), Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(this,
+						getResources().getString(R.string.error_date_in_past),
+						Toast.LENGTH_LONG).show();
 				return;
 			}
 		}
@@ -380,23 +356,24 @@ public class NewConversationActivity extends Activity {
 		sentIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer",
 				messageContainer);
 
-		PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, (int)messageContainer.getId(),
-				sentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this,
+				(int) messageContainer.getId(), sentIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Intent for delivery
-//		Intent deliveredIntent = new Intent(
-//				"edu.utsa.cs.smsmessenger.SMS_DELIVERED");
-//		deliveredIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer",
-//				messageContainer);
-//		PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this,
-//				0, deliveredIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		// Intent deliveredIntent = new Intent(
+		// "edu.utsa.cs.smsmessenger.SMS_DELIVERED");
+		// deliveredIntent.putExtra("edu.utsa.cs.smsmessenger.MessageContainer",
+		// messageContainer);
+		// PendingIntent deliveredPendingIntent =
+		// PendingIntent.getBroadcast(this,
+		// 0, deliveredIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Send Message
 		SmsManager sms = SmsManager.getDefault();
 		sms.sendTextMessage(messageContainer.getPhoneNumber(), null,
 				messageContainer.getBody(), sentPendingIntent, null);
 	}
-
 
 	private SmsMessageHandler getSmsMessageHandler() {
 		return SmsMessageHandler.getInstance(this);
@@ -439,8 +416,6 @@ public class NewConversationActivity extends Activity {
 		String phoneNumber = newRecipientTextView.getText().toString().trim();
 
 		if (!messageBody.isEmpty() || !phoneNumber.isEmpty()) {
-			if (!messageBody.isEmpty() && !phoneNumber.isEmpty())
-				sendNewMessageButton.setEnabled(true);
 			// Save message as new draft
 			MessageContainer message = new MessageContainer();
 			message.setBody(messageBody);
@@ -452,17 +427,18 @@ public class NewConversationActivity extends Activity {
 			MessageContainer[] msgArr = { message };
 			SaveNewDraftoDbTask saveThread = new SaveNewDraftoDbTask();
 			saveThread.execute(msgArr);
-		}
-		else
+		} else
 			getSmsMessageHandler().deleteNewDraftMessage();
 	}
 
 	public void startSheduleMessageActivity() {
 		Intent intent = new Intent(getContext(), ScheduleMessageActivity.class);
-		if(scheduleMessageDate!=null)
-			intent.putExtra(ScheduleMessageActivity.PASSED_SCHEDULE_DATE_KEY, scheduleMessageDate.getTimeInMillis());
+		if (scheduleMessageDate != null)
+			intent.putExtra(ScheduleMessageActivity.PASSED_SCHEDULE_DATE_KEY,
+					scheduleMessageDate.getTimeInMillis());
 		else
-			intent.putExtra(ScheduleMessageActivity.PASSED_SCHEDULE_DATE_KEY, -1L);
+			intent.putExtra(ScheduleMessageActivity.PASSED_SCHEDULE_DATE_KEY,
+					-1L);
 		startActivityForResult(intent, SCHEDULE_REQUEST_CODE);
 	}
 
@@ -481,16 +457,48 @@ public class NewConversationActivity extends Activity {
 		super.onBackPressed();
 	}
 
-	public void scheduleMessage(MessageContainer message)
-	{
-		if(message.getType().equals(SmsMessageHandler.MSG_TYPE_SCHEDULED))
-		{
-			AlarmManager alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+	public void scheduleMessage(MessageContainer message) {
+		if (message.getType().equals(SmsMessageHandler.MSG_TYPE_SCHEDULED)) {
+			AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 			Intent intent = new Intent("edu.utsa.cs.smsmessenger.SMS_SCHEDULED");
-			PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int)message.getId(), intent, 0);
-			alarmMgr.set(AlarmManager.RTC_WAKEUP, message.getDate(), pendingIntent);
+			PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
+					(int) message.getId(), intent, 0);
+			alarmMgr.set(AlarmManager.RTC_WAKEUP, message.getDate(),
+					pendingIntent);
 		}
 	}
-	
+
+	private boolean validToContact() {
+		if (newRecipientTextView.getText().length() == 0) {
+			return false;
+		} else {
+			if (ContactsUtil.isAValidPhoneNumber(actvty.getContentResolver(),
+					newRecipientTextView.getText().toString())) {
+				if (ContactsUtil.isAPhoneNumber(newRecipientTextView.getText()
+						.toString())) {
+					ContactContainer contact = ContactsUtil
+							.getContactByPhoneNumber(
+									actvty.getContentResolver(),
+									newRecipientTextView.getText().toString());
+
+					newRecipientTextView
+							.setText(contact.getDisplayName() != null ? contact
+									.getDisplayName() : contact
+									.getPhoneNumber());
+				}
+				return true;
+			} else {
+				newRecipientTextView.setText("");
+				newRecipientTextView.post(new Runnable() {
+					@Override
+					public void run() {
+						newRecipientTextView.requestFocus();
+					}
+
+				});
+				return false;
+			}
+		}
+	}
 
 }

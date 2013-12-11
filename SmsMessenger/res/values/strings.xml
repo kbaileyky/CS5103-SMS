@@ -60,5 +60,6 @@
 	<string name="action_call">Call: %s</string>
 	<string name="action_delete_conversation">Delete conversation</string>
 	<string name="action_delete_message">Delete message</string>
-	<string name="vibration_short_timer">"250"</string>
+	<string name="vibration_short_timer">25</string>
+	<string name="invalid_recipient_error">Error: Invalid recipient.</string>
 </resources>
