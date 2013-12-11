@@ -54,20 +54,6 @@ public class ContactsUtilTest extends AndroidTestCase {
 	public static final String INVALID_TEST_INTL_PHONE_NUM_A_W_SLASH = "12/345678/90123";
 	public static final String INVALID_TEST_INTL_PHONE_NUM_A_W_ALPHA = "12A345678X90123S";
 	
-	/*public static final String TEST_INTL_PHONE_NUM_A = "(123)";
-	public static final String TEST_INTL_PHONE_NUM_B = "1-234";
-	public static final String TEST_INTL_PHONE_NUM_C = "1-234-5";
-	public static final String TEST_INTL_PHONE_NUM_D = "1-234-56";
-	public static final String TEST_INTL_PHONE_NUM_E = "123456";
-	public static final String TEST_INTL_PHONE_NUM_F = "1234567";
-	public static final String TEST_INTL_PHONE_NUM_G = "12345678";
-	public static final String TEST_INTL_PHONE_NUM_H = "123456789";
-	public static final String TEST_INTL_PHONE_NUM_I = "123456789";
-	public static final String TEST_INTL_PHONE_NUM_J = "123456789";
-	public static final String TEST_INTL_PHONE_NUM_K = "1234567890";
-	public static final String TEST_INTL_PHONE_NUM_L = "12345678901";
-	public static final String TEST_INTL_PHONE_NUM_M = "123456789012";
-	public static final String TEST_INTL_PHONE_NUM_N = "1234567890123";*/
 
 	@Override
 	protected void setUp() throws Exception {
