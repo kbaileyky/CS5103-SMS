@@ -13,10 +13,10 @@
 \section{General Information}
 
 \subsection{System Overview}
-\par The Mercury Messenger is intended to manage the transmission and reception of SMS messages by organizing messages and allowing users to send, receive, and delete messages. Messages are organized into conversations by contact name/ contact number, so that all messages from a contact can be viewed from a single location.
-\par With limited usage the Mercury Messenger will access the stock contacts application with the purpose of obtaining information that may be convenient to the user. For example, retrieving the names of contacts associated with number or being able to select a number from contacts when writing a message.
+\par The Mercury Messenger is intended to manage the transmission and reception of SMS messages by organizing messages and allowing users to send, receive, and delete messages. Messages are organized into conversations by contact name/ contact number, so that all messages from a contact can be viewed from a single location.  Mercury Messenger will also send messages scheduled ahead of time.
+\par With limited usage the Mercury Messenger will access the stock contacts application with the purpose of obtaining information that may be convenient to the user. For example, retrieving the names of contacts associated with number or being able to select a number from contacts when writing a message. Mercury Messenger will also be able to make calls to the other party of sent and received messages.
 \par Mercury Messenger has a distinct user interface which will be discussed more in-depth during the system summary (Section~\ref{sec:UsingMercMess}). The Mercury Messenger is accessible from the application view on the Android operating system 4.0.
-\par Mercury Messenger has two tiers of operations. The first consists of operations with which the user is able to interact, such as view messages or creating messages. The second tier is background operations which update the application when messages are deleted, send, and received. The Mercury Messenger also constructs a database upon installation where all of the SMS messages that are transmitted or received while the Mercury Messenger is active are stored. Mercury Messenger will also send messages scheduled ahead of time.
+\par Mercury Messenger has two tiers of operations. The first consists of operations with which the user is able to interact, such as view messages or creating messages. The second tier is background operations which update the application when messages are deleted, send, and received. The Mercury Messenger also constructs a database upon installation where all of the SMS messages that are transmitted or received while the Mercury Messenger is active are stored.
 \par The software delivered in this iteration is fully functional.
 
 
@@ -99,7 +99,7 @@ Extracting, Installing, and Running Mercury Messenger.
 
 \par When the Send Message Button is pressed, the Mercury Messenger application will send a valid (has both a recipient and a body) message.
 
-\par When the Send Scheduled Message Button is pressed, the Mercury Messenger application will send a valid (has both a recipient and a body) message that has been scheduled to be sent in the future.
+\par When the Send Scheduled Message Button is pressed, the Mercury Messenger application will store a valid (has both a recipient and a body) message that has been scheduled to be sent in the future until it is triggered. These messages will be viewable in the Scheduled Message screen (~\ref{sec:SchedMess})
 
 
 \subsection{Start Up Screen: Conversation Lists}
@@ -248,8 +248,8 @@ This means that the sending a single message may result in the recipient receivi
 
 
 
-\par After the user has completed both their message and the recipients list, the user can press the Send Message Button to send his or her message(Figure~\ref{fig:sendMessage}).
-If the message is unable to be sent, the user will be notified with a pop-up.
+\par After the user has completed both their message and the recipients list, the user can press the Send Message Button or Send Scheduled Message Button to send his or her message(Figure~\ref{fig:sendMessage}).
+If the message is unable to be sent, the user will be notified with a pop-up and a vibration.
 
 
 
