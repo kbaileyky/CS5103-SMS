@@ -115,6 +115,7 @@ public class ContactsUtil {
 	public static ContactContainer getContactByPhoneNumber(
 			ContentResolver contentResolver, String phoneNumber) {
 
+		phoneNumber = getStrippedPhoneNumber(phoneNumber);
 		ContactContainer contact = new ContactContainer();
 		contact.setPhoneNumber(phoneNumber);
 		Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI,
@@ -189,10 +190,8 @@ public class ContactsUtil {
 	 * @return returns true if it is a phone number.
 	 */
 	public static boolean isAPhoneNumber(String contact) {
-		
-		if ( getStrippedPhoneNumber( contact)
+		if ( removeSpecialPhoneChars(contact)
 				.matches("^\\d{3,15}$")) {
-				//.matches("^\\d{10}|^\\d{11}|^[1]?(\\(\\d{3}\\)\\s?)?\\d{3}-\\d{4}$|^\\d{3}([.-])\\d{3}\\2\\d{4}$")) {
 			return true;
 		}
 		return false;
@@ -225,7 +224,7 @@ public class ContactsUtil {
 	 * This static method strips all non integer characters for a phone number.
 	 * 
 	 * @param phoneNumber
-	 *            The phone to remove all non integer characters from.
+	 *            The phone to remove all non integer characters from number.
 	 * 
 	 * @return returns a string representing the passed in phone number with all
 	 *         non integer characters removed.
@@ -233,5 +232,23 @@ public class ContactsUtil {
 	 */
 	public static String getStrippedPhoneNumber(String phoneNumber) {
 		return phoneNumber.replaceAll("[^\\d]", "");
+	}
+
+	/**
+	 * This static method strips all special characters from a phone number.
+	 * 
+	 * @param phoneNumber
+	 *            The phone to remove all special characters from number.
+	 * 
+	 * @return returns a string representing the passed in phone number with all
+	 *         non special characters removed.
+	 * 
+	 */
+	public static String removeSpecialPhoneChars(String number)
+	{
+		return number.replace("(", "")
+				.replace(")", "").replace(".", "")
+				.replace("+", "").replace("-", "")
+				.replace("#", "").replace(" ", "");
 	}
 }
